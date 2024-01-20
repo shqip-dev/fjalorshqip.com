@@ -1,16 +1,16 @@
 ---
-import * as fs from "fs";
+import * as fs from 'fs';
 
 export function getStaticPaths() {
-  const dictionary = fs.readFileSync("src/data/dictionary.json", "utf-8");
+  const dictionary = fs.readFileSync('src/data/dictionary.json', 'utf-8');
   return JSON.parse(dictionary)
     .map((entry: any) => ({
       params: {
-        term: entry.term.toLowerCase().replace("ç", "ch").replace("ë", "ee"),
+        term: entry.term.toLowerCase().replace('ç', 'ch').replace('ë', 'ee'),
       },
       props: entry,
     }))
-    .filter((path: any) => path.params.term !== "");
+    .filter((path: any) => path.params.term !== '');
 }
 
 const { term } = Astro.params;
