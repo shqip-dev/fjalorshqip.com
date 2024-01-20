@@ -5,11 +5,10 @@ import {
   saveSlugDictionary,
   type Index,
   saveIndex,
+  MIN_STEM_LENGTH,
 } from '../lib/dictionary.ts';
 import env from '../lib/env.ts';
 import pcs from '../lib/process.ts';
-
-const MIN_STEM_LENGTH = 3;
 
 const main = async () => {
   const production = env.isProduction();

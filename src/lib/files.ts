@@ -22,7 +22,26 @@ const writeJson = async <T>(
   await fs.writeFile(filename, stringifiedContent);
 };
 
+const getFileNames = async (dir: string): Promise<string[]> => {
+  const objs = await fs.readdir(dir);
+
+  const responses = await Promise.all(
+    objs.map(async (obj) => {
+      const stat = await fs.stat(path.join(dir, obj));
+      return {
+        isFile: stat.isFile(),
+        name: obj,
+      };
+    })
+  );
+
+  return responses
+    .filter((response) => response.isFile)
+    .map((response) => response.name);
+};
+
 export default {
   readJson,
   writeJson,
+  getFileNames,
 };

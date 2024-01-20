@@ -2,9 +2,12 @@ import files from './files.ts';
 
 const GEN_DIR_PREFIX = 'src/data/gen';
 const SLUG_DICTIONARY_FILENAME = `${GEN_DIR_PREFIX}/slugDictionary.json`;
+const INDEX_FILENAME_DIR = `${GEN_DIR_PREFIX}/stem`;
 const INDEX_FILENAME_TEMPLATE = (prefix: string) =>
-  `${GEN_DIR_PREFIX}/stem/${prefix}.json`;
+  `${INDEX_FILENAME_DIR}/${prefix}.json`;
 const SCRAPED_DICTIONARY_FILENAME = 'data/dictionary.json';
+
+export const MIN_STEM_LENGTH = 3;
 
 export interface ScrapedEntry {
   term: string;
@@ -54,6 +57,10 @@ export const saveSlugDictionary = async (content: Index, prod?: boolean) => {
   });
 };
 
+const getIndex = async (prefix: string) => {
+  return await files.readJson<Index>(INDEX_FILENAME_TEMPLATE(prefix));
+};
+
 export const saveIndex = async (
   content: Index,
   prefix: string,
@@ -63,4 +70,20 @@ export const saveIndex = async (
     createDir: true,
     pretty: !prod,
   });
+};
+
+export const getIndexes = async () => {
+  const indexFilenames = await files.getFileNames(INDEX_FILENAME_DIR);
+  const indexPrefixes = indexFilenames
+    .filter((name) => name.endsWith('.json'))
+    .map((name) => name.slice(0, -5));
+
+  return await Promise.all(
+    indexPrefixes.map(async (prefix) => {
+      return {
+        prefix,
+        index: await getIndex(prefix),
+      };
+    })
+  );
 };
