@@ -1,0 +1,38 @@
+---
+import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
+
+export async function getStaticPaths() {
+  const slugDictionary = await getSlugDictionary();
+  return Object.entries(slugDictionary).map(([key, value]) => ({
+    params: {
+      slug: key,
+    },
+    props: value,
+  }));
+}
+
+const { slug } = Astro.params;
+const props = Astro.props;
+---
+
+<div>Faqja: /f/{slug}</div>
+<p>
+  {
+    Object.values(props).map((e: any) => {
+      const entry = e as Entry;
+      return (
+        <>
+          <div>
+            <span style="font-size: 1.2em;">{entry.term}</span>{' '}
+            {entry.attributes}
+            <br />
+            <div style="max-width: 800px;margin-left: 30px;">
+              {entry.definitions}
+            </div>
+          </div>
+          <br />
+        </>
+      );
+    })
+  }
+</p>

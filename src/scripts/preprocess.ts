@@ -1,72 +1,68 @@
-import type {
-  OriginalDictionaryEntry,
-  IntermediateDictionaryEntry,
-  DictionaryEntry,
+import {
+  type ScrapedEntry,
+  getScrapedDictionary,
+  type Entry,
+  saveSlugDictionary,
+  type Index,
 } from '../lib/dictionary.ts';
-import files from '../lib/files.ts';
-
-const INPUT_FILE = 'data/dictionary.json';
-const OUTPUT_FILE = 'src/data/dictionary.json';
-
-const developmentSubSet = [
-  'ACAR',
-  'AERONAUTIKË',
-  'ÇLIRUES',
-  'HYRJE',
-  'IKACAKE',
-  'PUPË IV',
-];
+import env from '../lib/env.ts';
+import pcs from '../lib/process.ts';
 
 const main = async () => {
-  const production = process.env.NODE_ENV == 'production';
+  const production = env.isProduction();
 
-  const dictionaryEntries: OriginalDictionaryEntry[] = await files.readJson(
-    INPUT_FILE
+  const scrapedEntries = await getScrapedDictionary();
+
+  const entries = scrapedEntries.map(mapScrapedEntryToEntry);
+
+  const dictionarySubset = env.getDictionarySubset();
+  const entriesSubSet = production
+    ? // We have to filter some entries out since cloudflare pages has a limit on 20k files
+      entries.filter((_, idx) => idx % 2 == 0)
+    : entries.filter((entry) => dictionarySubset.includes(entry.term));
+
+  const slugDictionary = entriesSubSet
+    .filter((entry) => !!entry.slug)
+    .reduce((acc, entry) => {
+      const key = entry.slug;
+      if (acc[key]) {
+        acc[key].push(entry);
+      } else {
+        acc[key] = [entry];
+      }
+      return acc;
+    }, {} as Index);
+  await saveSlugDictionary(slugDictionary, production);
+
+  console.debug(`Generated ${entriesSubSet.length} entries`);
+};
+
+const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
+  const scrapedTermParts = scrapedEntry.term
+    .split(/\s+/)
+    .map((term) => term.trim())
+    .filter((term) => term !== '');
+
+  const term = scrapedTermParts.filter((part) => !part.endsWith('.')).join(' ');
+  const attributes = scrapedTermParts.filter((part) => part.endsWith('.'));
+
+  let definitions = scrapedEntry.definition.map((definition) =>
+    definition.trim()
   );
-  const temp: { [key: string]: IntermediateDictionaryEntry[] } = {};
+  if (definitions.length > 1) {
+    definitions = definitions.map((definition) =>
+      // Replace leading numbered indexes
+      definition.replace(/^\d+\.\s*/, '')
+    );
+  }
 
-  dictionaryEntries.forEach((entry) => {
-    const originalTermParts = entry.term
-      .split(/\s+/)
-      .map((term) => term.trim())
-      .filter((term) => term !== '');
-
-    const term = originalTermParts
-      .filter((part) => !part.endsWith('.'))
-      .join(' ');
-    const attributes = originalTermParts.filter((part) => part.endsWith('.'));
-
-    let definitions = entry.definition.map((definition) => definition.trim());
-    if (definitions.length > 1) {
-      definitions = definitions.map((definition) =>
-        definition.replace(/^\d+\.\s*/, '')
-      );
-    }
-
-    if (!temp[term]) {
-      temp[term] = [];
-    }
-    temp[term].push({
-      attributes,
-      definitions,
-    });
-  });
-
-  const filteredEntries = production
-    ? Object.entries(temp)
-    : Object.entries(temp).filter(([key]) => developmentSubSet.includes(key));
-
-  const result: DictionaryEntry[] = filteredEntries.map(([key, value]) => ({
-    term: key,
-    versions: value,
-  }));
-
-  files.writeJson(OUTPUT_FILE, result, {
-    createDir: true,
-    pretty: true,
-  });
-
-  console.debug(`Generated ${filteredEntries.length} entries`);
+  return {
+    term: term,
+    attributes: attributes,
+    definitions: definitions,
+    stems: pcs.stems(term),
+    slug: pcs.slug(term),
+  };
 };
 
 main();
