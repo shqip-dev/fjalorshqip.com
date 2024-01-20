@@ -11,7 +11,7 @@ export function getStaticPaths() {
                 .replace("ë", "ee"),
         },
         props: entry,
-    })).filter(path => path.params.term !== '');
+    })).filter((path:any) => path.params.term !== '');
 }
 
 const { term } = Astro.params;
