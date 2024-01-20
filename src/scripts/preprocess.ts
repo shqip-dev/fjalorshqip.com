@@ -4,9 +4,12 @@ import {
   type Entry,
   saveSlugDictionary,
   type Index,
+  saveIndex,
 } from '../lib/dictionary.ts';
 import env from '../lib/env.ts';
 import pcs from '../lib/process.ts';
+
+const MIN_STEM_LENGTH = 3;
 
 const main = async () => {
   const production = env.isProduction();
@@ -33,7 +36,50 @@ const main = async () => {
     }, {} as Index);
   await saveSlugDictionary(slugDictionary, production);
 
-  console.debug(`Generated ${entriesSubSet.length} entries`);
+  type Indexes = {
+    [prefix: string]: Index;
+  };
+
+  const indexes = entriesSubSet
+    .filter((entry) => !!entry.stems)
+    .flatMap((entry) =>
+      entry.stems.map((stem) => ({
+        stem,
+        entry,
+      }))
+    )
+    .filter(
+      (stemEntry) =>
+        !!stemEntry.stem && stemEntry.stem.length >= MIN_STEM_LENGTH
+    )
+    .reduce((acc, stemEntry) => {
+      const firstKey = stemEntry.stem.substring(0, MIN_STEM_LENGTH);
+      const secondKey = stemEntry.stem;
+      if (acc[firstKey]) {
+        if (acc[firstKey][secondKey]) {
+          acc[firstKey][secondKey].push(stemEntry.entry);
+        } else {
+          acc[firstKey][secondKey] = [stemEntry.entry];
+        }
+      } else {
+        acc[firstKey] = {
+          [secondKey]: [stemEntry.entry],
+        };
+      }
+
+      return acc;
+    }, {} as Indexes);
+
+  await Promise.all(
+    Object.entries(indexes).map(([prefix, index]) =>
+      saveIndex(index, prefix, production)
+    )
+  );
+  console.debug(
+    `Generated ${Object.entries(indexes).length} (sub) indexes and ${
+      entriesSubSet.length
+    } entries`
+  );
 };
 
 const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
