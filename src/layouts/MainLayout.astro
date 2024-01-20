@@ -1,0 +1,88 @@
+---
+import '@fontsource-variable/eb-garamond';
+const footerUrls = [
+  {
+    label: 'ballina',
+    url: '/',
+  },
+  {
+    label: 'burimi ne git',
+    url: 'https://github.com/shqip-dev/fjalorshqip.com',
+    target: '_blank',
+  },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{Astro.props.title}</title>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="title"><a href="/">Fjalor Shqip</a></div>
+      </header>
+      <slot />
+      <footer>
+        <div>
+          {
+            footerUrls.map((footerUrl) => (
+              <>
+                [<a href={footerUrl.url} target={footerUrl.target}>{footerUrl.label}</a>]
+              </>
+            ))
+          }
+        </div>
+        <div>
+          &copy;{new Date().getFullYear()} fjalorshqip.com.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style lang="scss">
+  html {
+    height: 100%;
+  }
+  body {
+    font-family: 'EB Garamond Variable', sans-serif;
+    height: 100%;
+    background-color: #f0ede8;
+  }
+
+  body,
+  header,
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .container {
+    max-width: 800px;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  header,
+  footer {
+    padding: 50px;
+    gap: 5px;
+  }
+  header {
+    .title {
+      font-size: 2.4em;
+      font-weight: 600;
+      a,
+      a:hover {
+        text-decoration: none;
+      }
+    }
+  }
+  a {
+    color: #d0523b;
+  }
+</style>
