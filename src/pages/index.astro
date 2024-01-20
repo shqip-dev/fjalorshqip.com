@@ -1,9 +1,10 @@
 ---
-import MainLayout from "../layouts/MainLayout.astro";
-
-
+import SearchBar from '../components/SearchBar.tsx';
+import MainLayout from '../layouts/MainLayout.astro';
 ---
 
 <MainLayout title=`Fjalor Shqip | fjalorshqip.com`>
-  <p>...</p>
+  <div>
+    <SearchBar client:load />
+  </div>
 </MainLayout>

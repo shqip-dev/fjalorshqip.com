@@ -1,0 +1,49 @@
+.searchbar {
+  display: flex;
+  background: white;
+  width: 100%;
+  
+  align-items: center;
+  padding: 10px 5px 10px 10px;
+  
+  transition: all 0.2s ease;
+  border: 1px solid grey;
+  border-radius: 15px;
+
+  box-sizing: border-box;
+  cursor: text;
+  
+  &:has(input:focus) {
+    border-color: #d53;
+  }
+
+  input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+  }
+
+  .clearButton {
+    transition: all 0.2s ease;
+    padding: 2px 9px;
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 0.7rem;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:active {
+      opacity: 0.8;
+    }
+  }
+
+  &:has(input:placeholder-shown) {
+    .clearButton {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}
