@@ -69,13 +69,17 @@ const footerUrls = [
     flex-direction: column;
   }
   .container {
-    max-width: 800px;
+    width: 800px;
     margin-left: 5%;
     margin-right: 5%;
+    @media all and (max-width: 820px) {
+      width: 95%;
+    }
   }
   header,
   footer {
-    padding: 5%;
+    padding-top: 25px;
+    padding-bottom: 25px;
     gap: 5px;
   }
   header {
