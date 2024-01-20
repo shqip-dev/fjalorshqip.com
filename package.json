@@ -5,13 +5,16 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "prebuild": "node --loader ts-node/esm ./src/preprocess.ts",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.4.1",
-    "astro": "^4.2.1",
-    "typescript": "^5.3.3"
+    "astro": "^4.2.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
   }
 }
