@@ -21,7 +21,7 @@ const production = process.env.NODE_ENV == 'production';
 
 const fileContent = fs.readFileSync('data/dictionary.json', 'utf-8');
 const dictionaryEntries: OriginalDictionaryEntry[] = JSON.parse(fileContent);
-const temp: {[key: string ]: IntermediateDictionaryEntry[]} = {};
+const temp: { [key: string]: IntermediateDictionaryEntry[] } = {};
 
 dictionaryEntries.forEach((entry) => {
     const originalTermParts = entry.term.split(/\s+/).map(term => term.trim()).filter(term => term !== '');
