@@ -3,7 +3,15 @@ import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
 
 export async function getStaticPaths() {
   const slugDictionary = await getSlugDictionary();
-  return Object.entries(slugDictionary).map(([key, value]) => ({
+
+  let entries = Object.entries(slugDictionary);
+  if (entries.length > 15_000) {
+    // We have to filter some entries out since cloudflare pages has a limit on 20k files
+    const ratio = 15_000 / entries.length;
+    entries = entries.filter((_, idx) => idx % 10 < ratio * 10);
+  }
+
+  return entries.map(([key, value]) => ({
     params: {
       slug: key,
     },

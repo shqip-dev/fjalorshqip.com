@@ -17,8 +17,7 @@ const main = async () => {
 
   const dictionarySubset = env.getDictionarySubset();
   const entriesSubSet = production
-    ? // We have to filter some entries out since cloudflare pages has a limit on 20k files
-      entries.filter((_, idx) => idx % 2 == 0)
+    ? entries
     : entries.filter((entry) => dictionarySubset.includes(entry.term));
 
   const slugDictionary = entriesSubSet

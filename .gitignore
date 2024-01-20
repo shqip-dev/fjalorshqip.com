@@ -24,4 +24,4 @@ pnpm-debug.log*
 .DS_Store
 
 # generated dictionary data
-src/data/dictionary.json
+src/data/gen/
