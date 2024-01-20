@@ -52,3 +52,5 @@ const result: DictionaryEntry[] = filteredEntries.map(([key, value]) => ({
 
 fs.mkdirSync('src/data/', { recursive: true });
 fs.writeFileSync('src/data/dictionary.json', JSON.stringify(result, null, 2));
+
+console.debug(`Generated ${filteredEntries.length} entries`);
