@@ -6,9 +6,9 @@ export async function getStaticPaths() {
   const slugDictionary = await getSlugDictionary();
 
   let entries = Object.entries(slugDictionary);
-  if (entries.length > 15_000) {
+  if (entries.length > 14_000) {
     // We have to filter some entries out since cloudflare pages has a limit on 20k files
-    const ratio = 15_000 / entries.length;
+    const ratio = 14_000 / entries.length;
     entries = entries.filter((_, idx) => idx % 10 < ratio * 10);
   }
 
