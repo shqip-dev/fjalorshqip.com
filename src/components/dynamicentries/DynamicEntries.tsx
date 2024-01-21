@@ -5,13 +5,18 @@ const WORD_PATH_PREFIX = '/f/';
 const SLUG_PATTERN = /^[a-z-]+$/;
 
 const DynamicEntries = () => {
-  const word = requestedWord();
-  return word ? <EntriesLoader slug={word} /> : <NotFound />;
+  let path = window?.location?.pathname || '';
+  const homepage = isHomepage(path);
+  const word = requestedWord(path);
+
+  return homepage ? <></> : word ? <EntriesLoader slug={word} /> : <NotFound />;
 };
 
-const requestedWord = () => {
-  let path = window?.location?.pathname || '';
+const isHomepage = (path: string) => {
+  return path === '' || path === '/';
+};
 
+const requestedWord = (path: string) => {
   if (!path.startsWith(WORD_PATH_PREFIX)) {
     return null;
   }
