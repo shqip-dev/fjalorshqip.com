@@ -1,22 +1,6 @@
 ---
 import FooterLinks from '../components/footerlinks/FooterLinks';
 import '@fontsource-variable/eb-garamond';
-const footerUrls = [
-  {
-    label: 'ballina',
-    url: '/',
-  },
-  {
-    label: 'kodi në github',
-    url: 'https://github.com/shqip-dev/fjalorshqip.com',
-    target: '_blank',
-  },
-  {
-    label: 'cloudflare pages',
-    url: 'https://pages.cloudflare.com/',
-    target: '_blank',
-  },
-];
 ---
 
 <html lang="sq">
@@ -41,7 +25,28 @@ const footerUrls = [
       </main>
       <footer>
         <div>
-          <FooterLinks links={footerUrls} />
+          <FooterLinks
+            links={[
+              {
+                label: 'ballina',
+                url: '/',
+              },
+              {
+                label: 'rreth',
+                url: '/rreth',
+              },
+              {
+                label: 'kodi',
+                url: 'https://github.com/shqip-dev/fjalorshqip.com',
+                target: '_blank',
+              },
+              {
+                label: 'platforma',
+                url: 'https://pages.cloudflare.com/',
+                target: '_blank',
+              },
+            ]}
+          />
         </div>
         <div>
           &copy;{new Date().getFullYear()} fjalorshqip.com.

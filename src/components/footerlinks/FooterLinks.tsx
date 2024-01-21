@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 interface FooterLink {
   label: string;
   url: string;
@@ -10,9 +12,9 @@ interface FooterLinksProps {
 const FooterLinks = (props: FooterLinksProps) => {
   return (
     <>
-      {props.links.map((link) =>
+      {props?.links?.map((link, idx) =>
         // prettier-ignore
-        <> [ <a href={link.url} target={link.target}>{link.label}</a> ] </>
+        <Fragment key={`link-${idx}`}> [ <a href={link.url} target={link.target}>{link.label}</a> ] </Fragment>
       )}
     </>
   );
