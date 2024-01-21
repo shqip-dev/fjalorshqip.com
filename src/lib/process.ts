@@ -4,8 +4,8 @@ const WHITESPACE_REGEX = /\s+/;
 const stems = (term: string) => {
   return term
     .toLowerCase()
-    .replace('ë', 'e')
-    .replace('ç', 'c')
+    .replaceAll('ë', 'e')
+    .replaceAll('ç', 'c')
     .split(WHITESPACE_REGEX)
     .map((word) => word.replace(NON_ALPHA_REGEX, ''))
     .filter((word) => word !== '');
@@ -14,8 +14,8 @@ const stems = (term: string) => {
 const slug = (term: string) => {
   return term
     .toLowerCase()
-    .replace('ë', 'ee')
-    .replace('ç', 'cc')
+    .replaceAll('ë', 'ee')
+    .replaceAll('ç', 'cc')
     .split(WHITESPACE_REGEX)
     .map((word) => word.replace(NON_ALPHA_REGEX, ''))
     .filter((word) => word !== '')
