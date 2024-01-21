@@ -28,7 +28,10 @@ export async function getStaticPaths() {
 const props = Astro.props;
 ---
 
-<MainLayout title=`${props['0'].term} | fjalorshqip.com`>
+<MainLayout
+  title=`${props['0'].term} | fjalorshqip.com`
+  description=`Kuptimi i fjales ${props['0'].term} ne gjuhën shqipe. Definicioni i ${props['0'].term}.`
+>
   <SearchBar client:load />
 
   <Entries entries={(Object.values(props) as Entry[]) || []} />

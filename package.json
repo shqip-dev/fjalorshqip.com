@@ -7,7 +7,7 @@
     "start": "astro dev",
     "prebuild": "node --loader ts-node/esm ./src/scripts/preprocess.ts",
     "build": "astro check && astro build",
-    "previnpew": "astro preview",
+    "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {

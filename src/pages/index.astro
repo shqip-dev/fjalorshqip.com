@@ -4,7 +4,10 @@ import SearchBar from '../components/searchbar/SearchBar.tsx';
 import MainLayout from '../layouts/MainLayout.astro';
 ---
 
-<MainLayout title=`Fjalor Shqip | fjalorshqip.com`>
+<MainLayout
+  title="Fjalor Shqip | fjalorshqip.com"
+  description="Fjalori i gjuhës shqipe"
+>
   <div>
     <SearchBar client:load />
     <DynamicEntries client:only />

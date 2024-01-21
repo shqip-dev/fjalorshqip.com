@@ -1,4 +1,5 @@
 ---
+import FooterLinks from '../components/footerlinks/FooterLinks';
 import '@fontsource-variable/eb-garamond';
 const footerUrls = [
   {
@@ -18,29 +19,29 @@ const footerUrls = [
 ];
 ---
 
-<html lang="en">
+<html lang="sq">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={Astro.props.description} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>{Astro.props.title}</title>
   </head>
   <body>
+    <a id="skip-nav" class="screenreader-text" href="#main-content">
+      Skip Navigation or Skip to Content
+    </a>
     <div class="container">
       <header>
         <div class="title"><a href="/">Fjalor Shqip</a></div>
       </header>
-      <slot />
+      <main id="main-content">
+        <slot />
+      </main>
       <footer>
         <div>
-          {
-            footerUrls.map((footerUrl) => (
-              <>
-                [<a href={footerUrl.url} target={footerUrl.target}>{footerUrl.label}</a>]
-              </>
-            ))
-          }
+          <FooterLinks links={footerUrls} />
         </div>
         <div>
           &copy;{new Date().getFullYear()} fjalorshqip.com.
@@ -51,9 +52,15 @@ const footerUrls = [
 </html>
 
 <style lang="scss">
+  :global(a) {
+    color: #d53;
+  }
+  :global(body) {
+    font-family: 'EB Garamond Variable', serif;
+  }
+
   body {
     background-color: #f1efe7;
-
     color: #222;
   }
 
@@ -89,7 +96,20 @@ const footerUrls = [
       }
     }
   }
-  a {
-    color: #d53;
+  .screenreader-text {
+    position: absolute;
+    left: -999px;
+    width: 1px;
+    height: 1px;
+    top: auto;
+
+    &:focus {
+      color: white;
+      display: inline-block;
+      height: auto;
+      width: auto;
+      position: static;
+      margin: auto;
+    }
   }
 </style>
