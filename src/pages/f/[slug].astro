@@ -1,9 +1,14 @@
 ---
+import Entries from '../../components/entries/Entries';
+import SearchBar from '../../components/searchbar/SearchBar';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
+import env from '../../lib/env';
 
 export async function getStaticPaths() {
-  const slugDictionary = await getSlugDictionary();
+  const slugDictionary = env.shouldSkipStaticWordPages()
+    ? []
+    : await getSlugDictionary();
 
   let entries = Object.entries(slugDictionary);
   if (entries.length > 14_000) {
@@ -24,33 +29,9 @@ const props = Astro.props;
 ---
 
 <MainLayout title=`${props['0'].term} | fjalorshqip.com`>
-  <p>
-    {
-      Object.values(props).map((e: any) => {
-        const entry = e as Entry;
-        return (
-          <>
-            <div>
-              <span class="title">{entry.term}</span> <span class="attributes">{entry.attributes}</span>
-              <br />
-              <div style="max-width: 800px;margin-left: 30px;">
-                {entry.definitions}
-              </div>
-            </div>
-            <br />
-          </>
-        );
-      })
-    }
-  </p>
+  <SearchBar client:load />
+
+  <Entries entries={(Object.values(props) as Entry[]) || []} />
 </MainLayout>
 
-<style lang="scss">
-  .title {
-    font-size: 1.2em;
-    font-weight: 600;
-  }
-  .attributes {
-    color: #655;
-  }
-</style>
+<style lang="scss"></style>
