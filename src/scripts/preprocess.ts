@@ -15,7 +15,9 @@ const main = async () => {
 
   const scrapedEntries = await getScrapedDictionary();
 
-  const entries = scrapedEntries.map(mapScrapedEntryToEntry);
+  const entries = scrapedEntries
+    .filter((scrapedEntry) => !scrapedEntry.skip)
+    .map(mapScrapedEntryToEntry);
 
   const dictionarySubset = env.getDictionarySubset();
   const entriesSubSet = production
