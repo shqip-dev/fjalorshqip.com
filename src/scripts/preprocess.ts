@@ -10,6 +10,7 @@ import {
 } from '../lib/dictionary.ts';
 import env from '../lib/env.ts';
 import pcs from '../lib/process.ts';
+import _ from 'lodash';
 
 type Indexes = {
   [prefix: string]: Index;
@@ -20,7 +21,7 @@ const main = async () => {
 
   const scrapedEntries = await getScrapedDictionary();
 
-  const entries = scrapedEntries
+  const entries = dedupScrapedEntries(scrapedEntries)
     .filter((scrapedEntry) => !scrapedEntry.skip)
     .map(mapScrapedEntryToEntry);
 
@@ -109,6 +110,28 @@ const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
     stems: pcs.stems(term),
     slug: pcs.slug(term),
   };
+};
+
+const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
+  const sortedScrapedEntries = _.sortBy(scrapedEntries, (entry) => entry.term);
+
+  for (let i = 1, j = sortedScrapedEntries.length; i < j; i++) {
+    const curr = sortedScrapedEntries[i];
+    const prev = sortedScrapedEntries[i - 1];
+
+    if (
+      curr &&
+      prev &&
+      curr.term === prev.term &&
+      _.isEqual(curr.definition, prev.definition)
+    ) {
+      sortedScrapedEntries.splice(i, 1);
+      i--;
+      j--;
+    }
+  }
+
+  return sortedScrapedEntries;
 };
 
 const accumulateEntriesInSubIndexes = (

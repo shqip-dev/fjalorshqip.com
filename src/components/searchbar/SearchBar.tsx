@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './SearchBar.module.scss';
-import { MIN_STEM_LENGTH, type Index, type Entry } from '../lib/dictionary';
-import pcs from '../lib/process';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
+import { MIN_STEM_LENGTH, type Entry, type Index } from '../../lib/dictionary';
+import pcs from '../../lib/process';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
