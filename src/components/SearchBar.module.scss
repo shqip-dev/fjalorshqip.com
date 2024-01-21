@@ -1,49 +1,73 @@
-.searchbar {
-  display: flex;
-  background: white;
-  width: 100%;
-  
-  align-items: center;
-  padding: 10px 5px 10px 10px;
-  
-  transition: all 0.2s ease;
-  border: 1px solid grey;
-  border-radius: 15px;
+.searchContainer {
+  .searchbar {
+    display: flex;
+    background: white;
+    width: 100%;
 
-  box-sizing: border-box;
-  cursor: text;
-  
-  &:has(input:focus) {
-    border-color: #d53;
-  }
+    align-items: center;
+    padding: 10px 5px 10px 10px;
 
-  input {
-    flex-grow: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-  }
-
-  .clearButton {
     transition: all 0.2s ease;
-    padding: 2px 9px;
-    cursor: pointer;
-    opacity: 0.5;
-    font-size: 0.7rem;
+    border: 1px solid grey;
+    border-radius: 15px;
 
-    &:hover {
-      opacity: 1;
+    &.hasSuggestions {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
     }
 
-    &:active {
-      opacity: 0.8;
+    box-sizing: border-box;
+    cursor: text;
+
+    &:has(input:focus) {
+      border-color: #d53;
+    }
+
+    input {
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+
+    .clearButton {
+      transition: all 0.2s ease;
+      padding: 2px 9px;
+      cursor: pointer;
+      opacity: 0.5;
+      font-size: 0.7rem;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &:active {
+        opacity: 0.8;
+      }
+    }
+
+    &:has(input:placeholder-shown) {
+      .clearButton {
+        opacity: 0;
+        pointer-events: none;
+      }
     }
   }
+  .suggestions {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3px;
+    gap: 3px;
+    .suggestion {
+      color: #d53;
+      background-color: white;
+      transition: background-color 0.4s ease;
+      overflow: hidden;
+      padding: 7px 7px 7px 10px;
 
-  &:has(input:placeholder-shown) {
-    .clearButton {
-      opacity: 0;
-      pointer-events: none;
+      &:hover {
+        background-color: #eee;
+      }
     }
   }
 }

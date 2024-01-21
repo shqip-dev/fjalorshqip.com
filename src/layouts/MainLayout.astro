@@ -23,7 +23,7 @@ const footerUrls = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>{Astro.props.title}</title>
   </head>
   <body>
@@ -37,7 +37,11 @@ const footerUrls = [
           {
             footerUrls.map((footerUrl) => (
               <>
-                [<a href={footerUrl.url} target={footerUrl.target}>{footerUrl.label}</a>]
+                [
+                <a href={footerUrl.url} target={footerUrl.target}>
+                  {footerUrl.label}
+                </a>
+                ]
               </>
             ))
           }
@@ -51,12 +55,9 @@ const footerUrls = [
 </html>
 
 <style lang="scss">
-  html {
-    height: 100%;
-  }
   body {
     background-color: #f1efe7;
-    min-height: 100%;
+
     color: #222;
   }
 

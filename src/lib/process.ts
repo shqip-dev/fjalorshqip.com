@@ -15,7 +15,7 @@ const slug = (term: string) => {
   return term
     .toLowerCase()
     .replace('ë', 'ee')
-    .replace('ç', 'ch')
+    .replace('ç', 'cc')
     .split(WHITESPACE_REGEX)
     .map((word) => word.replace(NON_ALPHA_REGEX, ''))
     .filter((word) => word !== '')
