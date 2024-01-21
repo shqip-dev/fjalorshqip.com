@@ -4,11 +4,16 @@ import {
   type Entry,
   saveSlugDictionary,
   type Index,
-  saveIndex,
+  saveStemSubIndex,
   MIN_STEM_LENGTH,
+  saveSlugSubIndex,
 } from '../lib/dictionary.ts';
 import env from '../lib/env.ts';
 import pcs from '../lib/process.ts';
+
+type Indexes = {
+  [prefix: string]: Index;
+};
 
 const main = async () => {
   const production = env.isProduction();
@@ -37,49 +42,44 @@ const main = async () => {
     }, {} as Index);
   await saveSlugDictionary(slugDictionary, production);
 
-  type Indexes = {
-    [prefix: string]: Index;
-  };
-
-  const indexes = entriesSubSet
+  const stemSubIndexes = entriesSubSet
     .filter((entry) => !!entry.stems)
     .flatMap((entry) =>
       entry.stems.map((stem) => ({
-        stem,
+        prefix: stem,
         entry,
       }))
     )
     .filter(
       (stemEntry) =>
-        !!stemEntry.stem && stemEntry.stem.length >= MIN_STEM_LENGTH
+        !!stemEntry.prefix && stemEntry.prefix.length >= MIN_STEM_LENGTH
     )
-    .reduce((acc, stemEntry) => {
-      const firstKey = stemEntry.stem.substring(0, MIN_STEM_LENGTH);
-      const secondKey = stemEntry.stem;
-      if (acc[firstKey]) {
-        if (acc[firstKey][secondKey]) {
-          acc[firstKey][secondKey].push(stemEntry.entry);
-        } else {
-          acc[firstKey][secondKey] = [stemEntry.entry];
-        }
-      } else {
-        acc[firstKey] = {
-          [secondKey]: [stemEntry.entry],
-        };
-      }
-
-      return acc;
-    }, {} as Indexes);
+    .reduce(accumulateEntriesInSubIndexes, {} as Indexes);
 
   await Promise.all(
-    Object.entries(indexes).map(([prefix, index]) =>
-      saveIndex(index, prefix, production)
+    Object.entries(stemSubIndexes).map(([prefix, index]) =>
+      saveStemSubIndex(index, prefix, production)
     )
   );
+
+  const slugSubIndexes = entriesSubSet
+    .filter((entry) => !!entry.slug && entry.slug.length >= MIN_STEM_LENGTH)
+    .map((entry) => ({
+      prefix: entry.slug,
+      entry,
+    }))
+    .reduce(accumulateEntriesInSubIndexes, {} as Indexes);
+
+  await Promise.all(
+    Object.entries(slugSubIndexes).map(([prefix, index]) =>
+      saveSlugSubIndex(index, prefix, production)
+    )
+  );
+
   console.debug(
-    `Generated ${Object.entries(indexes).length} (sub) indexes and ${
-      entriesSubSet.length
-    } entries`
+    `Generated ${Object.entries(stemSubIndexes).length} stem sub indexes, ${
+      Object.entries(slugDictionary).length
+    } slug sub indexes and ${entriesSubSet.length} entries`
   );
 };
 
@@ -109,6 +109,27 @@ const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
     stems: pcs.stems(term),
     slug: pcs.slug(term),
   };
+};
+
+const accumulateEntriesInSubIndexes = (
+  acc: Indexes,
+  stemEntry: { prefix: string; entry: Entry }
+) => {
+  const firstKey = stemEntry.prefix.substring(0, MIN_STEM_LENGTH);
+  const secondKey = stemEntry.prefix;
+  if (acc[firstKey]) {
+    if (acc[firstKey][secondKey]) {
+      acc[firstKey][secondKey].push(stemEntry.entry);
+    } else {
+      acc[firstKey][secondKey] = [stemEntry.entry];
+    }
+  } else {
+    acc[firstKey] = {
+      [secondKey]: [stemEntry.entry],
+    };
+  }
+
+  return acc;
 };
 
 main();

@@ -2,9 +2,12 @@ import files from './files.ts';
 
 const GEN_DIR_PREFIX = 'src/data/gen';
 const SLUG_DICTIONARY_FILENAME = `${GEN_DIR_PREFIX}/slugDictionary.json`;
-const INDEX_FILENAME_DIR = `${GEN_DIR_PREFIX}/stem`;
-const INDEX_FILENAME_TEMPLATE = (prefix: string) =>
-  `${INDEX_FILENAME_DIR}/${prefix}.json`;
+const SLUG_SUBINDEX_FILENAME_DIR = `${GEN_DIR_PREFIX}/slug`;
+const SLUG_SUBINDEX_FILENAME_TEMPLATE = (prefix: string) =>
+  `${SLUG_SUBINDEX_FILENAME_DIR}/${prefix}.json`;
+const STEM_SUBINDEX_FILENAME_DIR = `${GEN_DIR_PREFIX}/stem`;
+const STEM_SUBINDEX_FILENAME_TEMPLATE = (prefix: string) =>
+  `${STEM_SUBINDEX_FILENAME_DIR}/${prefix}.json`;
 const SCRAPED_DICTIONARY_FILENAME = 'data/dictionary.json';
 
 export const MIN_STEM_LENGTH = 3;
@@ -56,24 +59,60 @@ export const saveSlugDictionary = async (content: Index, prod?: boolean) => {
     pretty: !prod,
   });
 };
-
-const getIndex = async (prefix: string) => {
-  return await files.readJson<Index>(INDEX_FILENAME_TEMPLATE(prefix));
-};
-
-export const saveIndex = async (
+export const saveSlugSubIndex = async (
   content: Index,
   prefix: string,
   prod?: boolean
 ) => {
-  await files.writeJson(INDEX_FILENAME_TEMPLATE(prefix), content, {
+  await saveSubIndex(content, SLUG_SUBINDEX_FILENAME_TEMPLATE, prefix, prod);
+};
+
+export const getSlugSubIndexes = async () => {
+  return await getSubIndexes(
+    SLUG_SUBINDEX_FILENAME_DIR,
+    SLUG_SUBINDEX_FILENAME_TEMPLATE
+  );
+};
+
+export const saveStemSubIndex = async (
+  content: Index,
+  prefix: string,
+  prod?: boolean
+) => {
+  await saveSubIndex(content, STEM_SUBINDEX_FILENAME_TEMPLATE, prefix, prod);
+};
+
+export const getStemSubIndexes = async () => {
+  return await getSubIndexes(
+    STEM_SUBINDEX_FILENAME_DIR,
+    STEM_SUBINDEX_FILENAME_TEMPLATE
+  );
+};
+
+const getSubIndex = async (
+  prefix: string,
+  template: (prefix: string) => string
+) => {
+  return await files.readJson<Index>(template(prefix));
+};
+
+const saveSubIndex = async (
+  content: Index,
+  template: (prefix: string) => string,
+  prefix: string,
+  prod?: boolean
+) => {
+  await files.writeJson(template(prefix), content, {
     createDir: true,
     pretty: !prod,
   });
 };
 
-export const getIndexes = async () => {
-  const indexFilenames = await files.getFileNames(INDEX_FILENAME_DIR);
+const getSubIndexes = async (
+  subindexDir: string,
+  template: (prefix: string) => string
+) => {
+  const indexFilenames = await files.getFileNames(subindexDir);
   const indexPrefixes = indexFilenames
     .filter((name) => name.endsWith('.json'))
     .map((name) => name.slice(0, -5));
@@ -82,7 +121,7 @@ export const getIndexes = async () => {
     indexPrefixes.map(async (prefix) => {
       return {
         prefix,
-        index: await getIndex(prefix),
+        index: await getSubIndex(prefix, template),
       };
     })
   );

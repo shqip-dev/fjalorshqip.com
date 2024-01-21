@@ -1,10 +1,10 @@
 import type { APIContext } from 'astro';
-import { getIndexes } from '../../../lib/dictionary.ts';
+import { getSlugSubIndexes } from '../../../lib/dictionary.js';
 
 export async function getStaticPaths() {
-  const indexes = await getIndexes();
+  const indexes = await getSlugSubIndexes();
   return indexes.map((index) => ({
-    params: { stem: index.prefix },
+    params: { slug: index.prefix },
     props: index.index,
   }));
 }

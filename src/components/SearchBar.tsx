@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './SearchBar.module.scss';
 import { MIN_STEM_LENGTH, type Index, type Entry } from '../lib/dictionary';
 import pcs from '../lib/process';
-import { AnimatePresence, motion, useIsPresent } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 
 const SearchBar = () => {
@@ -18,7 +18,7 @@ const SearchBar = () => {
     const stem = pcs.stems(query)[0] || '';
     if (stem.length >= MIN_STEM_LENGTH) {
       const prefix = stem.substring(0, MIN_STEM_LENGTH);
-      const response = await fetch(`/api/index/${prefix}.json`);
+      const response = await fetch(`/api/stem-index/${prefix}.json`);
       if (!response.ok) {
         setSuggestions([]);
         return;
