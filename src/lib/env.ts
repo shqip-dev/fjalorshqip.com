@@ -1,21 +1,15 @@
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
 
-dotenv.config();
+config();
 
-const isProduction = () => {
+export const isProduction = () => {
   return process.env.NODE_ENV === 'production';
 };
 
-const shouldSkipStaticWordPages = () => {
+export const shouldSkipStaticWordPages = () => {
   return process.env.SHOULD_SKIP_STATIC_WORD_PAGES === 'true';
 };
 
-const getDictionarySubset = (): string[] => {
+export const getDictionarySubset = (): string[] => {
   return JSON.parse(process.env.DICTIONARY_SUBSET || '[]');
-};
-
-export default {
-  isProduction,
-  getDictionarySubset,
-  shouldSkipStaticWordPages,
 };

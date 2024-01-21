@@ -21,9 +21,7 @@ const EntriesLoader = (props: EntriesLoaderProps) => {
       console.debug('get info for ', prefix);
       let response;
       try {
-        response = await fetch(`/api/slug-index/${prefix}.json`).catch(
-          (e) => {}
-        );
+        response = await fetch(`/api/slug-index/${prefix}.json`);
       } catch (e) {
         setReponse([]);
         return;

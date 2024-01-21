@@ -1,7 +1,7 @@
 const NON_ALPHA_REGEX = /[^a-zA-Z]/g;
 const WHITESPACE_REGEX = /\s+/;
 
-const stems = (term: string) => {
+export const getStems = (term: string) => {
   return term
     .toLowerCase()
     .replaceAll('ë', 'e')
@@ -11,7 +11,7 @@ const stems = (term: string) => {
     .filter((word) => word !== '');
 };
 
-const slug = (term: string) => {
+export const getSlug = (term: string) => {
   return term
     .toLowerCase()
     .replaceAll('ë', 'ee')
@@ -20,9 +20,4 @@ const slug = (term: string) => {
     .map((word) => word.replace(NON_ALPHA_REGEX, ''))
     .filter((word) => word !== '')
     .join('-');
-};
-
-export default {
-  stems,
-  slug,
 };

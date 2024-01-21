@@ -3,10 +3,10 @@ import Entries from '../../components/entries/Entries';
 import SearchBar from '../../components/searchbar/SearchBar';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
-import env from '../../lib/env';
+import { shouldSkipStaticWordPages } from '../../lib/env';
 
 export async function getStaticPaths() {
-  const slugDictionary = env.shouldSkipStaticWordPages()
+  const slugDictionary = shouldSkipStaticWordPages()
     ? []
     : await getSlugDictionary();
 

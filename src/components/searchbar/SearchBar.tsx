@@ -3,7 +3,7 @@ import styles from './SearchBar.module.scss';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 import { MIN_STEM_LENGTH, type Entry, type Index } from '../../lib/dictionary';
-import pcs from '../../lib/process';
+import { getStems } from '../../lib/process';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -15,7 +15,7 @@ const SearchBar = () => {
   };
 
   const handleQueryChange = async (query: string) => {
-    const stem = pcs.stems(query)[0] || '';
+    const stem = getStems(query)[0] || '';
     if (stem.length >= MIN_STEM_LENGTH) {
       const prefix = stem.substring(0, MIN_STEM_LENGTH);
       const response = await fetch(`/api/stem-index/${prefix}.json`);

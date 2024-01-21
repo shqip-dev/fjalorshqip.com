@@ -1,4 +1,4 @@
-import files from './files.ts';
+import { readJson, writeJson, getFileNames } from './files.ts';
 
 const GEN_DIR_PREFIX = 'src/data/gen';
 const SLUG_DICTIONARY_FILENAME = `${GEN_DIR_PREFIX}/slugDictionary.json`;
@@ -46,15 +46,15 @@ export type Index = {
 };
 
 export const getScrapedDictionary = async () => {
-  return await files.readJson<ScrapedEntry[]>(SCRAPED_DICTIONARY_FILENAME);
+  return await readJson<ScrapedEntry[]>(SCRAPED_DICTIONARY_FILENAME);
 };
 
 export const getSlugDictionary = async () => {
-  return await files.readJson<Index>(SLUG_DICTIONARY_FILENAME);
+  return await readJson<Index>(SLUG_DICTIONARY_FILENAME);
 };
 
 export const saveSlugDictionary = async (content: Index, prod?: boolean) => {
-  await files.writeJson(SLUG_DICTIONARY_FILENAME, content, {
+  await writeJson(SLUG_DICTIONARY_FILENAME, content, {
     createDir: true,
     pretty: !prod,
   });
@@ -93,7 +93,7 @@ const getSubIndex = async (
   prefix: string,
   template: (prefix: string) => string
 ) => {
-  return await files.readJson<Index>(template(prefix));
+  return await readJson<Index>(template(prefix));
 };
 
 const saveSubIndex = async (
@@ -102,7 +102,7 @@ const saveSubIndex = async (
   prefix: string,
   prod?: boolean
 ) => {
-  await files.writeJson(template(prefix), content, {
+  await writeJson(template(prefix), content, {
     createDir: true,
     pretty: !prod,
   });
@@ -112,7 +112,7 @@ const getSubIndexes = async (
   subindexDir: string,
   template: (prefix: string) => string
 ) => {
-  const indexFilenames = await files.getFileNames(subindexDir);
+  const indexFilenames = await getFileNames(subindexDir);
   const indexPrefixes = indexFilenames
     .filter((name) => name.endsWith('.json'))
     .map((name) => name.slice(0, -5));

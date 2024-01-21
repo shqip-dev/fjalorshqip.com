@@ -8,16 +8,18 @@ import {
   MIN_STEM_LENGTH,
   saveSlugSubIndex,
 } from '../lib/dictionary.ts';
-import env from '../lib/env.ts';
-import pcs from '../lib/process.ts';
-import _ from 'lodash';
+import { isProduction, getDictionarySubset } from '../lib/env.ts';
+import { getStems, getSlug } from '../lib/process.ts';
+import isEqual from 'lodash/isEqual.js';
+import sortBy from 'lodash/sortBy.js';
+import { groupBy } from '../lib/utils.ts';
 
 type Indexes = {
   [prefix: string]: Index;
 };
 
 const main = async () => {
-  const production = env.isProduction();
+  const production = isProduction();
 
   const scrapedEntries = await getScrapedDictionary();
 
@@ -25,22 +27,15 @@ const main = async () => {
     .filter((scrapedEntry) => !scrapedEntry.skip)
     .map(mapScrapedEntryToEntry);
 
-  const dictionarySubset = env.getDictionarySubset();
+  const dictionarySubset = getDictionarySubset();
   const entriesSubSet = production
     ? entries
     : entries.filter((entry) => dictionarySubset.includes(entry.term));
 
-  const slugDictionary = entriesSubSet
-    .filter((entry) => !!entry.slug)
-    .reduce((acc, entry) => {
-      const key = entry.slug;
-      if (acc[key]) {
-        acc[key].push(entry);
-      } else {
-        acc[key] = [entry];
-      }
-      return acc;
-    }, {} as Index);
+  const slugDictionary = groupBy(
+    entriesSubSet.filter((entry) => !!entry.slug),
+    (entry) => entry.slug
+  );
   await saveSlugDictionary(slugDictionary, production);
 
   const stemSubIndexes = entriesSubSet
@@ -107,13 +102,13 @@ const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
     term: term,
     attributes: attributes,
     definitions: definitions,
-    stems: pcs.stems(term),
-    slug: pcs.slug(term),
+    stems: getStems(term),
+    slug: getSlug(term),
   };
 };
 
 const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
-  const sortedScrapedEntries = _.sortBy(scrapedEntries, (entry) => entry.term);
+  const sortedScrapedEntries = sortBy(scrapedEntries, (entry) => entry.term);
 
   for (let i = 1, j = sortedScrapedEntries.length; i < j; i++) {
     const curr = sortedScrapedEntries[i];
@@ -123,7 +118,7 @@ const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
       curr &&
       prev &&
       curr.term === prev.term &&
-      _.isEqual(curr.definition, prev.definition)
+      isEqual(curr.definition, prev.definition)
     ) {
       sortedScrapedEntries.splice(i, 1);
       i--;
@@ -151,7 +146,6 @@ const accumulateEntriesInSubIndexes = (
       [secondKey]: [stemEntry.entry],
     };
   }
-
   return acc;
 };
 
