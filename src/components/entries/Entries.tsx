@@ -14,7 +14,12 @@ const Entries = ({ entries = [] }: EntriesProps) => {
             <span className={styles.title}>{entry.term}</span>{' '}
             <span className={styles.attributes}>{entry.attributes}</span>
             <br />
-            <div className={styles.definitions}>{entry.definitions}</div>
+            {entry.definitions.map((definition, idx) => (
+              <div key={`def-${idx}`} className={styles.definition}>
+                {entry.definitions.length > 1 ? `${idx + 1}. ` : ''}
+                {definition}
+              </div>
+            ))}
           </div>
         );
       })}
