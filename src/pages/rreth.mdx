@@ -1,5 +1,11 @@
 import MainLayout from '../layouts/MainLayout.astro';
 
+export const EmailLink = () => <a href='mailto:contact@shqip.dev'>email</a>;
+export const DiscordLink = () => <a href='https://shqip.dev/discord' target='_blank'>Discord</a>;
+export const GitHubLink = () => <a href='https://github.com/shqip-dev/fjalorshqip.com' target='_blank'>GitHub</a>;
+export const WebArchiveLink = () => <a href='https://web.archive.org/web/20210614061957/http://fjalorshqip.com/' target='_blank'>WebArchive</a>;
+export const CloudFlareLink = () => <a href='https://pages.cloudflare.com/' target='_blank'>CloudFlare Pages</a>;
+
 <MainLayout 
     title="Rreth | fjalorshqip.com" 
     description="Rreth faqes fjalorshqip.com">
@@ -8,7 +14,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 ## Motivi -- Pse ekziston ky projekt
 
-Unë isha përdorues i faqes fjalorshqip.com<sup>[[1]](#cit-1)</sup> e cila pushoi së punuari para 3 viteve. 
+Unë isha përdorues i faqes fjalorshqip.com (<WebArchiveLink/>) e cila pushoi së punuari para 3 viteve. 
 Rreth dy muaj më parë zbulova se domeni kishte skaduar dhe fatmirësisht pata mundësinë të fitoja atë përmes një ankandi.
 
 Faqe si kjo veçse ekzistojnë, dhe për të mos qenë vetem një kopje e tyre me një emër tjeter, fjalorshqip.com ndryshon ne 2 hapësira.
@@ -21,7 +27,7 @@ Faqe si kjo veçse ekzistojnë, dhe për të mos qenë vetem një kopje e tyre m
 
 Fillimisht kam krijuar një baze të vogël por funksionale të fjalorit. Përdoruesit tashmë mund të shfrytëzojnë faqen 
 për të kërkuar fjalë dhe për të gjetur definicionet e tyre (të kufizuara për fjalët me tre ose më shumë shkronja). 
-Faqja ndërtohet ne fajlla statik dhe shërbehet përmes _Cloudflare Pages_<sup>[[2]](#cit-2)</sup>. JavaScript në klient
+Faqja ndërtohet ne fajlla statik dhe shërbehet përmes <CloudFlareLink/>. JavaScript në klient
  (shfletues) përdoret për ekzekutimin e kërkimit.
 Momentalisht kutia për kërkim shfaq vetëm fjalët që përputhen saktësisht me fjalën e kërkuar, me përjashtim të karaktereve
 speciale si ë dhe ç, që mund të zëvendësohen përkatësisht me e dhe c.
@@ -65,7 +71,7 @@ Meqenëse një krasitësi do t'i përfitonte edhe kjo faqe, një prej qëllimeve
 
 ## Open Source
 
-Ky projekt është me krenari open source, dhe kodi ofrohet në GitHub<sup>[[3]](#cit-3)</sup>. 
+Ky projekt është me krenari open source, dhe kodi ofrohet në <GitHubLink/>. 
 Së shpejti kodit do të i'a bashkangjis një licensë MIT që lejon perdorimin dhe ndryshimin e pakfizuar te programit. 
 
 
@@ -74,27 +80,16 @@ Së shpejti kodit do të i'a bashkangjis një licensë MIT që lejon perdorimin 
 ### Përkthimet dhe Dokumentacioni
 
 Për ndryshimet në fjalor, përkthimet e teksteve në faqe apo shtimin e dokumentacionit te programit ne gjuhën shqipe mund t'i
-bëni duke dërguar sugjerime ne contact@shqip.dev, përmes `Issues` ose direkt përmes `PR` në GitHub<sup>[[3]](#cit-3)</sup>.
+bëni duke dërguar sugjerime ne contact@shqip.dev, përmes `Issues` ose direkt përmes `PR` në <GitHubLink/>.
 
 ### Ndryshimet në kod
 
-Për ndryshime të vogla ose permirësime të bugs ju lutem të hapni PR ne GitHub<sup>[[3]](#cit-3)</sup>. Nëse ndryshimi është shumë i madh ose nëse keni
-ide të reja për ofrimin e shërbimeve të tjera atëher ju preferoj që të përdorni discord<sup>[[4]](#cit-4)</sup> ose të dërgoni email<sup>[[5]](#cit-5)</sup>.
+Për ndryshime të vogla ose permirësime të bugs ju lutem të hapni PR ne <GitHubLink/>. Nëse ndryshimi është shumë i madh ose nëse keni
+ide të reja për ofrimin e shërbimeve të tjera atëher ju preferoj që të përdorni <DiscordLink/> ose të dërgoni <EmailLink/>.
 Gjithashtu të njejtat menyra të kontaktit mund ti përdorni për të bëre pyetje rreth organizimit të kodit, testimit apo logjikës në
 disa sektore të programit.
 
 ### Raportimi i bugs
 
-Bugs mund të raportohen përmes `Issues` në GitHub<sup>[[3]](#cit-3)</sup> ose metodave të tjera të kontaktit.
-
-
-## Citatet
-
-1. <span id="cit-1">https://web.archive.org/web/20210614061957/http://fjalorshqip.com/</span>
-2. <span id="cit-2">https://pages.cloudflare.com/</span>
-3. <span id="cit-3">https://github.com/shqip-dev/fjalorshqip.com</span>
-4. <span id="cit-4">https://shqip.dev/discord</span>
-5. <span id="cit-5">contact@shqip.dev</span>
-
-
+Bugs mund të raportohen përmes `Issues` në <GitHubLink/> ose metodave të tjera të kontaktit.
 </MainLayout>
