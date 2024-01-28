@@ -97,7 +97,9 @@ const SearchBar = () => {
           .sort((a, b) => a.dist - b.dist)
           .map((a) => a.value);
 
-        setSuggestions(sortedValues.slice(0, MAX_SUGGESTIONS));
+        const topSuggestions = sortedValues.slice(0, MAX_SUGGESTIONS);
+
+        setSuggestions(topSuggestions);
       },
       () => setSuggestions([])
     );
@@ -131,7 +133,7 @@ const SearchBar = () => {
         <AnimatePresence>
           {suggestions.map((suggestion) => (
             <motion.a
-              key={suggestion.slug}
+              key={`${suggestion.slug}-${suggestion.attributes.join('-')}`}
               href={`/f/${suggestion.slug}`}
               className={styles.suggestion}
               initial={{ opacity: 0, height: 0 }}
