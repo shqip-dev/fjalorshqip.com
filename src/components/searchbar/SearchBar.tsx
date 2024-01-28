@@ -5,19 +5,23 @@ import classNames from 'classnames';
 import { type Entry, type Index } from '../../lib/dictionary';
 import { getStemPrefix, getStems } from '../../lib/process';
 import debounce from 'lodash/debounce';
+import zip from 'lodash/zip';
+import intersectionBy from 'lodash/intersectionBy';
+
+const MAX_SUGGESTIONS = 10;
 
 const stems: { [prefix: string]: Index } = {};
 
 const loadSubIndex = debounce(
   async (
-    prefix: string,
-    onSuccess: (subIndex: Index) => any,
+    prefixes: string[],
+    onSuccess: (subIndex: Index[]) => any,
     onError: () => any
   ) => {
-    const subIndex = await getOrFetchSubIndex(prefix);
+    const subIndexes = await Promise.all(prefixes.map(getOrFetchSubIndex));
 
-    if (subIndex) {
-      onSuccess(subIndex);
+    if (subIndexes) {
+      onSuccess(subIndexes);
     } else {
       onError();
     }
@@ -38,7 +42,6 @@ const getOrFetchSubIndex = async (prefix: string) => {
 
 const fetchSubIndex = async (prefix: string) => {
   try {
-    console.log('fetch l', prefix);
     const response = await fetch(`/api/stem-index/${prefix}.json`);
     if (!response.ok) {
       return response.status === 404 ? {} : null;
@@ -60,12 +63,36 @@ const SearchBar = () => {
   };
 
   const handleQueryChange = async (query: string) => {
-    const stem = getStems(query)[0] || '';
-    const prefix = getStemPrefix(stem);
+    if (!query) {
+      setSuggestions([]);
+      return;
+    }
+
+    const stems = getStems(query);
+    if (stems.every((stem) => !stem)) {
+      setSuggestions([]);
+      return;
+    }
+
+    const prefixes = stems.map(getStemPrefix);
 
     loadSubIndex(
-      prefix,
-      (subIndex) => setSuggestions(subIndex[stem] || []),
+      prefixes,
+      (subIndexes) => {
+        const values =
+          zip(stems, subIndexes)
+            .map(([stem, subIndex]) => {
+              return subIndex ? subIndex[stem || ''] : [];
+            })
+            .reduce((acc, next) => {
+              if (acc && !next) {
+                return acc;
+              }
+              return intersectionBy(acc, next, (a) => a.term);
+            }) || [];
+
+        setSuggestions(values.slice(0, MAX_SUGGESTIONS));
+      },
       () => setSuggestions([])
     );
   };
