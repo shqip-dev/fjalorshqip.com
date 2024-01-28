@@ -4,6 +4,55 @@ import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 import { MIN_STEM_LENGTH, type Entry, type Index } from '../../lib/dictionary';
 import { getStems } from '../../lib/process';
+import debounce from 'lodash/debounce';
+
+const stems: { [prefix: string]: Index } = {};
+
+const loadSubIndex = debounce(
+  async (
+    query: string,
+    onSuccess: (subIndex: Index) => any,
+    onError: () => any
+  ) => {
+    const stem = getStems(query)[0] || '';
+
+    if (stem.length >= MIN_STEM_LENGTH) {
+      const prefix = stem.substring(0, MIN_STEM_LENGTH);
+      const subIndex = await getOrFetchSubIndex(prefix);
+
+      if (subIndex) {
+        onSuccess(subIndex);
+      } else {
+        onError();
+      }
+    }
+  },
+  200
+);
+
+const getOrFetchSubIndex = async (prefix: string) => {
+  if (!stems[prefix]) {
+    const fetched = await fetchSubIndex(prefix);
+    if (fetched) {
+      stems[prefix] = fetched;
+    }
+  }
+
+  return stems[prefix];
+};
+
+const fetchSubIndex = async (prefix: string) => {
+  try {
+    const response = await fetch(`/api/stem-index/${prefix}.json`);
+    if (!response.ok) {
+      return response.status === 404 ? {} : null;
+    }
+
+    return (await response.json()) as Index;
+  } catch (e) {
+    return null;
+  }
+};
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -18,28 +67,27 @@ const SearchBar = () => {
     const stem = getStems(query)[0] || '';
     if (stem.length >= MIN_STEM_LENGTH) {
       const prefix = stem.substring(0, MIN_STEM_LENGTH);
-      const response = await fetch(`/api/stem-index/${prefix}.json`);
-      if (!response.ok) {
-        setSuggestions([]);
-        return;
-      }
-
-      const index = (await response.json()) as Index;
-      if (index[stem]) {
-        setSuggestions(index[stem]);
-      } else {
-        setSuggestions([]);
-      }
+      loadSubIndex(
+        prefix,
+        (subIndex) => {
+          const suggestions = subIndex[stem];
+          if (suggestions) {
+            setSuggestions(suggestions);
+          } else {
+            setSuggestions([]);
+          }
+        },
+        () => {
+          setSuggestions([]);
+        }
+      );
     } else {
       setSuggestions([]);
     }
   };
 
   useEffect(() => {
-    handleQueryChange(query).catch((e) => {
-      // TODO: Handle errors
-      console.log('error handling query change', e);
-    });
+    handleQueryChange(query);
   }, [query]);
 
   return (
