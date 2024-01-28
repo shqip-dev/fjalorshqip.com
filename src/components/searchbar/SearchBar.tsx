@@ -129,9 +129,9 @@ const SearchBar = () => {
       </div>
       <div className={styles.suggestions}>
         <AnimatePresence>
-          {suggestions.map((suggestion, idx) => (
+          {suggestions.map((suggestion) => (
             <motion.a
-              key={suggestion.slug + idx}
+              key={suggestion.slug}
               href={`/f/${suggestion.slug}`}
               className={styles.suggestion}
               initial={{ opacity: 0, height: 0 }}
