@@ -5,11 +5,10 @@ import {
   saveSlugDictionary,
   type Index,
   saveStemSubIndex,
-  MIN_STEM_LENGTH,
   saveSlugSubIndex,
 } from '../lib/dictionary.ts';
 import { isProduction, getDictionarySubset } from '../lib/env.ts';
-import { getStems, getSlug } from '../lib/process.ts';
+import { getStems, getSlug, getStemPrefix } from '../lib/process.ts';
 import isEqual from 'lodash/isEqual.js';
 import sortBy from 'lodash/sortBy.js';
 import { groupBy } from '../lib/utils.ts';
@@ -46,10 +45,7 @@ const main = async () => {
         entry,
       }))
     )
-    .filter(
-      (stemEntry) =>
-        !!stemEntry.prefix && stemEntry.prefix.length >= MIN_STEM_LENGTH
-    )
+    .filter((stemEntry) => !!stemEntry.prefix)
     .reduce(accumulateEntriesInSubIndexes, {} as Indexes);
 
   await Promise.all(
@@ -59,7 +55,7 @@ const main = async () => {
   );
 
   const slugSubIndexes = entriesSubSet
-    .filter((entry) => !!entry.slug && entry.slug.length >= MIN_STEM_LENGTH)
+    .filter((entry) => !!entry.slug)
     .map((entry) => ({
       prefix: entry.slug,
       entry,
@@ -133,7 +129,7 @@ const accumulateEntriesInSubIndexes = (
   acc: Indexes,
   stemEntry: { prefix: string; entry: Entry }
 ) => {
-  const firstKey = stemEntry.prefix.substring(0, MIN_STEM_LENGTH);
+  const firstKey = getStemPrefix(stemEntry.prefix);
   const secondKey = stemEntry.prefix;
   if (acc[firstKey]) {
     if (acc[firstKey][secondKey]) {

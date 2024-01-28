@@ -21,3 +21,11 @@ export const getSlug = (term: string) => {
     .filter((word) => word !== '')
     .join('-');
 };
+
+export const getStemPrefix = (stem: string) => {
+  if (stem.length >= 3) {
+    return stem.substring(0, 3);
+  } else {
+    return '_';
+  }
+};

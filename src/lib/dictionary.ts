@@ -10,8 +10,6 @@ const STEM_SUBINDEX_FILENAME_TEMPLATE = (prefix: string) =>
   `${STEM_SUBINDEX_FILENAME_DIR}/${prefix}.json`;
 const SCRAPED_DICTIONARY_FILENAME = 'data/dictionary.json';
 
-export const MIN_STEM_LENGTH = 3;
-
 export interface ScrapedEntry {
   term: string;
   definition: string[];

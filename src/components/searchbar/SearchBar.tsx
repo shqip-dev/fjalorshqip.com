@@ -2,29 +2,24 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './SearchBar.module.scss';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
-import { MIN_STEM_LENGTH, type Entry, type Index } from '../../lib/dictionary';
-import { getStems } from '../../lib/process';
+import { type Entry, type Index } from '../../lib/dictionary';
+import { getStemPrefix, getStems } from '../../lib/process';
 import debounce from 'lodash/debounce';
 
 const stems: { [prefix: string]: Index } = {};
 
 const loadSubIndex = debounce(
   async (
-    query: string,
+    prefix: string,
     onSuccess: (subIndex: Index) => any,
     onError: () => any
   ) => {
-    const stem = getStems(query)[0] || '';
+    const subIndex = await getOrFetchSubIndex(prefix);
 
-    if (stem.length >= MIN_STEM_LENGTH) {
-      const prefix = stem.substring(0, MIN_STEM_LENGTH);
-      const subIndex = await getOrFetchSubIndex(prefix);
-
-      if (subIndex) {
-        onSuccess(subIndex);
-      } else {
-        onError();
-      }
+    if (subIndex) {
+      onSuccess(subIndex);
+    } else {
+      onError();
     }
   },
   200
@@ -43,6 +38,7 @@ const getOrFetchSubIndex = async (prefix: string) => {
 
 const fetchSubIndex = async (prefix: string) => {
   try {
+    console.log('fetch l', prefix);
     const response = await fetch(`/api/stem-index/${prefix}.json`);
     if (!response.ok) {
       return response.status === 404 ? {} : null;
@@ -65,25 +61,13 @@ const SearchBar = () => {
 
   const handleQueryChange = async (query: string) => {
     const stem = getStems(query)[0] || '';
-    if (stem.length >= MIN_STEM_LENGTH) {
-      const prefix = stem.substring(0, MIN_STEM_LENGTH);
-      loadSubIndex(
-        prefix,
-        (subIndex) => {
-          const suggestions = subIndex[stem];
-          if (suggestions) {
-            setSuggestions(suggestions);
-          } else {
-            setSuggestions([]);
-          }
-        },
-        () => {
-          setSuggestions([]);
-        }
-      );
-    } else {
-      setSuggestions([]);
-    }
+    const prefix = getStemPrefix(stem);
+
+    loadSubIndex(
+      prefix,
+      (subIndex) => setSuggestions(subIndex[stem] || []),
+      () => setSuggestions([])
+    );
   };
 
   useEffect(() => {
