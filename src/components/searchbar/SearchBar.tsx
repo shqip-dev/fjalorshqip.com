@@ -7,6 +7,7 @@ import { getStemPrefix, getStems } from '../../lib/process';
 import debounce from 'lodash/debounce';
 import zip from 'lodash/zip';
 import intersectionBy from 'lodash/intersectionBy';
+import leven from 'leven';
 
 const MAX_SUGGESTIONS = 10;
 
@@ -91,7 +92,12 @@ const SearchBar = () => {
               return intersectionBy(acc, next, (a) => a.term);
             }) || [];
 
-        setSuggestions(values.slice(0, MAX_SUGGESTIONS));
+        const sortedValues = values
+          .map((value) => ({ dist: leven(value.term, query), value }))
+          .sort((a, b) => a.dist - b.dist)
+          .map((a) => a.value);
+
+        setSuggestions(sortedValues.slice(0, MAX_SUGGESTIONS));
       },
       () => setSuggestions([])
     );
