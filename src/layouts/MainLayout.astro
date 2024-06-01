@@ -1,6 +1,9 @@
 ---
 import FooterLinks from '../components/footerlinks/FooterLinks';
 import '@fontsource-variable/eb-garamond';
+
+const metaStr = import.meta.env.META_TAGS;
+const meta: [string, string][] = metaStr ? Object.entries(JSON.parse(metaStr)) : [];
 ---
 
 <html lang="sq">
@@ -9,6 +12,9 @@ import '@fontsource-variable/eb-garamond';
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={Astro.props.description} />
+    {
+        meta.map(([key, val]) => <meta name={key} content={val} />)
+    }
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>{Astro.props.title}</title>
   </head>
