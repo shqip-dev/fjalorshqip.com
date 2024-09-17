@@ -3,7 +3,7 @@ import Entries from '../../components/entries/Entries';
 import SearchBar from '../../components/searchbar/SearchBar';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
-import { shouldSkipStaticWordPages } from '../../lib/env';
+import { isCloudflarePages, shouldSkipStaticWordPages } from '../../lib/env';
 
 export async function getStaticPaths() {
   const slugDictionary = shouldSkipStaticWordPages()
@@ -11,7 +11,7 @@ export async function getStaticPaths() {
     : await getSlugDictionary();
 
   let entries = Object.entries(slugDictionary);
-  if (entries.length > 14_000) {
+  if (isCloudflarePages() && entries.length > 14_000) {
     // We have to filter some entries out since cloudflare pages has a limit on 20k files
     const ratio = 14_000 / entries.length;
     entries = entries.filter((_, idx) => idx % 100 < ratio * 100);

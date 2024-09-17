@@ -10,6 +10,10 @@ export const shouldSkipStaticWordPages = () => {
   return process.env.SHOULD_SKIP_STATIC_WORD_PAGES === 'true';
 };
 
+export const isCloudflarePages = () => {
+  return process.env.CLOUDFLARE === 'true';
+};
+
 export const getDictionarySubset = (): string[] => {
   return JSON.parse(process.env.DICTIONARY_SUBSET || '[]');
 };
