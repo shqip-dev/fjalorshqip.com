@@ -6,88 +6,41 @@ export const GitHubLink = () => <a href='https://github.com/shqip-dev/fjalorshqi
 export const WebArchiveLink = () => <a href='https://web.archive.org/web/20210614061957/http://fjalorshqip.com/' target='_blank'>WebArchive</a>;
 export const CloudFlareLink = () => <a href='https://pages.cloudflare.com/' target='_blank'>CloudFlare Pages</a>;
 
-<MainLayout 
-    title="Rreth | fjalorshqip.com" 
+<MainLayout
+    title="Rreth | fjalorshqip.com"
     description="Rreth faqes fjalorshqip.com">
 # Rreth FjalorShqip
 
+## Pse ekziston ky projekt
 
-## Motivi -- Pse ekziston ky projekt
+Si përdorues i faqes fjalorshqip.com (<WebArchiveLink/>) e cila pushoi së punuari, vendosa ta rindërtoj
+pas skadimit të domain-it. Synimi është që kjo faqe të jetë një burim i hapur (`open source`) dhe të
+ofrojë më shumë veçori për përdoruesit.
 
-Unë isha përdorues i faqes fjalorshqip.com (<WebArchiveLink/>) e cila pushoi së punuari para 3 viteve. 
-Rreth dy muaj më parë zbulova se domeni kishte skaduar dhe fatmirësisht pata mundësinë të fitoja atë përmes një ankandi.
+## Gjendja aktuale
 
-Faqe si kjo veçse ekzistojnë, dhe për të mos qenë vetem një kopje e tyre me një emër tjeter, fjalorshqip.com ndryshon ne 2 hapësira.
-
-1. Kjo faqe është `open source` që prej fillimit
-2. Do të ofrojë veçori (features) me shumë sa i përket funksionalitetit (lexo "Synimet" më poshtë) 
-
-
-## Gjendja e tanishme e projektit
-
-Fillimisht kam krijuar një baze të vogël por funksionale të fjalorit. Përdoruesit tashmë mund të shfrytëzojnë faqen 
-për të kërkuar fjalë dhe për të gjetur definicionet e tyre (të kufizuara për fjalët me tre ose më shumë shkronja). 
-Faqja ndërtohet ne fajlla statik dhe shërbehet përmes <CloudFlareLink/>. JavaScript në klient
- (shfletues) përdoret për ekzekutimin e kërkimit.
-Momentalisht kutia për kërkim shfaq vetëm fjalët që përputhen saktësisht me fjalën e kërkuar, me përjashtim të karaktereve
-speciale si ë dhe ç, që mund të zëvendësohen përkatësisht me e dhe c.
-
+Faqja aktualisht ofron kërkimin për definicione të fjalëve (me kufizime për fjalët me tre ose më shumë
+shkronja) dhe shërbehet përmes <CloudFlareLink/>. Mënyra e kërkimit nuk është e avancuar, por përdoruesit mund të
+gjejnë përputhje të sakta të fjalëve.
 
 ## Synimet
 
-### Përmirësim i Kërkimit të Fjalëve
-
-- Krijimi i indekseve N-Gram dhe përdorimi i tyre pë plotësim të fjalëve (word completion), sugjerime dhe korrigjim të gabimeve (typo correction).
-
-### Funksionaliteti i Fjalëve të Ngjashme
-
-Përfshirja e një hapësire me "fjalë të ngjashme" krahas definicioneve p.sh. sinonimet dhe antonimet.
-
-### Pasurimi i Fjalorit
-
-Përpjekje të vazhduara për të pasuruar dhe zgjeruar fjalorin me informacione shtesë.
-Në të ardhme më të largët fjalorshqip mund të shërbejë edhe si platformë të plotë që lehtëson përditësime dhe kontribute në fjalor
-nga përdoruesit. Veçorive të mundshme të kësaj platforme mund të jenë:
-
-- Kërkesa për definicione te një fjale
-- Sugjerim për ndryshim
-- Shtim i fjalëve, definicioneve, sinonimeve ose antonimeve të reja
-- Vlerësimi i përmbajtjeve të shtuar nga përdoruesit e tjerë
-- Raportimi i gabimeve
-- etj..
-
-### Fjalorthi mobil
-
-Zhvillimi i një aplikacioni që lejon përdoruesit të krijojë fjalorthe personale (krahasuar me `vocabulary app` dhe jo `dictionary app`).
-
-### Perpunuesi i fjalëve
-
-Pjesë kyqe e algoritmet të kërkimit është perpunimi i të dhënave para se të futen në index. Një prej përpunuesëve më të
-rëndësishëm është "Stemmer" (krasitës?), i cili e transformon një fjalët me kuptim të njejtë ne një rrënjë të përbashkët. 
-Fatkeqsisht nuk ka një program të till open source për gjuhën shqipe edhepse për gjuhët tjera ekzistojnë shumë të tille.
-Meqenëse një krasitësi do t'i përfitonte edhe kjo faqe, një prej qëllimeve është zhvillimi i një programi të tillë.
+Plani është përmirësimi i metodës së kërkimit, pasurimi i fjalorit dhe zhvillimi i veçorive të tjera për ta bërë
+faqen më të dobishme dhe të çasshme për përdoruesit.
 
 ## Open Source
 
-Ky projekt është me krenari open source, dhe kodi ofrohet në <GitHubLink/>. 
-Së shpejti kodit do të i'a bashkangjis një licensë MIT që lejon perdorimin dhe ndryshimin e pakfizuar te programit. 
-
+Ky projekt është me krenari `open source`, dhe kodi mund të gjendet në <GitHubLink/>. Një licencë MIT
+do të bashkëngjitet për përdorim dhe ndryshim të lirë.
 
 ## Kontribuoni
 
-### Përkthimet dhe Dokumentacioni
+Për përmirësime, përkthime apo raportime të problemeve, mund të kontaktoni në contact@shqip.dev ose të
+hapni `Issues` dhe `PR` në <GitHubLink/>.
 
-Për ndryshimet në fjalor, përkthimet e teksteve në faqe apo shtimin e dokumentacionit te programit ne gjuhën shqipe mund t'i
-bëni duke dërguar sugjerime ne contact@shqip.dev, përmes `Issues` ose direkt përmes `PR` në <GitHubLink/>.
+## Kontakt
 
-### Ndryshimet në kod
+<EmailLink/>, <DiscordLink/>
 
-Për ndryshime të vogla ose permirësime të bugs ju lutem të hapni PR ne <GitHubLink/>. Nëse ndryshimi është shumë i madh ose nëse keni
-ide të reja për ofrimin e shërbimeve të tjera atëher ju preferoj që të përdorni <DiscordLink/> ose të dërgoni <EmailLink/>.
-Gjithashtu të njejtat menyra të kontaktit mund ti përdorni për të bëre pyetje rreth organizimit të kodit, testimit apo logjikës në
-disa sektore të programit.
-
-### Raportimi i bugs
-
-Bugs mund të raportohen përmes `Issues` në <GitHubLink/> ose metodave të tjera të kontaktit.
 </MainLayout>
+
