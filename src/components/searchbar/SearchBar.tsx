@@ -11,6 +11,8 @@ import leven from 'leven';
 
 const MAX_SUGGESTIONS = 10;
 
+declare const umami: any;
+
 const stems: { [prefix: string]: Index } = {};
 
 const loadSubIndex = debounce(
@@ -100,6 +102,7 @@ const SearchBar = () => {
         const topSuggestions = sortedValues.slice(0, MAX_SUGGESTIONS);
 
         setSuggestions(topSuggestions);
+        umami.track('search', {q: query});
       },
       () => setSuggestions([])
     );
