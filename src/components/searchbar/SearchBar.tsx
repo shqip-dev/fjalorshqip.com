@@ -11,7 +11,12 @@ import leven from 'leven';
 
 const MAX_SUGGESTIONS = 10;
 
-declare const umami: any;
+declare global {
+  interface Document {
+    __fjalorshqip__: string;
+  }
+  const umami: any;
+}
 
 const stems: { [prefix: string]: Index } = {};
 
@@ -53,6 +58,22 @@ const fetchSubIndex = async (prefix: string) => {
     return (await response.json()) as Index;
   } catch (e) {
     return null;
+  }
+};
+
+const random_string = () => {
+  return Math.random().toString(36).substring(2, 8);
+}
+
+const push_query = async (query: string) => {
+  try {
+    if (!document.__fjalorshqip__) {
+      document.__fjalorshqip__ = random_string();
+    }
+    
+    umami.track('search_v2', {q: query, rs: document.__fjalorshqip__});
+  } catch (e) {
+    console.error('unexpected error', e);
   }
 };
 
@@ -102,7 +123,7 @@ const SearchBar = () => {
         const topSuggestions = sortedValues.slice(0, MAX_SUGGESTIONS);
 
         setSuggestions(topSuggestions);
-        umami.track('search', {q: query});
+        push_query(query);
       },
       () => setSuggestions([])
     );
