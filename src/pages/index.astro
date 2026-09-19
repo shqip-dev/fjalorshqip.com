@@ -8,8 +8,16 @@ import MainLayout from '../layouts/MainLayout.astro';
   title="Fjalor Shqip | fjalorshqip.com"
   description="Fjalori i gjuhës shqipe"
 >
-  <div>
-    <SearchBar client:load />
-    <DynamicEntries client:only />
+  <div class="lookup">
+    <SearchBar client:load autoFocus />
+    <DynamicEntries client:only="react" />
   </div>
 </MainLayout>
+
+<style lang="scss">
+  /* `index.astro` is also the 404 catch-all, so this spacing has to sit right
+     both for the bare home page and for a word page rendered in the browser. */
+  .lookup {
+    padding-top: clamp(2rem, 9vh, 5rem);
+  }
+</style>

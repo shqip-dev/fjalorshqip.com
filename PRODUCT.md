@@ -54,8 +54,8 @@ The speed and the quiet *are* the product.
 
 **Confirmed capabilities**
 
-- Type-ahead search over the dictionary with diacritic-insensitive matching, suggestions ranked by
-  Levenshtein distance to the query, capped at 10.
+- Type-ahead search over the dictionary with diacritic-insensitive matching: three characters prefix-match
+  inside the fetched sub-index, and results are ordered exact match first, then alphabetically, capped at 10.
 - A permanent, linkable page per word at `/f/<slug>`, showing the term, its grammatical attributes, and
   its numbered definitions; the ones not prerendered are rendered in the browser from the same indexes.
 - Grammatical attributes (`m.`, `ndajf.`, `krahin.`, …) are parsed out of the raw term and kept as
@@ -76,11 +76,19 @@ The speed and the quiet *are* the product.
 - The 3-character prefix contract is a shared contract between the build-time generator and the browser
   client; keys shorter than 3 characters live in a `_` bucket.
 
+**Explicitly not a goal**
+
+- **Enriching or editing the dictionary.** The corpus is fixed: this site presents *Fjalor i gjuhës
+  shqipe*, published by the Academy of Sciences of Albania — Akademia e Shkencave e Shqipërisë,
+  <https://akad.gov.al/> — in 2006, as it stands. Future work improves how that content is found and
+  read, never what it contains. Do not design features that promise added, corrected, or crowd-sourced
+  entries.
+
 **Explicitly undecided**
 
-- How far search should go beyond exact-match (typo tolerance, inflected forms, multi-word phrases,
-  searching inside definitions). `src/pages/rreth.mdx` states plainly that search is not yet advanced
-  and that improving it is a goal.
+- How far search should go beyond its current prefix matching (typo tolerance, inflected forms,
+  multi-word phrases, searching inside definitions). Improving the search method is a stated goal on
+  `src/pages/rreth.mdx`; enriching the corpus is not.
 
 ## Brand Commitments
 
@@ -93,9 +101,11 @@ The speed and the quiet *are* the product.
 
 ## Evidence on Hand
 
-- `data/dictionary.json` — ~14 MB, roughly 40k entries, the real corpus. Derived from the original
-  fjalorshqip.com dictionary; `src/pages/rreth.mdx` states an MIT license is planned but not yet
-  attached. Do not assert a license or rights beyond what that page already says.
+- `data/dictionary.json` — ~14 MB, 39,132 usable entries, the real corpus. Its content is *Fjalor i
+  gjuhës shqipe*, published by Akademia e Shkencave e Shqipërisë (<https://akad.gov.al/>) in 2006, which
+  the site presents unchanged and credits on the `Rreth` page. `src/pages/rreth.mdx` states an MIT license is planned but not yet attached — that concerns
+  the project's own code. Do not assert a license, rights, or permissions over the dictionary content
+  beyond what the user has stated.
 - Real analytics: Umami is live in production and a `search_v2` event records queries, which has already
   been used to detect words missing from the dictionary (commit `0e92a69`).
 - Existing written documentation in Albanian: `docs/README.md` and `docs/kerkimi.md`.

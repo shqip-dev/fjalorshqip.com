@@ -54,9 +54,12 @@ Three artifacts land in `src/data/gen/`:
 ## Client details
 
 `SearchBar` debounces sub-index loads by 200 ms and caches them in a module-level `stems` object keyed by
-prefix, so typing further characters within the same 3-char prefix costs no network. Multi-word queries
-fetch one sub-index per word and `intersectionBy(term)` the results. Ranking is `leven(entry.term, query)`
-against the raw query, capped at `MAX_SUGGESTIONS = 10`. A missing sub-index (404) is treated as an empty
+prefix, so typing further characters within the same 3-char prefix costs no network. Within the fetched
+bucket it takes the exact stem key *plus every key that starts with it* (`matchStem`), which is what makes
+three characters behave as type-ahead — the bucket is already in memory, so this costs no request and no
+change to the generated indexes. Multi-word queries fetch one sub-index per word and `intersectionBy(term)`
+the results. Ranking is exact-stem first, then `leven(entry.stems, queryStems)`, then term length, capped
+at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at `MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty
 index, not an error. Queries are reported to Umami as a `search_v2` event with a per-document random id
 (`document.__fjalorshqip__`).
 
@@ -65,3 +68,20 @@ index, not an error. Queries are reported to Umami as a `search_v2` event with a
 Terms under 3 characters all collapse into `_.json`; a typo inside the first three characters can't be
 recovered from, since those characters select the file; no full-text search over definitions; no
 morphological analysis, so inflected forms don't resolve to their base entry.
+
+## Render-time entry formatting
+
+`src/lib/entryFormat.ts` parses the structure the scraped definitions already carry — `*` opens the idiom
+block, `shih te BËJ` names a cross-reference target in capitals — and `Entries` renders those as a labelled
+block and as real links. This runs at render time on purpose: `preprocess.ts` and `src/data/gen/` are
+untouched, so the prefix contract is unaffected. Moving it to build time later is an optimisation, not a
+rewrite. `getTermFromSlug` reverses the `ë → ee` / `ç → cc` doubling to name a word the dictionary lacks.
+
+## Guide words: one rule, two implementations
+
+The neighbours shown above a headword span the **3-character sub-index the word lives in**, not the whole
+dictionary. `f/[slug].astro` buckets by `getStemPrefix(slug)` at build time and `EntriesLoader.getNeighbours`
+buckets the fetched `/api/slug-index/<prefix>.json` in the browser; both sort by term with
+`Intl.Collator('sq')`. They must keep agreeing — most word pages are not prerendered, so the same word would
+otherwise name different neighbours depending on which path rendered it. A word at a bucket edge has no
+neighbour on that side, which is correct: a printed page ends too.

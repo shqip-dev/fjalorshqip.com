@@ -1,0 +1,398 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-19T00:00:00Z",
+  "title": "Design System: Fjalori 1980",
+  "extensions": {
+    "colorMeta": {
+      "cloth": {
+        "role": "primary",
+        "displayName": "Cover Cloth Oxblood",
+        "canonical": "#6b1d1f",
+        "contrastOnStock": "9.09:1 as text on stock; also the masthead rule, the colophon ground and the 22% selection wash. The original oxblood, restored after a desaturated #653430 round was rejected.",
+        "tonalRamp": [
+          "#1c0607",
+          "#2d0a0b",
+          "#481113",
+          "#6b1d1f",
+          "#8f2b2d",
+          "#b35457",
+          "#d49192",
+          "#f0d4d5"
+        ]
+      },
+      "on-cloth": {
+        "role": "neutral",
+        "displayName": "Ink On Cloth",
+        "canonical": "#f0eae0",
+        "contrastOnCloth": "9.64:1 — colophon text and links, the focus-ring outline inside the colophon, and the focused skip-link chip",
+        "tonalRamp": [
+          "#26251d",
+          "#3c3b31",
+          "#565448",
+          "#757264",
+          "#999685",
+          "#c0bdac",
+          "#e0ddd1",
+          "#f0eae0"
+        ]
+      },
+      "on-cloth-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink On Cloth",
+        "canonical": "#cdbcae",
+        "contrastOnCloth": "6.26:1 — the colophon’s middot separators, the cloth ground’s equivalent of --rule-strong",
+        "tonalRamp": [
+          "#241c16",
+          "#3f332a",
+          "#5b4c3f",
+          "#7e6b5b",
+          "#a08c7b",
+          "#bda897",
+          "#cdbcae",
+          "#efe7e0"
+        ]
+      },
+      "stock": {
+        "role": "neutral",
+        "displayName": "Academy Stock",
+        "canonical": "#e9e4d7",
+        "tonalRamp": [
+          "#272316",
+          "#483f28",
+          "#695c3a",
+          "#917f50",
+          "#af9d6e",
+          "#c5b896",
+          "#dbd3bd",
+          "#e9e4d7"
+        ]
+      },
+      "stock-sunk": {
+        "role": "neutral",
+        "displayName": "Sunk Stock",
+        "canonical": "#e0dbcc",
+        "tonalRamp": [
+          "#262217",
+          "#463f2a",
+          "#665c3e",
+          "#8c7e55",
+          "#aa9c73",
+          "#c1b799",
+          "#e0dbcc",
+          "#f0ede6"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Brown-Black Ink",
+        "canonical": "#241d17",
+        "contrastOnStock": "13.1:1",
+        "tonalRamp": [
+          "#241d17",
+          "#44372c",
+          "#645040",
+          "#896e57",
+          "#a88d76",
+          "#bfac9b",
+          "#d7cbc1",
+          "#efeae6"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#5c5145",
+        "contrastOnStock": "6.09:1",
+        "tonalRamp": [
+          "#231f1a",
+          "#403830",
+          "#5c5145",
+          "#807160",
+          "#9f8f7f",
+          "#b9aea2",
+          "#d3ccc5",
+          "#eeebe8"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline Rule",
+        "canonical": "#c4bba7",
+        "tonalRamp": [
+          "#252119",
+          "#433c2d",
+          "#625842",
+          "#86795a",
+          "#a59779",
+          "#c4bba7",
+          "#d6d0c2",
+          "#efece7"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "#837a66",
+        "contrastOnStock": "3.35:1 — floor, not a preference: it carries the search field’s resting underline",
+        "tonalRamp": [
+          "#22201b",
+          "#3f3b31",
+          "#5c5547",
+          "#837a66",
+          "#9d9481",
+          "#b8b1a3",
+          "#d2cec6",
+          "#edece8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Lemma",
+        "purpose": "The headword on a word page and the not-found title. Uppercase, oxblood at weight 600, balanced wrap, closed by a 3px ink rule. The colour carries the emphasis, so the weight does not have to."
+      },
+      "headline": {
+        "displayName": "Page Title",
+        "purpose": "Prose-page h1 (Rreth). Uppercase, ink at weight 600, closed by a 3px ink rule — same weight as a lemma, deliberately not the same colour."
+      },
+      "title": {
+        "displayName": "Result Headword",
+        "purpose": "The term in a search result row; uppercase, oxblood when the row is hovered or keyboard-active."
+      },
+      "subhead": {
+        "displayName": "Prose Subhead",
+        "purpose": "Prose-page h2. Sentence case, balanced wrap, 2.2rem above, held to the measure. Also the ceiling of the compact search field's clamp."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Senses, definitions, running prose. Capped at a 68ch measure."
+      },
+      "small": {
+        "displayName": "Small Text",
+        "purpose": "Italic grammatical label stacks, result gists, idiom lines — and, upright with normal tracking, every status sentence: hint, pending, no-match, error, loader, colophon notes."
+      },
+      "label": {
+        "displayName": "Small-Caps Label",
+        "purpose": "Alegreya SC at 0.82rem. Labels only: guide words, the rail and its count, masthead descriptor, homograph marks, colophon links (set in --on-cloth on the cloth ground), idiom titles, cross-references. Never a sentence."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Masthead only. Oxblood small caps on the stock ground, above the 2px cloth rule; inverts to ink on hover."
+      },
+      "field": {
+        "displayName": "Search Field",
+        "purpose": "The input at home scale; steps down to clamp(1.05rem, 3.2vw, 1.22rem) at weight 400 in the compact word-page variant."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-settle",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The only easing in the system. CSS transitions use it at 140ms for colour and 160ms for the field's rule; the scripted list animations use it too."
+      },
+      {
+        "name": "flip-move",
+        "value": "Web Animations API, 260ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Measured in a layout effect before paint: a surviving result row animates translateY from its previous rect to its new one; a new row fades in from translateY(5px). No @keyframes, no animation library."
+      },
+      {
+        "name": "flip-exit",
+        "value": "200ms height 1 -> 0, opacity 1 -> 0, fill: forwards",
+        "purpose": "A row that stops matching is held in the list at its old position with data-leaving=\"true\" and collapsed by height while its neighbours close the gap."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Gates the whole FLIP pass off in script and clamps every CSS transition/animation to 0.001ms globally."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "rail-narrow",
+        "value": "30rem"
+      },
+      {
+        "name": "entry-columns",
+        "value": "60rem"
+      },
+      {
+        "name": "container-max",
+        "value": "56rem"
+      },
+      {
+        "name": "measure",
+        "value": "68ch (623px at container width)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Masthead",
+      "kind": "nav",
+      "refersTo": "masthead",
+      "description": "Quiet paper closed by an oxblood rule: the cloth wordmark and the muted-ink descriptor on the stock ground, bounded below by a 2px cloth rule.",
+      "html": "<header class=\"ds-masthead\"><a href=\"/\" class=\"ds-masthead-mark\">Fjalor Shqip</a><p class=\"ds-masthead-note\">Fjalor i gjuhës shqipe</p></header>",
+      "css": ".ds-masthead { background-color: var(--stock, #e9e4d7); border-bottom: 2px solid var(--cloth, #6b1d1f); display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.35rem 1.5rem; padding: 0.85rem 2rem 0.75rem; } .ds-masthead-mark { font-family: 'Alegreya SC', Georgia, serif; font-size: 1.32rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--cloth, #6b1d1f); text-decoration: none; transition: color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-masthead-mark:hover { color: var(--ink, #241d17); } .ds-masthead-mark:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; } .ds-masthead-note { margin: 0; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; letter-spacing: 0.06em; color: var(--ink-muted, #5c5145); }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "The primary action on every page: a ruled line, not a box. The 3px underline turns oxblood on focus and is the focus indicator. The line under it is a sentence in the regular face, never small caps.",
+      "html": "<div class=\"ds-field-wrap\"><div class=\"ds-field\"><input class=\"ds-field-input\" type=\"search\" placeholder=\"Kërko një fjalë\" value=\"mal\" /><button class=\"ds-field-clear\" aria-label=\"Pastro kërkimin\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M3.5 3.5 L12.5 12.5 M12.5 3.5 L3.5 12.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"square\"/></svg></button></div><p class=\"ds-field-status\">Shkruani pa «ë» dhe «ç» — fjala gjendet njësoj.</p></div>",
+      "css": ".ds-field { display: flex; align-items: center; gap: 0.5rem; border-bottom: 3px solid var(--rule-strong, #837a66); padding-bottom: 0.3rem; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-field:focus-within { border-bottom-color: var(--cloth, #6b1d1f); } .ds-field-input { flex: 1 1 auto; min-width: 0; font-family: 'Alegreya Variable', Georgia, serif; font-size: clamp(1.4rem, 5.5vw, 1.9rem); font-weight: 500; line-height: 1.3; color: var(--ink, #241d17); background: transparent; border: 0; border-radius: 0; padding: 0.1em 0; caret-color: var(--cloth, #6b1d1f); } .ds-field-input:focus { outline: none; } .ds-field-input::placeholder { color: var(--ink-muted, #5c5145); opacity: 1; } .ds-field-clear { flex: 0 0 auto; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ink-muted, #5c5145); transition: color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-field-clear svg { width: 0.95rem; height: 0.95rem; } .ds-field-clear:hover { color: var(--cloth, #6b1d1f); } .ds-field-clear:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; } .ds-field-status { margin: 0.7rem 0 0; min-height: 1.5em; font-family: 'Alegreya Variable', Georgia, serif; font-size: 0.9rem; line-height: 1.5; letter-spacing: normal; color: var(--ink-muted, #5c5145); }"
+    },
+    {
+      "name": "Running-Head Rail",
+      "kind": "nav",
+      "refersTo": "guide-rail",
+      "description": "The guide words: the span of the prefix shard the browser fetched at the margins, the result count centred in a hairline leader. Labels, so small caps are correct here.",
+      "html": "<p class=\"ds-rail\"><span class=\"ds-rail-end\">BUKË MALI</span><span class=\"ds-rail-leader\"><span class=\"ds-rail-count\">10 fjalët më të afërta</span></span><span class=\"ds-rail-end\">RRUSH MALI</span></p>",
+      "css": ".ds-rail { margin: 0; padding-bottom: 0.45rem; border-bottom: 1px solid var(--rule, #c4bba7); display: flex; align-items: center; gap: 0 0.75rem; min-height: 1.5em; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; letter-spacing: 0.06em; color: var(--ink-muted, #5c5145); } .ds-rail-end { flex: 0 0 auto; color: var(--ink-muted, #5c5145); } .ds-rail-leader { flex: 1 1 auto; display: flex; align-items: center; gap: 0 0.7rem; min-width: 0; } .ds-rail-leader::before, .ds-rail-leader::after { content: ''; flex: 1 1 auto; border-top: 1px solid var(--rule, #c4bba7); } .ds-rail-count { flex: 0 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } @media (max-width: 30rem) { .ds-rail-count { display: none; } .ds-rail-leader { gap: 0; } }"
+    },
+    {
+      "name": "Result Row",
+      "kind": "card",
+      "refersTo": "result-row",
+      "description": "A search suggestion: headword, italic label stack, one truncated gist line. Hairline-separated, never boxed; hover and keyboard-active share one treatment. A row leaving the list keeps its slot (data-leaving=\"true\") while script collapses its height.",
+      "html": "<ul class=\"ds-results\"><li class=\"ds-result\" data-leaving=\"false\"><a class=\"ds-result-link\" href=\"#\"><span class=\"ds-result-term\">MALARIE</span><span class=\"ds-result-attrs\">f. vet. nj. mjek.</span><span class=\"ds-result-gist\">Sëmundje e rëndë që shkaktohet nga parazitë shumë të vegjël…</span></a></li></ul>",
+      "css": ".ds-results { margin: 0; padding: 0; list-style: none; } .ds-result { border-bottom: 1px solid var(--rule, #c4bba7); } .ds-result[data-leaving='true'] { overflow: hidden; pointer-events: none; } .ds-result-link { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 0.55rem; padding: 0.7rem 0.5rem; text-decoration: none; color: var(--ink, #241d17); font-family: 'Alegreya Variable', Georgia, serif; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-result-term { font-weight: 700; font-size: 1.3rem; line-height: 1.25; text-transform: uppercase; letter-spacing: 0.015em; } .ds-result-attrs { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-result-gist { grid-column: 1 / -1; margin-top: 0.15rem; font-size: 0.9rem; line-height: 1.45; color: var(--ink-muted, #5c5145); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-result-link:hover { background-color: var(--stock-sunk, #e0dbcc); } .ds-result-link:hover .ds-result-term { color: var(--cloth, #6b1d1f); } .ds-result-link:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; }"
+    },
+    {
+      "name": "Entry",
+      "kind": "custom",
+      "refersTo": "headword",
+      "description": "The entry as the book sets it: the lemma in oxblood at weight 600 over a 3px ink rule, homograph mark and italic label stack, senses numbered with tabular figures hanging in a fixed column.",
+      "html": "<article class=\"ds-entry\"><h1 class=\"ds-entry-headword\">ACAR</h1><section class=\"ds-entry-version\"><div class=\"ds-entry-head\"><span class=\"ds-entry-mark\">I</span><span class=\"ds-entry-labels\">m.</span></div><ol class=\"ds-entry-senses\"><li class=\"ds-entry-sense\">Të ftohtë i madh, i thatë e me ngricë; fraq, cingërimë, thëllim.</li><li class=\"ds-entry-sense\">fig. Ashpërsi, vrazhdësi; zemërim. <a class=\"ds-entry-ref\" href=\"#\">BËJ</a></li></ol></section></article>",
+      "css": ".ds-entry { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-entry-headword { margin: 0; font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; text-wrap: balance; overflow-wrap: break-word; color: var(--cloth, #6b1d1f); } .ds-entry-version { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 3px solid var(--ink, #241d17); } .ds-entry-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 0.6rem; margin-bottom: 0.7rem; min-height: 1em; } .ds-entry-mark { font-family: 'Alegreya SC', Georgia, serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.12em; color: var(--cloth, #6b1d1f); } .ds-entry-labels { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); word-spacing: 0.12em; } .ds-entry-senses { counter-reset: sense; max-width: 68ch; margin: 0; padding: 0; list-style: none; } .ds-entry-sense { counter-increment: sense; position: relative; padding-left: 2.1rem; margin-top: 0.85rem; line-height: 1.62; break-inside: avoid; } .ds-entry-sense::before { content: counter(sense) '.'; position: absolute; left: 0; top: 0; width: 1.6rem; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; color: var(--cloth, #6b1d1f); } .ds-entry-ref { font-family: 'Alegreya SC', Georgia, serif; font-weight: 500; letter-spacing: 0.06em; color: var(--cloth, #6b1d1f); text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+    },
+    {
+      "name": "Prose Page Head",
+      "kind": "custom",
+      "refersTo": "page-title",
+      "description": "A page that is not a word: the title stays ink at the same weight a lemma uses, spans the full container with its 3px rule, and only the reading line below is held to the measure.",
+      "html": "<div class=\"ds-prose\"><h1 class=\"ds-prose-title\">Rreth FjalorShqip</h1><h2 class=\"ds-prose-sub\">Pse ekziston ky projekt</h2><p class=\"ds-prose-p\">Si përdorues i faqes fjalorshqip.com, vendosa ta rindërtoj pas skadimit të domain-it. Synimi është që kjo faqe të jetë një burim i hapur (<code class=\"ds-prose-code\">open source</code>).</p></div>",
+      "css": ".ds-prose { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); font-size: 1.075rem; line-height: 1.62; } .ds-prose-title { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.012em; text-transform: uppercase; text-wrap: balance; padding-bottom: 0.5rem; border-bottom: 3px solid var(--ink, #241d17); } .ds-prose-sub { max-width: 68ch; margin: 2.2rem 0 0.3rem; font-size: 1.22rem; font-weight: 700; line-height: 1.25; text-wrap: balance; } .ds-prose-p { max-width: 68ch; margin: 0.85rem 0 0; } .ds-prose-code { font-family: inherit; font-style: italic; letter-spacing: 0.01em; } .ds-prose a { color: inherit; text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+    },
+    {
+      "name": "Idiom Block",
+      "kind": "custom",
+      "refersTo": "cross-reference",
+      "description": "The entry's `*` idiom block, parsed at render time and set behind a hairline left rule under a small-caps title.",
+      "html": "<div class=\"ds-idioms\"><h2 class=\"ds-idioms-title\">Shprehje</h2><ul class=\"ds-idioms-list\"><li class=\"ds-idiom\">E merr me acar.</li><li class=\"ds-idiom\">I hyri acari në shpirt.</li></ul></div>",
+      "css": ".ds-idioms { margin: 0.8rem 0 0.3rem; padding-left: 0.9rem; border-left: 1px solid var(--rule, #c4bba7); font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-idioms-title { margin: 0 0 0.2rem; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em; color: var(--ink-muted, #5c5145); } .ds-idioms-list { margin: 0; padding: 0; list-style: none; } .ds-idiom { font-size: 0.9rem; line-height: 1.5; margin-top: 0.4rem; }"
+    },
+    {
+      "name": "Colophon",
+      "kind": "nav",
+      "refersTo": "colophon",
+      "description": "The binding closing the page: a full-bleed cloth ground with no top border, small-caps links in --on-cloth with a translucent underline, muted-on-cloth middots, and the notes below them in the regular face because they are sentences. The one region that recolours the focus ring, because it is the one region whose ground is not stock.",
+      "html": "<footer class=\"ds-colophon\"><nav class=\"ds-colophon-links\"><a href=\"/\">ballina</a><span class=\"ds-colophon-sep\" aria-hidden=\"true\">·</span><a href=\"/rreth\">rreth</a><span class=\"ds-colophon-sep\" aria-hidden=\"true\">·</span><a href=\"#\">kodi</a></nav><p class=\"ds-colophon-note\">Faqe tërësisht statike — kërkimi ndodh në shfletuesin tuaj.</p><p class=\"ds-colophon-note\">© 2026 fjalorshqip.com</p></footer>",
+      "css": ".ds-colophon { background-color: var(--cloth, #6b1d1f); color: var(--on-cloth, #f0eae0); padding: 1.6rem 2rem 2.4rem; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; letter-spacing: 0.06em; } .ds-colophon-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.55rem; } .ds-colophon-links a { color: var(--on-cloth, #f0eae0); text-decoration-color: color-mix(in srgb, var(--on-cloth, #f0eae0) 45%, transparent); text-decoration-thickness: from-font; text-underline-offset: 0.18em; transition: text-decoration-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-colophon-links a:hover { text-decoration-color: currentColor; } .ds-colophon :focus-visible, .ds-colophon-links a:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; outline-color: var(--on-cloth, #f0eae0); } .ds-colophon-sep { color: var(--on-cloth-muted, #cdbcae); } .ds-colophon-note { margin: 0.4rem 0 0; font-family: 'Alegreya Variable', Georgia, serif; font-size: 0.9rem; letter-spacing: normal; }"
+    },
+    {
+      "name": "Not-Found Notice",
+      "kind": "custom",
+      "refersTo": "headword",
+      "description": "The missing-word page, set exactly where a real entry sets its parts so the page stays inside the book — the asked-for word as a lemma in oxblood, no eyebrow, no illustration.",
+      "html": "<div class=\"ds-notfound\"><h1 class=\"ds-notfound-title\">ACARUES</h1><p class=\"ds-notfound-labels\">nuk u gjet në fjalor</p><p class=\"ds-notfound-note\">Provoni trajtën e paskajuar të fjalës — kërkimi nuk i njeh format e lakuara. Kthehuni te <a href=\"/\">ballina</a>.</p></div>",
+      "css": ".ds-notfound { max-width: 68ch; font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-notfound-title { margin: 0; padding-bottom: 0.4rem; border-bottom: 3px solid var(--ink, #241d17); font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; overflow-wrap: break-word; color: var(--cloth, #6b1d1f); } .ds-notfound-labels { margin: 0.7rem 0 0; font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-notfound-note { margin: 0.9rem 0 0; line-height: 1.62; color: var(--ink-muted, #5c5145); } .ds-notfound-note a { color: var(--ink, #241d17); text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+    },
+    {
+      "name": "Skip Link",
+      "kind": "button",
+      "refersTo": "skip-link-focus",
+      "description": "Screen-reader-only until focused, when it becomes a cloth chip: the second use of --on-cloth after the colophon.",
+      "html": "<a class=\"ds-skip\" href=\"#main-content\">Kalo te përmbajtja</a>",
+      "css": ".ds-skip { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; font-family: 'Alegreya Variable', Georgia, serif; } .ds-skip:focus { position: static; width: auto; height: auto; margin: 0; clip-path: none; display: inline-block; padding: 0.6rem 1rem; background-color: var(--cloth, #6b1d1f); color: var(--on-cloth, #f0eae0); border-radius: 0; text-decoration: none; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The academy dictionary, opened.",
+    "overview": "This is the Fjalor i Gjuhës së Sotme Shqipe (1980) rebuilt as an interface rather than a website that happens to hold dictionary data. Every device on screen is one the printed volume already had: running guide words at the top of the page, a capitalized headword in the binding's own red, an italic abbreviation stack, numbered senses, a separated idiom block, cross-references set in small caps. Nothing is invented to look \"designed\"; the structure the book used to make a dense page legible is the structure the page uses.\n\nThe sheet is warm, not grey. Academy stock is a cream-khaki paper and the ink laid on it is a brown-black, not a neutral near-black — the page has a hue of its own rather than reading as grey card under black type. The sheet is one ground from the masthead through the content, and the binding closes it: the cover cloth becomes the ground exactly once, at the foot, in the colophon block. At the head the cloth is a line and a colour of text, not a band — the wordmark is oxblood and a 2px solid var(--cloth) rule closes the masthead. The history of the chrome matters, because the shipped state is a restoration rather than a new idea: full-bleed oxblood bands top and bottom were tried and rejected as harsh; the oxblood was then desaturated in answer to that, which was judged not an improvement; a further build put gold foil edges on both regions instead. What ships drops foil entirely and returns the cloth to its original oxblood (#6b1d1f) — red text at the head, a single closing block of red at the foot. The desaturated red is history, not a value in this system. Between those two ends the cover cloth does what the printed dictionary does with it: it sets the lemma. The headword of an entry, the not-found title and the wordmark are oxblood; so are sense numbers, homograph marks, cross-references, the caret and focused rule of the field, hover states, and the focus ring.\n\nIt is a printed world, so it has no lighting. There are no shadows, no gradients and no rounded corners anywhere in the build. Depth is rule weight and ink density only. The site has one appearance: color-scheme: light is declared, a single theme-color (#e9e4d7) ships, and no prefers-color-scheme query exists anywhere — a browser asking for dark gets this same sheet. The rejections that still hold are explicit: not the centered search box on white that every dictionary ships, not the soft cream-and-literary-serif costume that \"old book\" usually means, not two full-bleed cloth bands bracketing the page, and not the colourless grey rendition this system briefly carried.",
+    "keyCharacteristics": [
+      "One warm ground for reading — academy stock from the masthead through the entry — closed by one cloth block at the foot.",
+      "Cloth sets the lemma, the marks and the masthead's rule; it is a surface only in the colophon.",
+      "Depth is rule weight — 1px hairline, 2px bound, 3px close — and nothing else.",
+      "Alegreya Variable for everything read; Alegreya SC for labels only, never for sentences.",
+      "Light-only by decision, with body ink at 13.1:1 and every boundary measured."
+    ],
+    "rules": [
+      {
+        "name": "The One Ground Rule",
+        "body": "The sheet is one ground — academy stock — from the masthead through the whole of the content, and the binding closes it. --cloth becomes a ground exactly once, in the colophon block at the foot of the page, and nowhere else: not behind the masthead, not behind a card, not behind a section of an entry. Two full-bleed cloth bands bracketing the page were tried and rejected as harsh; one closing block at the foot with red text at the head is the arrangement that shipped. A new region that wants to stand out gets a rule, not a fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cloth-As-Lemma Rule",
+        "body": "Oxblood sets the word the dictionary is defining and the marks that point at one: headword, not-found title, sense numbers, homograph marks, cross-references, hover and focus states. It is never running text. A page title that is not a defined word — the Rreth h1 — stays ink at the same weight; the red is what tells a lemma from a heading.",
+        "section": "colors"
+      },
+      {
+        "name": "The Measured Boundary Rule",
+        "body": "--rule-strong may not be lightened. It carries the search field's resting underline, the only boundary in the system a user has to see before interacting, and it is set where it is (3.35:1 on stock) to clear the 3:1 a UI boundary owes. Decorative hairlines (--rule) are exempt; anything that bounds a control is not.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Appearance Rule",
+        "body": "This site ships one appearance. color-scheme: light is declared and no prefers-color-scheme query exists in the build; a dark-preference browser renders this exact sheet. Do not add a dark variant to a new surface.",
+        "section": "colors"
+      },
+      {
+        "name": "The Small-Caps-Are-Labels Rule",
+        "body": "Alegreya SC is for labels: a guide word, a homograph numeral, a footer link, the masthead descriptor, an idiom-block title, a cross-reference, a result count. It is never a sentence. A sentence set in small caps at 13px has no lowercase shapes left to read a line by, and every status, hint, pending, no-match, error, loader and colophon-note line in this build is therefore set in the regular upright face at --step-small with normal tracking. If it has a verb, it is not in small caps.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Hyphenation Rule",
+        "body": "`hyphens: auto` is deliberately absent everywhere, including in justified two-column entries. The browser's pattern set breaks Albanian wrongly (`ko-ckë` for `koc-kë`) and varies by engine; a bad break inside a dictionary of that language teaches the error. `text-align: justify` is kept on the two-column long-entry layout — the one page the book itself justified — because narrow measures need it and the ragged right of a 2.5rem-gapped column looks broken.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Numbers Rule",
+        "body": "Sense numbers are set `font-variant-numeric: tabular-nums lining-nums` in a fixed 1.6rem right-aligned column, so the sense text hangs on one axis from 1. through 36.",
+        "section": "typography"
+      },
+      {
+        "name": "The Terminology-Not-Code Rule",
+        "body": "Backticked terms in prose take an italic at +0.01em in the inherited serif. There is no monospace face in this system.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rule-Weight Depth Rule",
+        "body": "Three weights are the whole depth system: 1px separates, 2px bounds, 3px closes. A surface that needs to feel raised gets a heavier rule, never a shadow, a tint or a radius.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep one reading ground: --stock from the masthead through the content, with the masthead closed by 2px solid var(--cloth).",
+      "Do let the cloth be a ground exactly once — the colophon block at the foot — with --on-cloth text, --on-cloth links, --on-cloth-muted separators, an --on-cloth focus ring, and no border above it.",
+      "Do set a lemma in --cloth at weight 600 — the entry headword, the not-found title — and keep a non-lemma page title (.prose h1) in --ink at the same weight.",
+      "Do use --cloth for marks as well: sense numbers, homograph marks, cross-references, the focused field rule, the caret, hover colours, the focus ring.",
+      "Do express depth as rule weight — 1px separates, 2px bounds, 3px closes.",
+      "Do set labels in Alegreya SC at 0.82rem / +0.06em: guide words, the rail and its count, colophon links, homograph marks, idiom titles, cross-references.",
+      "Do set every sentence — hints, status, pending, no-match, errors, the loader, colophon notes — in the regular upright face at --step-small with normal tracking.",
+      "Do span structure across the container and cap only the reading line at --measure, so a prose page and a word page line up at 896px of span and a 623px measure.",
+      "Do keep --rule-strong at or above 3:1 on stock (it measures 3.35:1); it is the field's resting underline.",
+      "Do keep every text/background pair at or above 4.5:1 — ink 13.1:1, muted ink 6.09:1 and cloth 9.09:1 on stock; --on-cloth 9.64:1 and --on-cloth-muted 6.26:1 on cloth — and make every state legible without relying on colour alone.",
+      "Do use tabular lining figures for any number that stacks vertically.",
+      "Do animate list changes with a measured FLIP pass on real DOM nodes — survivors move, entrants fade in, leavers hold their slot and collapse — and skip the whole pass under prefers-reduced-motion: reduce."
+    ],
+    "donts": [
+      "Don't add a box-shadow, a gradient or a border-radius anywhere. The build contains none of the three and the world is printed.",
+      "Don't give a second region a coloured ground. The cloth is the ground once, at the foot; the masthead, the entry, the result list and every future section sit on stock. Two full-bleed cloth bands bracketing the page were tried and rejected as harsh — do not restore the top band, and do not invent a third.",
+      "Don't set a sentence in small caps. Small caps are for labels of a few words; a 13px line with no lowercase shapes cannot be read as a line.",
+      "Don't lighten --rule-strong, --ink-muted or --ink to soften the page. The warmth comes from the hue of the stock and the ink, not from lower contrast.",
+      "Don't set body text, a sense or a prose paragraph in oxblood; cloth is the lemma and the marks.",
+      "Don't put --ink, --ink-muted or --rule-strong on the cloth ground, or --on-cloth / --on-cloth-muted on stock. Each pair belongs to one ground.",
+      "Don't enable hyphens: auto — the engine hyphenates Albanian wrongly, and this is a dictionary of Albanian. Justification in two-column long entries is allowed and intended.",
+      "Don't add a prefers-color-scheme: dark block or a second palette. The site is light-only by decision.",
+      "Don't draw a four-sided border, a card or a rounded well around the search field or a result row.",
+      "Don't add an icon font, an emoji or a third typeface. Icons are inline SVG geometry at currentColor.",
+      "Don't put a kicker or eyebrow label above a title — the not-found page comments this refusal explicitly and sets its short verdict where an entry sets its label stack instead.",
+      "Don't signal state with colour alone, and don't convey the current-page rail end by fading it.",
+      "Don't reach for an animation library or @keyframes for list motion; the system's motion is measured in a layout effect and played through the Web Animations API."
+    ]
+  }
+}

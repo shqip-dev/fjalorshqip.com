@@ -5,10 +5,13 @@ export const DiscordLink = () => <a href='https://shqip.dev/discord' target='_bl
 export const GitHubLink = () => <a href='https://github.com/shqip-dev/fjalorshqip.com' target='_blank'>GitHub</a>;
 export const WebArchiveLink = () => <a href='https://web.archive.org/web/20210614061957/http://fjalorshqip.com/' target='_blank'>WebArchive</a>;
 export const CloudFlareLink = () => <a href='https://pages.cloudflare.com/' target='_blank'>CloudFlare Pages</a>;
+export const AkademiaLink = () => <a href='https://akad.gov.al/' target='_blank'>Akademia e Shkencave e Shqipërisë</a>;
 
 <MainLayout
     title="Rreth | fjalorshqip.com"
     description="Rreth faqes fjalorshqip.com">
+<div class="prose">
+
 # Rreth FjalorShqip
 
 ## Pse ekziston ky projekt
@@ -19,14 +22,20 @@ ofrojë më shumë veçori për përdoruesit.
 
 ## Gjendja aktuale
 
-Faqja aktualisht ofron kërkimin për definicione të fjalëve (me kufizime për fjalët me tre ose më shumë
-shkronja) dhe shërbehet përmes <CloudFlareLink/>. Mënyra e kërkimit nuk është e avancuar, por përdoruesit mund të
-gjejnë përputhje të sakta të fjalëve.
+Faqja ofron kërkimin për definicione të fjalëve dhe shërbehet përmes <CloudFlareLink/>. Duke shkruar tri
+shkronja a më shumë, shfaqen fjalët që nisin me atë varg — pa qenë nevoja të shkruhet fjala e plotë dhe pa
+`ë` a `ç` nga tastiera. Kërkimi ende nuk i njeh trajtat e lakuara e as nuk kërkon brenda kuptimeve.
+
+## Burimi i fjalorit
+
+Kuptimet e fjalëve në këtë faqe janë marrë nga *Fjalor i gjuhës shqipe*, botuar nga <AkademiaLink/> në
+vitin 2006. Faqja i paraqet ato ashtu siç janë.
 
 ## Synimet
 
-Plani është përmirësimi i metodës së kërkimit, pasurimi i fjalorit dhe zhvillimi i veçorive të tjera për ta bërë
-faqen më të dobishme dhe të çasshme për përdoruesit.
+Plani është përmirësimi i metodës së kërkimit dhe zhvillimi i veçorive të tjera për ta bërë faqen më të
+dobishme e të çasshme. Fjalori vetë mbetet ashtu siç është: kjo faqe nuk synon ta zgjerojë a ta
+ndryshojë përmbajtjen e tij.
 
 ## Open Source
 
@@ -42,5 +51,6 @@ hapni `Issues` dhe `PR` në <GitHubLink/>.
 
 <EmailLink/>, <DiscordLink/>
 
+</div>
 </MainLayout>
 

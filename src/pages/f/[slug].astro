@@ -3,14 +3,44 @@ import Entries from '../../components/entries/Entries';
 import SearchBar from '../../components/searchbar/SearchBar';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
+import type { Neighbour } from '../../lib/entryFormat.ts';
 import { isCloudflarePages, shouldSkipStaticWordPages } from '../../lib/env';
+import { getStemPrefix } from '../../lib/process.ts';
 
 export async function getStaticPaths() {
   const slugDictionary = shouldSkipStaticWordPages()
-    ? []
+    ? {}
     : await getSlugDictionary();
 
   let entries = Object.entries(slugDictionary);
+
+  // Guide words span the sub-index the word lives in — the same 3-character
+  // bucket the browser fetches — so a prerendered page and a page rendered in
+  // the browser name the same neighbours. `EntriesLoader.getNeighbours` is the
+  // client half of this rule and must keep matching it.
+  const collator = new Intl.Collator('sq');
+  const buckets = new Map<string, { slug: string; term: string }[]>();
+  for (const [slug, value] of entries) {
+    const prefix = getStemPrefix(slug);
+    const bucket = buckets.get(prefix) || [];
+    bucket.push({ slug, term: value[0]?.term || slug });
+    buckets.set(prefix, bucket);
+  }
+
+  const neighbours = new Map<
+    string,
+    { prev: Neighbour | null; next: Neighbour | null }
+  >();
+  for (const bucket of buckets.values()) {
+    bucket.sort((a, b) => collator.compare(a.term, b.term));
+    bucket.forEach((entry, index) => {
+      neighbours.set(entry.slug, {
+        prev: bucket[index - 1] || null,
+        next: bucket[index + 1] || null,
+      });
+    });
+  }
+
   if (isCloudflarePages() && entries.length > 14_000) {
     // We have to filter some entries out since cloudflare pages has a limit on 20k files
     const ratio = 14_000 / entries.length;
@@ -21,20 +51,29 @@ export async function getStaticPaths() {
     params: {
       slug: key,
     },
-    props: value,
+    props: {
+      entries: value as Entry[],
+      ...(neighbours.get(key) || { prev: null, next: null }),
+    },
   }));
 }
 
-const props = Astro.props;
+const { entries, prev, next } = Astro.props;
+const term = entries[0].term;
 ---
 
 <MainLayout
-  title=`${props['0'].term} | Kuptimi i fjalës | fjalorshqip.com`
-  description=`Kuptimi i fjalës ${props['0'].term} në gjuhën shqipe. Definicioni i ${props['0'].term}.`
+  title={`${term} | Kuptimi i fjalës | fjalorshqip.com`}
+  description={`Kuptimi i fjalës ${term} në gjuhën shqipe. Definicioni i ${term}.`}
 >
-  <SearchBar client:load />
-
-  <Entries entries={(Object.values(props) as Entry[]) || []} />
+  <div class="lookup">
+    <SearchBar client:load compact />
+    <Entries entries={entries} prev={prev} next={next} />
+  </div>
 </MainLayout>
 
-<style lang="scss"></style>
+<style lang="scss">
+  .lookup {
+    padding-top: clamp(1.4rem, 4vh, 2.4rem);
+  }
+</style>

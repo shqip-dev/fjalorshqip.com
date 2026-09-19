@@ -1,0 +1,277 @@
+/*
+ * Fjalori 1980 — the academy dictionary rebuilt as an interface.
+ *
+ * The page is one sheet: cool academy stock, ink, hairline rules, from the
+ * masthead to the colophon. The cover cloth survives only where the book puts
+ * it on an opened page — the headword, the sense numbers, the cross-references,
+ * the wash of a text selection — and it becomes the ground once, at the
+ * colophon. Depth is rule weight and ink density, so there are no shadows, no
+ * gradients and no soft corners.
+ */
+
+:root {
+  /* cover cloth — the binding: the wordmark's ink at the head, the ground at
+     the foot, and the accent everywhere between */
+  --cloth: #6b1d1f;
+
+  /* text block — warm academy stock and a brown-black ink, so the page has a
+     hue of its own instead of reading as grey paper under black type */
+  --stock: #e9e4d7;
+  --stock-sunk: #e0dbcc;
+  --ink: #241d17;
+  --ink-muted: #5c5145;
+  --rule: #c4bba7;
+  --rule-strong: #837a66;
+
+  /* ink laid on the cloth — the colophon and the focused skip link */
+  --on-cloth: #f0eae0;
+  --on-cloth-muted: #cdbcae;
+
+  --measure: 68ch;
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+  --rule-hair: 1px;
+
+  --step-guide: 0.82rem;
+  --step-small: 0.9rem;
+  --step-body: 1.075rem;
+  --step-lead: 1.3rem;
+  --step-title: clamp(1.9rem, 4.5vw, 2.6rem);
+  --step-display: clamp(2.4rem, 9vw, 4rem);
+
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--stock);
+  color: var(--ink);
+  font-family: 'Alegreya Variable', 'Alegreya', Georgia, serif;
+  font-size: var(--step-body);
+  line-height: 1.62;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--rule-strong);
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 140ms var(--ease-settle);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+/*
+ * Browser surfaces. The caret, the selection, the scrollbar and the focus ring
+ * ship with defaults that belong to no design system; here they are cut from
+ * the same cloth as everything else.
+ */
+::selection {
+  background-color: color-mix(in srgb, var(--cloth) 22%, var(--stock));
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--cloth);
+  outline-offset: 3px;
+}
+
+/* The colophon is the one coloured ground on the site, so the ring there is
+   cut from the paper — an oxblood outline on oxblood is no ring at all. */
+.colophon :focus-visible {
+  outline-color: var(--on-cloth);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--rule-strong);
+  border: 3px solid var(--stock);
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* Small caps carry the apparatus — guide words, marks, short labels. Never a
+   sentence: without lowercase shapes there is nothing left to read a line by. */
+.sc {
+  font-family: 'Alegreya SC', 'Alegreya Variable', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.screenreader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.screenreader-text:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip-path: none;
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  background-color: var(--cloth);
+  color: var(--on-cloth);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* The measure the whole site is set to. */
+.container {
+  width: min(100% - (var(--gutter) * 2), 56rem);
+  margin-inline: auto;
+}
+
+/*
+ * Guide words. A printed dictionary tells you where in the alphabet you are
+ * standing at the top of every page; here they are the entry's actual
+ * neighbours, so the book's oldest navigation device is also the site's.
+ */
+.guide {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1.4rem;
+  flex-wrap: wrap;
+  font-family: 'Alegreya SC', 'Alegreya Variable', Georgia, serif;
+  font-size: var(--step-guide);
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+}
+
+.guide a {
+  color: var(--ink-muted);
+  text-decoration-color: color-mix(in srgb, var(--ink-muted) 40%, transparent);
+}
+
+.guide a:hover {
+  color: var(--cloth);
+  text-decoration-color: currentColor;
+}
+
+/* The descriptor beside the wordmark. */
+.head-note {
+  font-family: 'Alegreya SC', 'Alegreya Variable', Georgia, serif;
+  font-size: var(--step-guide);
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+/* Running prose — the Rreth page and anything else set as a page of text.
+   Structure spans the column exactly as a word page does; only the reading
+   line is held to the measure, so the two pages line up edge to edge. */
+.prose {
+  padding-top: clamp(1.75rem, 6vw, 3rem);
+}
+
+.prose h1 {
+  font-size: var(--step-title);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--ink);
+}
+
+.prose h2 {
+  max-width: var(--measure);
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2.2rem;
+  margin-bottom: 0.3rem;
+  text-wrap: balance;
+}
+
+.prose p,
+.prose li {
+  max-width: var(--measure);
+  margin-top: 0.85rem;
+}
+
+.prose a {
+  text-decoration-color: var(--cloth);
+}
+
+/* Backticked terms in the copy are terminology, not code: they take an
+   italic, never a monospace costume. */
+.prose code {
+  font-family: inherit;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}

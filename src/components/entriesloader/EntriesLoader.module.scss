@@ -1,0 +1,7 @@
+.loading {
+  margin-top: clamp(1.75rem, 6vw, 3rem);
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+}

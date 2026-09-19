@@ -107,11 +107,15 @@ ndryshim në fushën e kërkimit:
    Kërkesat janë të vonuara me 200ms (`debounce`), kështu që shkrimi i shpejtë nuk gjeneron një kërkesë
    për çdo shkronjë. Çdo nënindeks i shkarkuar mbahet në memorie, prandaj shkronja e katërt, e pestë e
    kështu me radhë nuk kushtojnë asnjë kërkesë të re — prefiksi mbetet i njëjti.
-3. **Kryqëzon rezultatet** kur kërkimi ka më shumë se një fjalë: mbahen vetëm zërat që dalin te të gjitha
+3. **Gjen përputhjet brenda nënindeksit.** Skedari i shkarkuar i përmban të gjithë çelësat që nisin me
+   ato tri shkronja, prandaj krahas përputhjes së saktë merren edhe të gjithë çelësat që nisin me atë që
+   u shkrua. Kështu tri shkronja mjaftojnë për t'i parë fjalët e mundshme — pa asnjë kërkesë shtesë dhe
+   pa e ndryshuar indeksin e gjeneruar.
+4. **Kryqëzon rezultatet** kur kërkimi ka më shumë se një fjalë: mbahen vetëm zërat që dalin te të gjitha
    fjalët.
-4. **Rendit** përputhjet sipas distancës [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)
-   ndaj tekstit origjinal, që zërat më të afërt me atë që u shkrua të dalin të parët, dhe shfaq 10 të
-   parët.
+5. **Rendit** përputhjet: e para del përputhja e saktë, pastaj radhiten sipas distancës
+   [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance) ndaj vargut të normalizuar, dhe në
+   fund sipas gjatësisë së termit. Shfaqen 10 të parat.
 
 Pra, pas kërkesës së parë, shtypja e mëtejshme e shkronjave brenda së njëjtës fjalë kushton zero rrjet.
 
@@ -136,9 +140,8 @@ Prandaj `index.astro` duhet të vazhdojë të funksionojë edhe si faqe pritëse
 
 - **Fjalët me më pak se tri shkronja** bien të gjitha në nënindeksin `_.json` dhe praktikisht nuk
   kërkohen dot mes njëra-tjetrës.
-- **Kërkimi kërkon përputhje të saktë** të një forme të normalizuar. Distanca Levenshtein përdoret vetëm
-  për të renditur atë që tashmë u gjet brenda nënindeksit — nuk gjen dot fjalë me gabim drejtshkrimor në
-  tri shkronjat e para, sepse ato përcaktojnë se cili skedar shkarkohet.
+- **Gabimi brenda tri shkronjave të para nuk rikuperohet.** Ato përcaktojnë se cili skedar shkarkohet,
+  prandaj një gabim aty nuk gjendet dot; kërkimi ndihmon vetëm nga shkronja e katërt e tutje.
 - **Nuk ka kërkim brenda kuptimeve**, vetëm brenda termave.
 - **Fjalori i lakuar nuk njihet**: format e lakuara e të zgjedhuara (`shtëpisë`, `punuam`) nuk lidhen me
   zërin bazë, sepse `stems` është thjesht normalizim shkronjash, jo analizë morfologjike.

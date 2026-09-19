@@ -1,0 +1,20 @@
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.55rem;
+}
+
+.separator {
+  color: var(--on-cloth-muted);
+}
+
+/* Set on the binding, so the links are the paper rather than the ink. */
+.links a {
+  color: var(--on-cloth);
+  text-decoration-color: color-mix(in srgb, var(--on-cloth) 45%, transparent);
+}
+
+.links a:hover {
+  text-decoration-color: currentColor;
+}

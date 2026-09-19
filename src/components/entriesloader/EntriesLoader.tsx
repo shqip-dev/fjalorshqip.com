@@ -3,16 +3,51 @@ import type { Entry, Index } from '../../lib/dictionary';
 import NotFound from '../notfound/NotFound';
 import Entries from '../entries/Entries';
 import { getStemPrefix } from '../../lib/process';
+import { getTermFromSlug, type Neighbour } from '../../lib/entryFormat';
+import styles from './EntriesLoader.module.scss';
 
 interface EntriesLoaderProps {
   slug: string;
 }
+
+interface Neighbours {
+  prev: Neighbour | null;
+  next: Neighbour | null;
+}
+
+const NO_NEIGHBOURS: Neighbours = { prev: null, next: null };
+
+/*
+ * Most word pages are not prerendered — Cloudflare Pages caps a deployment at
+ * 20k files — so the sub-index the browser fetched is where their guide words
+ * have to come from. It holds every slug sharing the first three characters,
+ * which is the same span the printed dictionary would have had on one page.
+ */
+const getNeighbours = (index: Index, slug: string): Neighbours => {
+  const collator = new Intl.Collator('sq');
+  const ordered = Object.keys(index)
+    .map((key) => ({ slug: key, term: index[key]?.[0]?.term || key }))
+    .sort((a, b) => collator.compare(a.term, b.term));
+
+  const position = ordered.findIndex((entry) => entry.slug === slug);
+  if (position === -1) {
+    return NO_NEIGHBOURS;
+  }
+
+  return {
+    prev: ordered[position - 1] || null,
+    next: ordered[position + 1] || null,
+  };
+};
+
 const EntriesLoader = (props: EntriesLoaderProps) => {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [neighbours, setNeighbours] = useState<Neighbours>(NO_NEIGHBOURS);
 
-  const setReponse = (entries: Entry[]) => {
+  const setReponse = (entries: Entry[], neighbours = NO_NEIGHBOURS) => {
     setEntries(entries);
+    setNeighbours(neighbours);
     setLoading(false);
   };
 
@@ -32,21 +67,28 @@ const EntriesLoader = (props: EntriesLoaderProps) => {
 
     const index = (await response.json()) as Index;
     if (index[props.slug]) {
-      setReponse(index[props.slug]);
+      setReponse(index[props.slug], getNeighbours(index, props.slug));
     } else {
       setReponse([]);
     }
   };
+
   useEffect(() => {
     handleInitialLoad();
   }, []);
 
-  return loading ? (
-    <div>Loading...</div>
-  ) : entries.length !== 0 ? (
-    <Entries entries={entries} />
+  if (loading) {
+    return (
+      <p className={styles.loading} role="status">
+        Po hapet {getTermFromSlug(props.slug)}…
+      </p>
+    );
+  }
+
+  return entries.length !== 0 ? (
+    <Entries entries={entries} prev={neighbours.prev} next={neighbours.next} />
   ) : (
-    <NotFound />
+    <NotFound word={getTermFromSlug(props.slug)} />
   );
 };
 

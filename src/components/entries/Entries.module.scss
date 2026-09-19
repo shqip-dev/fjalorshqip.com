@@ -1,19 +1,152 @@
-.entries {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
+/* The entry as the book sets it: headword, label stack, numbered senses,
+   the idiom block below them, cross-references live. */
+
+.entry {
+  margin-top: clamp(1.75rem, 6vw, 3rem);
 }
 
-.definition {
-  box-sizing: border-box;
-  margin-left: 30px;
+/* The end of a span that is the word you are on, not a link to somewhere else:
+   told apart by the absent underline rather than by going faint. */
+.railEnd {
+  color: var(--ink-muted);
 }
 
-.title {
-  font-size: 1.2em;
+.guideLeader {
+  flex: 1 1 auto;
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+:global(.guide) + .headword {
+  margin-top: 0.9rem;
+}
+
+.headword {
+  font-size: var(--step-display);
   font-weight: 600;
+  color: var(--cloth);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
-.attributes {
-  color: #655;
+
+.version {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.version:first-of-type {
+  border-top-width: 3px;
+  border-top-color: var(--ink);
+}
+
+.versionHead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 0.6rem;
+  margin-bottom: 0.7rem;
+  min-height: 1em;
+}
+
+.mark {
+  font-size: var(--step-small);
+  font-weight: 700;
+  color: var(--cloth);
+  letter-spacing: 0.12em;
+}
+
+.variant {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* The grammatical apparatus: 25 labels across the whole dictionary, set the
+   way the book set them rather than dropped into the sentence. */
+.labels {
+  font-style: italic;
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+  word-spacing: 0.12em;
+}
+
+.senses {
+  counter-reset: sense;
+  max-width: var(--measure);
+}
+
+.sense {
+  counter-increment: sense;
+  position: relative;
+  padding-left: 2.1rem;
+  margin-top: 0.85rem;
+  break-inside: avoid;
+}
+
+.sense::before {
+  content: counter(sense) '.';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.6rem;
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--cloth);
+}
+
+.single .sense {
+  padding-left: 0;
+}
+
+.single .sense::before {
+  content: none;
+}
+
+/* Thirty-six senses is a real entry in this dictionary, and the book set that
+   page in two narrow columns for the same reason. */
+@media (min-width: 60rem) {
+  .columns {
+    column-count: 2;
+    column-gap: 2.5rem;
+    column-rule: var(--rule-hair) solid var(--rule);
+    max-width: none;
+    /* The one page the book itself justified: a long entry in narrow measure.
+       No `hyphens: auto` — the engine's pattern set breaks Albanian wrongly
+       (`ko-ckë` for `koc-kë`) and varies by browser, and a bad break inside a
+       dictionary of this language teaches the error. */
+    text-align: justify;
+  }
+
+  .columns .sense:first-child {
+    margin-top: 0;
+  }
+}
+
+.ref {
+  font-weight: 500;
+  color: var(--cloth);
+  text-decoration-color: var(--cloth);
+}
+
+.idioms {
+  margin: 0.8rem 0 0.3rem;
+  padding-left: 0.9rem;
+  border-left: var(--rule-hair) solid var(--rule);
+}
+
+.idiomsTitle {
+  font-size: var(--step-guide);
+  font-weight: 400;
+  color: var(--ink-muted);
+  margin-bottom: 0.2rem;
+}
+
+.idiom {
+  font-size: var(--step-small);
+  line-height: 1.5;
+  margin-top: 0.4rem;
 }

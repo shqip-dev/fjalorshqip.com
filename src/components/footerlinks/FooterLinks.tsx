@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import styles from './FooterLinks.module.scss';
 
 interface FooterLink {
   label: string;
@@ -11,12 +12,20 @@ interface FooterLinksProps {
 
 const FooterLinks = (props: FooterLinksProps) => {
   return (
-    <>
-      {props?.links?.map((link, idx) =>
-        // prettier-ignore
-        <Fragment key={`link-${idx}`}> [ <a href={link.url} target={link.target}>{link.label}</a> ] </Fragment>
-      )}
-    </>
+    <nav className={styles.links} aria-label="Lidhjet e faqes">
+      {props?.links?.map((link, idx) => (
+        <Fragment key={`link-${idx}`}>
+          {idx !== 0 && (
+            <span className={styles.separator} aria-hidden="true">
+              ·
+            </span>
+          )}
+          <a href={link.url} target={link.target}>
+            {link.label}
+          </a>
+        </Fragment>
+      ))}
+    </nav>
   );
 };
 
