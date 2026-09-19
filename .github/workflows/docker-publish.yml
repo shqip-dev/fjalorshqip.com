@@ -31,7 +31,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx build \
-            --platform linux/amd64,linux/arm64 \
+            --platform linux/amd64 \
             --cache-from=ghcr.io/${{ github.repository }}:cache \
             --tag ghcr.io/${{ github.repository }}:latest \
             --push .

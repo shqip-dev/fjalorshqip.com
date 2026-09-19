@@ -1,10 +1,13 @@
 # The build stage runs on the *builder's* architecture, never the target's.
 # What it produces is `dist` — static HTML, CSS, JS and JSON with nothing
-# architecture-specific in it — so building it once and copying it into each
-# target image is not a shortcut, it is the correct thing. Emulating this stage
-# for linux/arm64 was killing the build: QEMU took a SIGILL out of node
-# (`uncaught target signal 4`, exit 132) part-way through prerendering ~39k word
-# pages. Only the runtime stage below is built per target.
+# architecture-specific in it — so one build serves any target image; only the
+# runtime stage below is worth building per architecture.
+#
+# The workflow publishes linux/amd64 only, so today this pin changes nothing.
+# It is here for the day someone adds a second platform back: building this
+# stage under QEMU for linux/arm64 killed node with a SIGILL (`uncaught target
+# signal 4`, exit 132) part-way through prerendering the word pages. Keep the
+# pin and that leg never gets emulated in the first place.
 #
 # BuildKit sets BUILDPLATFORM itself; the default is for the legacy builder,
 # which leaves it empty and would otherwise fail to parse the platform.

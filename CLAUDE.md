@@ -98,13 +98,14 @@ there). Umami events are `fjalez_open`, `fjalez_first_guess`, `fjalez_invalid`, 
   do that implicitly for `npm run build --production`; pnpm does not) and must copy `.npmrc`, or
   `prebuild` is skipped and `astro build` fails on the missing `src/data/gen/slug`. `pnpm install` runs
   with `--prod=false` so the devDependencies `astro check` needs survive `NODE_ENV=production`.
-- The build stage is pinned to `--platform=$BUILDPLATFORM`, so it is **never emulated**. The image is
-  published for amd64 and arm64, and building the site under QEMU for arm64 killed node with a SIGILL
-  (`qemu: uncaught target signal 4`, exit 132) part-way through prerendering the word pages. `dist` is
-  static files with nothing architecture-specific in it, so one build serves both targets; only the
-  `static-web-server` runtime stage is built per architecture. Keep the `ARG BUILDPLATFORM` default
-  above it — BuildKit sets the value itself, but the legacy builder leaves it empty and fails to parse
-  the platform.
+- The image is published for **linux/amd64 only**. arm64 was dropped from `docker-publish.yml` because
+  building the site under QEMU killed node with a SIGILL (`qemu: uncaught target signal 4`, exit 132)
+  part-way through prerendering the word pages. If it ever comes back, add it on a native arm64 runner
+  rather than through emulation — and leave the build stage's `--platform=$BUILDPLATFORM` pin in place,
+  which keeps that stage on the builder's architecture (`dist` is static files, so one build serves any
+  target; only the `static-web-server` runtime stage is per-architecture). The `ARG BUILDPLATFORM`
+  default above it is for the legacy builder, which leaves the value empty and fails to parse the
+  platform; BuildKit sets it itself.
 - `prebuild` runs `src/scripts/preprocess.ts` through node's native type stripping — no ts-node. That
   needs node >= 22.18 (see `engines`) and is why the `.ts` imports carry explicit `.ts` extensions.
 - `pnpm-workspace.yaml` `overrides` are security floors for transitive deps. Re-check `pnpm audit`
