@@ -1,0 +1,324 @@
+/*
+ * Fjalëz — the board is the one ruled table in this system. A puzzle in a book
+ * is set as a grid of cells with hairlines between them, and that is literally
+ * how it is drawn here: one rule-coloured ground under a 1px grid gap, cells in
+ * stock on top. No cell has a border, a radius or a shadow of its own.
+ *
+ * The three answers a tile can give are ink densities, which is the system's
+ * whole depth vocabulary: the binding's oxblood for a letter standing in its
+ * place, the selection wash for a letter the word holds elsewhere, sunk stock
+ * for a letter it does not hold. The washes are ordered by lightness, so the
+ * pattern still reads when the colour does not, and the misplaced letter is
+ * closed by a 3px cloth rule as well.
+ */
+
+.fjalez {
+  padding-top: clamp(1.75rem, 6vw, 3rem);
+
+  /* The board, the keyboard and the keys that commit a guess are one object and
+     share one measure — narrower than the reading column, because a square grid
+     set to 56rem would be a wall. The measure answers to the viewport's height
+     as well as its width: six square rows and three rows of keys have to be
+     seen together, or the game is played by scrolling. The floor keeps a key
+     wide enough for a thumb. */
+  --play: min(100%, 26rem, max(16rem, calc(100svh - 28rem)));
+}
+
+.head {
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+}
+
+/* A page title, not a lemma: ink at the headword's weight, as the Rreth page
+   sets its own. */
+.title {
+  font-size: var(--step-title);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.rail {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1.4rem;
+  margin-top: 0.3rem;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.intro {
+  margin-top: 0.8rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+/* The play block is centred on the page while everything set as type — the
+   title, the running head, the intro, the archive — keeps the column's left
+   edge. Inside the block nothing is centred: the status line, the answer and
+   the legend all start on the board's own left edge. */
+.play {
+  width: var(--play);
+  margin-inline: auto;
+}
+
+.board {
+  display: grid;
+  gap: var(--rule-hair);
+  padding: var(--rule-hair);
+  margin-top: clamp(1.1rem, 4vh, 2rem);
+  background-color: var(--rule);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--rule-hair);
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background-color: var(--stock);
+  font-size: clamp(1.3rem, 6vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  transition:
+    background-color 180ms var(--ease-settle),
+    color 180ms var(--ease-settle);
+}
+
+/* A two-character letter is one letter and has to fit in one cell. */
+.tile[data-wide='true'] {
+  font-size: clamp(1rem, 4.4vw, 1.3rem);
+  letter-spacing: 0;
+}
+
+/* The caret of the field, moved onto the board: the cell waiting for a letter
+   carries the same 3px oxblood rule the search field wears when focused. */
+.tile[data-caret='true']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background-color: var(--cloth);
+}
+
+.tile[data-mark='correct'] {
+  background-color: var(--cloth);
+  color: var(--on-cloth);
+}
+
+.tile[data-mark='present'] {
+  background-color: var(--cloth-wash);
+}
+
+.tile[data-mark='present']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background-color: var(--cloth);
+}
+
+.tile[data-mark='absent'] {
+  background-color: var(--stock-sunk);
+  color: var(--ink-muted);
+}
+
+/* The scored row settles left to right — one letter read after another, the way
+   a line is read. Reduced motion is handled globally. */
+.revealing .tile {
+  animation: settle 300ms var(--ease-settle) both;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0.55;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.status {
+  min-height: 1.6em;
+  margin-top: 0.7rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.result {
+  margin-top: 0.4rem;
+}
+
+.verdict {
+  font-size: var(--step-lead);
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+/* Set as the day's word is set — the same headword, the same underline at rest:
+   the answer is a dictionary entry, and the game hands the reader to it. */
+.answer {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 0.7rem;
+  margin-top: 0.5rem;
+  padding-block: 0.35rem;
+  min-height: 2.75rem;
+  text-decoration: none;
+}
+
+.answerTerm {
+  font-size: var(--step-title);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 40%, transparent);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 140ms var(--ease-settle);
+}
+
+@media (hover: hover) {
+  .answer:hover .answerTerm {
+    text-decoration-color: currentColor;
+  }
+}
+
+.answerNote {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+}
+
+.resultActions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.share {
+  padding-block: 0.5rem;
+  font-size: var(--step-guide);
+  text-transform: uppercase;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 45%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.share:hover {
+  text-decoration-color: currentColor;
+}
+
+.todayLink {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  text-decoration-color: color-mix(in srgb, var(--ink-muted) 40%, transparent);
+}
+
+.todayLink:hover {
+  color: var(--cloth);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  margin-top: clamp(1.6rem, 5vh, 2.2rem);
+  padding-top: 0.75rem;
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legendTile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.legendTile[data-mark='correct'] {
+  background-color: var(--cloth);
+  color: var(--on-cloth);
+}
+
+.legendTile[data-mark='present'] {
+  background-color: var(--cloth-wash);
+}
+
+.legendTile[data-mark='present']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background-color: var(--cloth);
+}
+
+.legendTile[data-mark='absent'] {
+  background-color: var(--stock-sunk);
+  color: var(--ink-muted);
+}
+
+.legendText {
+  margin: 0;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin-top: 1.1rem;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.closed {
+  margin-top: 1.2rem;
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.closedLink {
+  margin-top: 0.6rem;
+  font-size: var(--step-small);
+}
+
+.closedLink a {
+  text-decoration-color: var(--cloth);
+}

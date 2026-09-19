@@ -11,8 +11,8 @@ image published to ghcr.io by `.github/workflows/docker-publish.yml`.
 
 ## Docs
 
-- `docs/README.md` and `docs/kerkimi.md` are user/contributor-facing and are **written in Albanian —
-  keep them that way**, as is all UI copy and page content.
+- `docs/README.md`, `docs/kerkimi.md` and `docs/fjalez.md` are user/contributor-facing and are
+  **written in Albanian — keep them that way**, as is all UI copy and page content.
 - `docs/_claude/` holds English detail referenced from here. Read
   [`docs/_claude/search-indexing.md`](docs/_claude/search-indexing.md) before touching the indexing
   pipeline, the search bar, or the word-page routes.
@@ -30,6 +30,7 @@ Package manager is **pnpm** (migrated from npm). `.npmrc` sets `enable-pre-post-
 | `pnpm build` | `astro check` (typecheck) + `astro build` — runs `prebuild` first |
 | `pnpm astro check` | Typecheck only |
 | `pnpm preview` | Serve `./dist` |
+| `pnpm fjalez:words` | Regenerate `src/data/fjalez/guesses.json` (Fjalëz guess list) |
 
 There is no test suite and no linter beyond `astro check` (`.prettierrc`: 2 spaces, single quotes).
 
@@ -63,6 +64,33 @@ bucketed by the first 3 characters of the key. Astro publishes those sub-indexes
 Load-bearing details that are easy to break — the stem/slug normalization split, the 3-char prefix
 contract shared by generator and clients, and `index.astro` doubling as the 404 catch-all that renders
 non-prerendered word pages — are in `docs/_claude/search-indexing.md`.
+
+## Fjalëz
+
+`/fjaleez` (the slug rule — `ë → ee` — applies to the game's URLs the way it does to a word page's;
+code identifiers keep the plain `fjalez`, as `docs/kerkimi.md` already spells `kërkimi`) is the word
+game: one five-letter word a day, six guesses, played entirely in the browser.
+`src/lib/fjalez.ts` holds the rules and `PUZZLES`, the day → word list (2026-09-19 → 2026-11-18, UTC
+days like `getWordOfDay`, but **it must not wrap** — a repeat would hand back a solved word). Three
+things are load-bearing:
+
+- **One character to a box.** `splitLetters` is a plain character split and is what counts a word's
+  length everywhere — the puzzle list, the guess-list generator and the board all go through it. A
+  letter written with two characters (DH, SH, RR, …) fills two boxes, so `GARDH` is five and `SHTËPI`
+  is not a five-letter word here. The keyboard is QWERTY with Ë after P and Ç after L (no W — the
+  alphabet has none).
+- **The guess list is committed, not generated at build time.** `src/data/fjalez/guesses.json` (3.5k
+  words) comes from `pnpm fjalez:words` and is in git, because `prebuild` is env-gated down to a
+  subset in development and the game may not depend on that gate. `/api/fjaleez/fjalee.json` serves it
+  and the board fetches it once.
+- **Results live in `localStorage` (`fjalez.v1`) and nowhere else** — `src/lib/fjalezStore.ts`. Only
+  the guesses are stored, keyed by the day's **date** rather than its index in the series (an index
+  means nothing if `START_UTC` ever moves); won/lost is derived, so the two cannot disagree. Every
+  access is wrapped: storage can be refused outright.
+
+Days after today are refused client-side (the whole site is prerendered, so the check can only live
+there). Umami events are `fjalez_open`, `fjalez_first_guess`, `fjalez_invalid`, `fjalez_win`,
+`fjalez_lose`, `fjalez_share` and `fjalez_definition`.
 
 ## Notes
 

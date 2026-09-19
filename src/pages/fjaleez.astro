@@ -1,0 +1,31 @@
+---
+import Fjalez from '../components/fjalez/Fjalez';
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout
+  title="Fjalëz | Loja e fjalëve shqipe | fjalorshqip.com"
+  description="Fjalëz — gjeje fjalën e ditës me pesë shkronja shqipe. Gjashtë mundësi, një fjalë e re çdo ditë."
+>
+  {
+    /* The board knows which day it is, which day was asked for and what this
+       browser has already played — none of which exists at build time, so the
+       page ships the frame and the island renders the game. */
+  }
+  <Fjalez client:only="react" />
+
+  <noscript>
+    <p class="noscript">
+      Fjalëza luhet në shfletues. Aktivizoni JavaScript-in për ta luajtur, ose
+      <a href="/">kërkoni një fjalë</a> në fjalor.
+    </p>
+  </noscript>
+</MainLayout>
+
+<style lang="scss">
+  .noscript {
+    padding-top: clamp(1.75rem, 6vw, 3rem);
+    line-height: var(--leading-read);
+    color: var(--ink-muted);
+  }
+</style>

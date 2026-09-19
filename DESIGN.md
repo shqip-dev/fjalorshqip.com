@@ -245,8 +245,10 @@ lemma, the marks, the masthead's rule and the ground of the closing block.
 
 ### Named Rules
 **The One Ground Rule.** The sheet is one ground — academy stock — from the masthead through the whole
-of the content, and the binding closes it. `--cloth` becomes a ground exactly once, in the colophon
-block at the foot of the page, and nowhere else: not behind the masthead, not behind a card, not behind
+of the content, and the binding closes it. `--cloth` becomes a ground in exactly two places: the
+colophon block at the foot of every page, and a Fjalëz tile holding a letter that stands in its place —
+a single cell, not a region, and the one state in the system that has to be read across a grid at a
+glance. Nowhere else: not behind the masthead, not behind a card, not behind
 a section of an entry. Two full-bleed cloth bands bracketing the page were tried and rejected as harsh;
 one closing block at the foot with red *text* at the head is the arrangement that shipped. A new region
 that wants to stand out gets a rule, not a fill.
@@ -439,7 +441,9 @@ Everything is square. Radius is `0` everywhere in the build — not "small", zer
 field, the result rows, the focus ring's outline box, the colophon block and the clear button. Form is
 expressed by ruled lines, by ink weight and by the one change of ground, not by silhouette. Borders are
 always full-width or full-height single rules; there are no boxes drawn on all four sides anywhere in
-the system. The one inline icon (the clear "×") is hand-drawn SVG geometry — two square-capped 1.6px
+the system. The one grid of cells — the Fjalëz board and its alphabet keyboard — is built the way a
+printed table is: a rule-coloured ground showing through 1px grid gaps, so the hairlines are shared
+between neighbours and no cell owns a border. The one inline icon (the clear "×") is hand-drawn SVG geometry — two square-capped 1.6px
 strokes at currentColor — not an icon font or a glyph.
 
 ## Components
@@ -542,6 +546,43 @@ without a daily build. The cost is recorded in the source: near midnight the dat
 the reader's own clock has left. That was accepted over the alternative of a label disagreeing with the
 word beneath it.
 
+### Fjalëz Board (signature)
+The word game at `/fjaleez`, and the one **ruled table** in this system. A puzzle in a book is set as a
+grid of cells with hairlines between them, and that is how it is drawn: a rule-coloured ground under a
+1px grid gap with cells in `--stock` on top, so no cell carries a border, a radius or a shadow of its
+own. The keyboard beneath it is the same construction in three staggered strips — QWERTY, with Ë after P and
+Ç after L where a German layout keeps Ü, Ö and Ä, and no W, because the alphabet has none. Each row
+is its own ruled strip, centred against the widest one and sized as its share of the keyboard
+(`--keys / --columns * 100%`), which holds every key to one width across rows without measuring
+anything. The board, the keyboard and the two action keys share one measure, `--play`, which answers to
+the viewport's **height** as well as its width (`min(100%, 26rem, max(16rem, 100svh - 28rem))`): six
+square rows and three rows of keys have to be seen together, or the game is played by scrolling. The
+play block is the one **centred** object in the system — `margin-inline: auto` on a block of `--play`
+— while the title, the running head, the intro and the archive keep the column's left edge, and
+nothing *inside* the block is centred: the status line, the answer and the legend all start on the
+board's own left edge.
+
+A tile's answer is an **ink density**, which is the system's whole depth vocabulary:
+- *In place* — `--cloth` ground, `--on-cloth` letter (9.64:1). The placed letter is the lemma being
+  revealed, so it is set in the binding.
+- *In the word, elsewhere* — `--cloth-wash` ground (the selection wash, 22% cloth over stock) under
+  `--ink` (8.85:1), closed by a 3px `--cloth` rule along the bottom.
+- *Not in the word* — `--stock-sunk` under `--ink-muted` (5.58:1).
+
+The three grounds are ordered by lightness — dark, mid, pale — so the pattern reads when the colour does
+not, and the misplaced letter carries the rule as a second signal rather than relying on the wash alone.
+The cell waiting for a letter wears the search field's own caret: a 3px oxblood rule along its bottom
+edge. A refused guess nudges the active row once through the Web Animations API and says why in the
+status line; the row that has just been scored settles left to right, one tile after another, the way a
+line is read. Both are skipped under `prefers-reduced-motion`.
+
+A box holds one character, so a letter written with two fills two boxes and the grid stays five wide.
+The page title is **ink**, not oxblood — "Fjalëz" is a page, not a defined word — with the puzzle's
+number and its UTC date as a running head below it. The answer, once the game is over, is set exactly as
+the day's word is set: an oxblood headword at `--step-title` / 700 with its underline at rest, linking
+to the entry. The archive below is the result list's construction — hairline-separated rows, each a
+full-width target, the current day's number in oxblood.
+
 ### Not-Found / Empty / Loading
 All three are set exactly where a real entry sets its parts, so the page stays inside the book: the
 not-found title at display scale in oxblood at 600 over a 3px ink rule, its short verdict in the italic
@@ -602,8 +643,9 @@ cloth chip: oxblood ground, `--on-cloth` text, 0.6rem/1rem padding, square.
 ### Don't:
 - **Don't** add a `box-shadow`, a gradient or a `border-radius` anywhere. The build contains none of the
   three and the world is printed.
-- **Don't** give a second region a coloured ground. The cloth is the ground once, at the foot; the
-  masthead, the entry, the result list and every future section sit on stock. Two full-bleed cloth bands
+- **Don't** give a second region a coloured ground. The cloth is the ground at the foot and inside a
+  single placed Fjalëz tile; the masthead, the entry, the result list and every future section sit on
+  stock. Two full-bleed cloth bands
   bracketing the page were tried and rejected as harsh — do not restore the top band, and do not invent
   a third.
 - **Don't** set a sentence in small caps. Small caps are for labels of a few words; a 13px line with no

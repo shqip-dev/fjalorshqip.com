@@ -23,6 +23,10 @@
   --rule: #c4bba7;
   --rule-strong: #837a66;
 
+  /* the cloth at 22% over the stock — the wash of a selected run of text, and
+     of a Fjalëz letter the day's word holds in another place */
+  --cloth-wash: color-mix(in srgb, var(--cloth) 22%, var(--stock));
+
   /* ink laid on the cloth — the colophon and the focused skip link */
   --on-cloth: #f0eae0;
   --on-cloth-muted: #cdbcae;
@@ -115,7 +119,7 @@ button {
  * the same cloth as everything else.
  */
 ::selection {
-  background-color: color-mix(in srgb, var(--cloth) 22%, var(--stock));
+  background-color: var(--cloth-wash);
   color: var(--ink);
 }
 

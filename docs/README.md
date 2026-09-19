@@ -2,6 +2,9 @@
 
 Fjalor i gjuhës shqipe, i ndërtuar me [Astro](https://astro.build) dhe ishuj [React](https://react.dev).
 
+Përveç fjalorit, faqja mban edhe **Fjalëzën** — lojën e fjalës së ditës me pesë shkronja (shih
+[Fjalëza](fjalez.md)).
+
 Faqja është **tërësisht statike**: nuk ka server aplikacioni, nuk ka bazë të dhënash dhe nuk ka API që
 ekzekutohet gjatë kërkimit. Gjithçka që shpërndahet janë skedarë `HTML`, `CSS`, `JS` dhe `JSON`, të cilët
 mund të vendosen në çfarëdo hostingu statik (aktualisht CloudFlare Pages, por edhe një `static-web-server`
@@ -18,11 +21,14 @@ brenda Docker-it). I gjithë kërkimi ndodh në shfletuesin e përdoruesit — s
 ├── public/                    # skedarë statikë (favicon, robots.txt)
 └── src/
     ├── components/            # ishujt React (SearchBar, Entries, ...)
+    ├── data/fjalez/           # lista e fjalëve pesëshkronjore të Fjalëzës (ruhet në git)
     ├── data/gen/              # indekset e gjeneruara gjatë ndërtimit (nuk ruhen në git)
     ├── layouts/
     ├── lib/                   # logjika e përbashkët: stems, slug, lexim/shkrim i skedarëve
     ├── pages/                 # faqet dhe endpoint-et JSON
-    └── scripts/preprocess.ts  # gjeneruesi i indekseve
+    └── scripts/
+        ├── preprocess.ts      # gjeneruesi i indekseve
+        └── fjalezWords.ts     # gjeneruesi i listës së fjalëve të Fjalëzës
 ```
 
 ## Komandat
@@ -37,6 +43,7 @@ Të gjitha komandat thirren nga baza e projektit përmes terminalit. Menaxheri i
 | `pnpm prebuild`  | Gjeneron indekset në `src/data/gen/` nga `data/dictionary.json`   |
 | `pnpm build`     | Kontrollon tipat dhe ndërton faqen në `./dist/` (thërret `prebuild`) |
 | `pnpm preview`   | Shërben lokalisht atë që u ndërtua në `./dist/`                   |
+| `pnpm fjalez:words` | Rigjeneron listën e fjalëve të Fjalëzës nga `data/dictionary.json` |
 
 ## Ndërtimi lokal
 
@@ -72,6 +79,7 @@ Variablat e tjera:
 ## Dokumentimi
 
 - [Si funksionon kërkimi](kerkimi.md) — indeksimi gjatë ndërtimit dhe kërkimi në shfletues.
+- [Fjalëza](fjalez.md) — rregullat e lojës, shkronjat me dy karaktere dhe ruajtja e rezultatit.
 
 ## Kontribuoni
 
