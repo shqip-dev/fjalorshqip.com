@@ -1,4 +1,15 @@
-FROM node:24-alpine AS build
+# The build stage runs on the *builder's* architecture, never the target's.
+# What it produces is `dist` — static HTML, CSS, JS and JSON with nothing
+# architecture-specific in it — so building it once and copying it into each
+# target image is not a shortcut, it is the correct thing. Emulating this stage
+# for linux/arm64 was killing the build: QEMU took a SIGILL out of node
+# (`uncaught target signal 4`, exit 132) part-way through prerendering ~39k word
+# pages. Only the runtime stage below is built per target.
+#
+# BuildKit sets BUILDPLATFORM itself; the default is for the legacy builder,
+# which leaves it empty and would otherwise fail to parse the platform.
+ARG BUILDPLATFORM=linux/amd64
+FROM --platform=$BUILDPLATFORM node:24-alpine AS build
 
 # `prebuild` only emits dictionary entries when NODE_ENV=production (see src/lib/env.ts).
 # npm used to set this implicitly for `npm run build --production`; pnpm does not, so it

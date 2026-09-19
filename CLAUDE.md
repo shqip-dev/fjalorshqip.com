@@ -98,6 +98,13 @@ there). Umami events are `fjalez_open`, `fjalez_first_guess`, `fjalez_invalid`, 
   do that implicitly for `npm run build --production`; pnpm does not) and must copy `.npmrc`, or
   `prebuild` is skipped and `astro build` fails on the missing `src/data/gen/slug`. `pnpm install` runs
   with `--prod=false` so the devDependencies `astro check` needs survive `NODE_ENV=production`.
+- The build stage is pinned to `--platform=$BUILDPLATFORM`, so it is **never emulated**. The image is
+  published for amd64 and arm64, and building the site under QEMU for arm64 killed node with a SIGILL
+  (`qemu: uncaught target signal 4`, exit 132) part-way through prerendering the word pages. `dist` is
+  static files with nothing architecture-specific in it, so one build serves both targets; only the
+  `static-web-server` runtime stage is built per architecture. Keep the `ARG BUILDPLATFORM` default
+  above it — BuildKit sets the value itself, but the legacy builder leaves it empty and fails to parse
+  the platform.
 - `prebuild` runs `src/scripts/preprocess.ts` through node's native type stripping — no ts-node. That
   needs node >= 22.18 (see `engines`) and is why the `.ts` imports carry explicit `.ts` extensions.
 - `pnpm-workspace.yaml` `overrides` are security floors for transitive deps. Re-check `pnpm audit`
