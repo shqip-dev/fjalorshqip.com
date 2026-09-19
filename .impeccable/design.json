@@ -161,11 +161,11 @@
       },
       "subhead": {
         "displayName": "Prose Subhead",
-        "purpose": "Prose-page h2. Sentence case, balanced wrap, 2.2rem above, held to the measure. Also the ceiling of the compact search field's clamp."
+        "purpose": "Prose-page h2. Sentence case, balanced wrap, 2.2rem above, spanning the container like the rest of the prose page. Also the ceiling of the compact search field's clamp."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Senses, definitions, running prose. Capped at a 68ch measure."
+        "purpose": "Senses and definitions, held to the 68ch --measure at 1.62 leading. Prose paragraphs are the same size but not the same block: they span the full container (98 characters) at 1.7 leading."
       },
       "small": {
         "displayName": "Small Text",
@@ -222,7 +222,11 @@
       },
       {
         "name": "measure",
-        "value": "68ch (623px at container width)"
+        "value": "68ch (623px at container width) — the sense list and .notfound only; prose is uncapped at 896px"
+      },
+      {
+        "name": "prose-measure",
+        "value": "none — prose runs the full 896px container, 98 characters at 1.7 leading"
       }
     ]
   },
@@ -271,9 +275,9 @@
       "name": "Prose Page Head",
       "kind": "custom",
       "refersTo": "page-title",
-      "description": "A page that is not a word: the title stays ink at the same weight a lemma uses, spans the full container with its 3px rule, and only the reading line below is held to the measure.",
+      "description": "A page that is not a word: the title stays ink at the same weight a lemma uses, and heading, rule and text all share one edge — the prose page is uncapped, running the full container at 1.7 leading.",
       "html": "<div class=\"ds-prose\"><h1 class=\"ds-prose-title\">Rreth FjalorShqip</h1><h2 class=\"ds-prose-sub\">Pse ekziston ky projekt</h2><p class=\"ds-prose-p\">Si përdorues i faqes fjalorshqip.com, vendosa ta rindërtoj pas skadimit të domain-it. Synimi është që kjo faqe të jetë një burim i hapur (<code class=\"ds-prose-code\">open source</code>).</p></div>",
-      "css": ".ds-prose { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); font-size: 1.075rem; line-height: 1.62; } .ds-prose-title { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.012em; text-transform: uppercase; text-wrap: balance; padding-bottom: 0.5rem; border-bottom: 3px solid var(--ink, #241d17); } .ds-prose-sub { max-width: 68ch; margin: 2.2rem 0 0.3rem; font-size: 1.22rem; font-weight: 700; line-height: 1.25; text-wrap: balance; } .ds-prose-p { max-width: 68ch; margin: 0.85rem 0 0; } .ds-prose-code { font-family: inherit; font-style: italic; letter-spacing: 0.01em; } .ds-prose a { color: inherit; text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+      "css": ".ds-prose { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); font-size: 1.075rem; line-height: 1.62; } .ds-prose-title { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.012em; text-transform: uppercase; text-wrap: balance; padding-bottom: 0.5rem; border-bottom: 3px solid var(--ink, #241d17); } .ds-prose-sub { margin: 2.2rem 0 0.3rem; font-size: 1.22rem; font-weight: 700; line-height: 1.25; text-wrap: balance; } .ds-prose-p { margin: 0.85rem 0 0; line-height: 1.7; } .ds-prose-code { font-family: inherit; font-style: italic; letter-spacing: 0.01em; } .ds-prose a { color: inherit; text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
     },
     {
       "name": "Idiom Block",
@@ -363,6 +367,11 @@
         "name": "The Rule-Weight Depth Rule",
         "body": "Three weights are the whole depth system: 1px separates, 2px bounds, 3px closes. A surface that needs to feel raised gets a heavier rule, never a shadow, a tint or a radius.",
         "section": "elevation"
+      },
+      {
+        "name": "The Two Measures Rule",
+        "body": "This system has two reading widths and they are not reconciled. A defined word is read at the 68ch --measure at 1.62 leading; a page of prose is read at the full container, 98 characters at 1.7 leading, because the user asked for heading and text on one edge. Structure — the h1, its 3px rule, the guide rail — spans the container on both. When you add a surface, decide which of the two it is and take that page's whole behaviour, measure and leading together; do not invent a third width and do not quietly re-cap the prose page.",
+        "section": "layout"
       }
     ],
     "dos": [
@@ -373,7 +382,7 @@
       "Do express depth as rule weight — 1px separates, 2px bounds, 3px closes.",
       "Do set labels in Alegreya SC at 0.82rem / +0.06em: guide words, the rail and its count, colophon links, homograph marks, idiom titles, cross-references.",
       "Do set every sentence — hints, status, pending, no-match, errors, the loader, colophon notes — in the regular upright face at --step-small with normal tracking.",
-      "Do span structure across the container and cap only the reading line at --measure, so a prose page and a word page line up at 896px of span and a 623px measure.",
+      "Do span structure across the container on both page types (896px at the 56rem container), and then follow the page: a word page's sense list and the .notfound block are capped at the 68ch --measure (623px, 1.62 leading); a prose page is not capped at all and runs the full 896px at 1.7 leading. Don't split the difference on a new surface — pick the page type it belongs to.",
       "Do keep --rule-strong at or above 3:1 on stock (it measures 3.35:1); it is the field's resting underline.",
       "Do keep every text/background pair at or above 4.5:1 — ink 13.1:1, muted ink 6.09:1 and cloth 9.09:1 on stock; --on-cloth 9.64:1 and --on-cloth-muted 6.26:1 on cloth — and make every state legible without relying on colour alone.",
       "Do use tabular lining figures for any number that stacks vertically.",

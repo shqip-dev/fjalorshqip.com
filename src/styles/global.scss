@@ -231,8 +231,7 @@ button {
 }
 
 /* Running prose — the Rreth page and anything else set as a page of text.
-   Structure spans the column exactly as a word page does; only the reading
-   line is held to the measure, so the two pages line up edge to edge. */
+   Everything spans the column: heading, rule and text share one edge. */
 .prose {
   padding-top: clamp(1.75rem, 6vw, 3rem);
 }
@@ -249,7 +248,6 @@ button {
 }
 
 .prose h2 {
-  max-width: var(--measure);
   font-size: 1.22rem;
   font-weight: 700;
   line-height: 1.25;
@@ -260,8 +258,8 @@ button {
 
 .prose p,
 .prose li {
-  max-width: var(--measure);
   margin-top: 0.85rem;
+  line-height: 1.7;
 }
 
 .prose a {

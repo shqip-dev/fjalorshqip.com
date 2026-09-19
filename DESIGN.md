@@ -261,7 +261,8 @@ text rather than being it. `font-synthesis-weight: none` is set, so weights are 
   oxblood when the row is hovered or keyboard-active.
 - **Subhead** (700, 1.22rem, 1.25): Prose-page `h2`, sentence case, balanced wrap, 2.2rem of space above.
   Also the ceiling of the compact search field's clamp.
-- **Body** (400, 1.075rem, 1.62): Senses, prose, definitions. Measure capped at 68ch.
+- **Body** (400, 1.075rem, 1.62): Senses and definitions, held to the 68ch `--measure`. Prose paragraphs
+  are the same size but not the same block: they span the container and take 1.7 leading (see Layout).
 - **Small** (400, 0.9rem, 1.45): Italic label stacks, result gists, idiom lines, homograph marks — and,
   in the regular upright face, every status sentence: the field's hint, "Po kërkohet…", the no-match and
   error lines, the loader line, and the colophon's static-site and copyright notes.
@@ -293,17 +294,24 @@ serif. There is no monospace face in this system.
 
 ## Layout
 
-A single measure, no grid. `.container` is `min(100% - 2×gutter, 56rem)` centred, with the gutter itself
+One column, no grid — and, since the prose change, two reading widths inside it. `.container` is
+`min(100% - 2×gutter, 56rem)` centred, with the gutter itself
 fluid (`clamp(1.25rem, 5vw, 2.5rem)`). The colophon's cloth ground is the one element that breaks the
 container: the colour runs full-bleed while its contents stay on the same 56rem column as everything
 above.
 
-**Structure spans the column; only reading is measured.** A word page sets its headword, its rules and
-its guide rail across the full container and holds only the sense list to the 68ch `--measure`. The
-prose page does exactly the same: `.prose h1` and its closing rule span the container, while
-`.prose p`, `.prose li` and `.prose h2` are capped at `--measure`. Measured at the 56rem container: 896px
-of structural span and a 623px reading line on both pages. Do not cap a whole page at the measure —
-that was the old prose behaviour and it made the two pages disagree at the edge.
+**The two page types measure differently, on purpose.** Both span their structure across the full
+container, and there they agree: 896px of span at the 56rem container on a word page and on a prose
+page alike. Below the structure they diverge. A word page holds its sense list to the 68ch `--measure`
+— 623px, 68 characters, 1.62 leading. A prose page holds nothing back: `.prose h1`, `.prose h2`,
+`.prose p` and `.prose li` all run the full 896px, which is **98 characters** to the line, and the
+paragraphs open to **1.7** leading to carry it. That is the user's explicit choice — they asked for the
+Rreth page's text to sit on the same edge as its heading — and the line-length cost has been raised
+with them separately. It is recorded here as a stated tension, not as a target to copy blindly.
+
+`--measure` (68ch) still exists and still governs everything it governed before except prose: the sense
+list on a word page and the `.notfound` block. Search results are not measured; they are held by the
+container like the rest of the search column.
 
 Vertical rhythm is a small set of reused steps rather than a numeric scale:
 `clamp(1.75rem, 6vw, 3rem)` opens every major block (entry, not-found, loader, prose), 1.5rem separates
@@ -317,6 +325,14 @@ Responsive behaviour is two breakpoints and both are content-driven: below 30rem
 is dropped and the leader closes to a single uninterrupted rule; at and above 60rem a long entry's sense
 list becomes two columns with a 2.5rem gap and a hairline column rule. Nothing reflows into a drawer, a
 modal or a hamburger — the field is the navigation at every width.
+
+### Named Rules
+**The Two Measures Rule.** This system has two reading widths and they are not reconciled. A *defined
+word* is read at the 68ch `--measure` at 1.62 leading; a *page of prose* is read at the full container,
+98 characters at 1.7 leading, because the user asked for heading and text on one edge. Structure — the
+h1, its 3px rule, the guide rail — spans the container on both. When you add a surface, decide which of
+the two it is and take that page's whole behaviour, measure and leading together; do not invent a third
+width and do not quietly re-cap the prose page.
 
 ## Elevation & Depth
 
@@ -446,8 +462,10 @@ cloth chip: oxblood ground, `--on-cloth` text, 0.6rem/1rem padding, square.
   links, homograph marks, idiom titles, cross-references.
 - **Do** set every sentence — hints, status, pending, no-match, errors, the loader, colophon notes — in
   the regular upright face at `--step-small` with normal tracking.
-- **Do** span structure across the container and cap only the reading line at `--measure`, so a prose
-  page and a word page line up at 896px of span and a 623px measure.
+- **Do** span structure across the container on both page types (896px at the 56rem container), and
+  then follow the page: a word page's sense list and the `.notfound` block are capped at the 68ch
+  `--measure` (623px, 1.62 leading); a prose page is not capped at all and runs the full 896px at 1.7
+  leading. Don't split the difference on a new surface — pick the page type it belongs to.
 - **Do** keep `--rule-strong` at or above 3:1 on stock (it measures 3.35:1); it is the field's resting
   underline.
 - **Do** keep every text/background pair at or above 4.5:1 — ink 13.1:1, muted ink 6.09:1 and cloth
