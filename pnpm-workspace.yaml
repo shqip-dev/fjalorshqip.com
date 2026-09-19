@@ -1,9 +1,15 @@
+# Security floors for transitive dependencies that the direct deps have not yet
+# pulled forward. Re-check with `pnpm audit` after upgrades and drop the ones
+# that are no longer needed.
 overrides:
-  esbuild: ^0.28.1
+  baseline-browser-mapping: ^2.11.0
+  browserslist: ^4.28.7
+  devalue: ^5.9.1
+  fast-uri: ^3.1.6
+  immutable: ^5.1.8
+  smol-toml: ^1.7.1
   yaml: ^2.8.3
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   sharp: true
-minimumReleaseAgeExclude:
-  - astro@6.4.8

@@ -10,14 +10,15 @@ straight from `src/`).
   `enable-pre-post-scripts=true` so `pnpm build` runs the `prebuild` data-gen step the way
   `npm run build` used to. Native build scripts (esbuild, sharp, @parcel/watcher) are
   approved in `pnpm-workspace.yaml` `allowBuilds`.
-- All deps upgraded to latest 2026-06-17 (astro 6, react 19, framer-motion 12). `pnpm audit`
-  is clean; transitive `esbuild`/`yaml` pinned via `pnpm-workspace.yaml` `overrides`.
-- Two upgrade fixes landed in source: `framer-motion` `transition={{ type:'ease-in' }}` →
-  `{{ ease:'easeIn' }}` (SearchBar), and `import '@fontsource-variable/eb-garamond'` →
-  `.../index.css` (MainLayout) for type resolution.
+- All deps upgraded to latest 2026-09-19 (astro 7, react 19, motion 13). `pnpm audit` is clean;
+  transitive security floors are pinned via `pnpm-workspace.yaml` `overrides`.
+- Upgrade fixes landed in source: `framer-motion` `transition={{ type:'ease-in' }}` →
+  `{{ ease:'easeIn' }}` (SearchBar), `import '@fontsource-variable/eb-garamond'` →
+  `.../index.css` (MainLayout) for type resolution, and 2026-09-19 the `framer-motion` import
+  moved to its current package name, `motion/react`.
 
 ## Build / data
-- `prebuild` (`src/scripts/preprocess.ts`, ts-node/esm) generates `src/data/gen/` from the
+- `prebuild` (`src/scripts/preprocess.ts`, node native type stripping) generates `src/data/gen/` from the
   14 MB `data/dictionary.json` (39,897 entries). It only emits entries when
   `NODE_ENV=production` OR `DICTIONARY_SUBSET=["term",...]` is set — otherwise 0 entries and
   the full `astro build` fails on missing `src/data/gen/slug` (pre-existing, env-gated, not a

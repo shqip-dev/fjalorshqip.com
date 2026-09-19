@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './SearchBar.module.scss';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import classNames from 'classnames';
 import type { Entry, Index } from '../../lib/dictionary';
 import { getStemPrefix, getStems } from '../../lib/process';

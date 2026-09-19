@@ -14,7 +14,8 @@ RUN corepack enable
 
 # .npmrc carries enable-pre-post-scripts=true, without which `pnpm build` skips `prebuild`.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-# --prod=false because NODE_ENV=production would otherwise drop ts-node, which `prebuild` needs.
+# --prod=false because NODE_ENV=production would otherwise drop the devDependencies that
+# `astro check` needs (@astrojs/check, typescript, the @types packages).
 RUN pnpm install --frozen-lockfile --prod=false
 
 COPY astro.config.mjs astro.config.mjs

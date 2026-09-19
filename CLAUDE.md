@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`fjalorshqip.com` — an Albanian dictionary site built with Astro 6 + React 19 islands. It ships as
+`fjalorshqip.com` — an Albanian dictionary site built with Astro 7 + React 19 islands. It ships as
 **static files only**: no application server, no database, no request-time code. Search runs entirely in
 the browser against JSON indexes generated at build time. Deployed to Cloudflare Pages, plus a Docker
 image published to ghcr.io by `.github/workflows/docker-publish.yml`.
@@ -69,7 +69,13 @@ non-prerendered word pages — are in `docs/_claude/search-indexing.md`.
 - `Dockerfile` builds with pnpm via corepack. It must set `NODE_ENV=production` explicitly (npm used to
   do that implicitly for `npm run build --production`; pnpm does not) and must copy `.npmrc`, or
   `prebuild` is skipped and `astro build` fails on the missing `src/data/gen/slug`. `pnpm install` runs
-  with `--prod=false` so `ts-node` survives `NODE_ENV=production`.
+  with `--prod=false` so the devDependencies `astro check` needs survive `NODE_ENV=production`.
+- `prebuild` runs `src/scripts/preprocess.ts` through node's native type stripping — no ts-node. That
+  needs node >= 22.18 (see `engines`) and is why the `.ts` imports carry explicit `.ts` extensions.
+- `pnpm-workspace.yaml` `overrides` are security floors for transitive deps. Re-check `pnpm audit`
+  after any upgrade and drop the entries that are no longer needed.
+- `typescript` is held at `^6` on purpose: `@astrojs/check` still declares a
+  `^5.0.0 || ^6.0.0` peer range, so bumping to 7 breaks `astro check` (and therefore `pnpm build`).
 - `.design-sync/`, `.ds-sync/` and `ds-bundle/` are tooling for bundling the React components as a
   design-system package — not part of the site build. `.design-sync/NOTES.md` records the pnpm migration
   and dependency-upgrade details.

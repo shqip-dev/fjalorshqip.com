@@ -1,6 +1,13 @@
-import { config } from 'dotenv';
-
-config();
+// Node's built-in .env loader. Same precedence as dotenv: variables already present in
+// the real environment (shell, CI, Docker) win over the file.
+try {
+  process.loadEnvFile();
+} catch (error) {
+  // A missing .env is normal — everything can come from the environment instead.
+  if ((error as { code?: string })?.code !== 'ENOENT') {
+    throw error;
+  }
+}
 
 export const isProduction = () => {
   return process.env.NODE_ENV === 'production';
