@@ -4,9 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import classNames from 'classnames';
 import type { Entry, Index } from '../../lib/dictionary';
 import { getStemPrefix, getStems } from '../../lib/process';
-import debounce from 'lodash/debounce';
-import zip from 'lodash/zip';
-import intersectionBy from 'lodash/intersectionBy';
+import { debounce, intersectBy } from '../../lib/utils';
 import leven from 'leven';
 import { SEARCH_QUERY_PARAM } from '../../lib/search';
 
@@ -105,15 +103,18 @@ const SearchBar = () => {
       prefixes,
       (subIndexes) => {
         const values =
-          zip(stems, subIndexes)
-            .map(([stem, subIndex]) => {
-              return subIndex ? subIndex[stem || ''] : [];
+          stems
+            .map((stem, idx) => {
+              const subIndex = subIndexes[idx];
+              // An absent stem key stays `undefined` on purpose: the reduce below
+              // skips it, whereas an empty list would wipe out the intersection.
+              return subIndex ? subIndex[stem] : [];
             })
             .reduce((acc, next) => {
               if (acc && !next) {
                 return acc;
               }
-              return intersectionBy(acc, next, (a) => a.term);
+              return intersectBy(acc || [], next || [], (a) => a.term);
             }) || [];
 
         const sortedValues = values

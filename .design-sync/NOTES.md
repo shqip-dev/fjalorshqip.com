@@ -12,6 +12,9 @@ straight from `src/`).
   approved in `pnpm-workspace.yaml` `allowBuilds`.
 - All deps upgraded to latest 2026-09-19 (astro 7, react 19, motion 13). `pnpm audit` is clean;
   transitive security floors are pinned via `pnpm-workspace.yaml` `overrides`.
+- `lodash`/`@types/lodash`, `ts-node` and `dotenv` were dropped 2026-09-19. Their replacements are
+  `sortByKey`/`isSameList`/`intersectBy`/`debounce` in `src/lib/utils.ts`, node native type
+  stripping, and `process.loadEnvFile()`. One less runtime dep in the island bundle.
 - Upgrade fixes landed in source: `framer-motion` `transition={{ type:'ease-in' }}` →
   `{{ ease:'easeIn' }}` (SearchBar), `import '@fontsource-variable/eb-garamond'` →
   `.../index.css` (MainLayout) for type resolution, and 2026-09-19 the `framer-motion` import

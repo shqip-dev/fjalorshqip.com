@@ -76,6 +76,10 @@ non-prerendered word pages — are in `docs/_claude/search-indexing.md`.
   after any upgrade and drop the entries that are no longer needed.
 - `typescript` is held at `^6` on purpose: `@astrojs/check` still declares a
   `^5.0.0 || ^6.0.0` peer range, so bumping to 7 breaks `astro check` (and therefore `pnpm build`).
+- There is no lodash. `src/lib/utils.ts` holds the small replacements (`sortByKey`, `isSameList`,
+  `intersectBy`, `debounce`). `intersectBy` deliberately keeps lodash `intersectionBy`'s dedupe-by-key
+  behaviour, and `SearchBar` relies on an absent stem key staying `undefined` rather than `[]` — an
+  empty list there would wipe out the intersection instead of being skipped.
 - `.design-sync/`, `.ds-sync/` and `ds-bundle/` are tooling for bundling the React components as a
   design-system package — not part of the site build. `.design-sync/NOTES.md` records the pnpm migration
   and dependency-upgrade details.

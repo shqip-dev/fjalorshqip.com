@@ -9,9 +9,7 @@ import {
 } from '../lib/dictionary.ts';
 import { isProduction, getDictionarySubset } from '../lib/env.ts';
 import { getStems, getSlug, getStemPrefix } from '../lib/process.ts';
-import isEqual from 'lodash/isEqual.js';
-import sortBy from 'lodash/sortBy.js';
-import { groupBy } from '../lib/utils.ts';
+import { groupBy, isSameList, sortByKey } from '../lib/utils.ts';
 
 type Indexes = {
   [prefix: string]: Index;
@@ -104,7 +102,7 @@ const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
 };
 
 const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
-  const sortedScrapedEntries = sortBy(scrapedEntries, (entry) => entry.term);
+  const sortedScrapedEntries = sortByKey(scrapedEntries, (entry) => entry.term);
 
   for (let i = 1, j = sortedScrapedEntries.length; i < j; i++) {
     const curr = sortedScrapedEntries[i];
@@ -114,7 +112,7 @@ const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
       curr &&
       prev &&
       curr.term === prev.term &&
-      isEqual(curr.definition, prev.definition)
+      isSameList(curr.definition, prev.definition)
     ) {
       sortedScrapedEntries.splice(i, 1);
       i--;
