@@ -1,0 +1,14 @@
+.astro/
+.design-sync/
+.ds-sync/
+.git/
+.github/
+.vscode/
+dist/
+docs/
+ds-bundle/
+node_modules/
+src/data/gen/
+.env
+.env.production
+*.log

@@ -2,6 +2,7 @@
   "name": "page",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@11.5.3",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -11,25 +12,25 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.4.1",
-    "@astrojs/mdx": "^2.0.5",
-    "@astrojs/react": "^3.0.9",
-    "@astrojs/sitemap": "^3.0.5",
-    "@fontsource-variable/eb-garamond": "^5.0.17",
-    "@types/react": "^18.2.48",
-    "@types/react-dom": "^18.2.18",
-    "astro": "^4.2.1",
+    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/react": "^5.0.7",
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/eb-garamond": "^5.2.7",
+    "astro": "^6.4.8",
     "classnames": "^2.5.1",
-    "framer-motion": "^10.18.0",
-    "leven": "^4.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.70.0"
+    "framer-motion": "^12.40.0",
+    "leven": "^4.1.0",
+    "lodash": "^4.18.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sass": "^1.101.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.202",
-    "dotenv": "^16.3.2",
-    "lodash": "^4.17.21",
+    "@astrojs/check": "^0.9.9",
+    "@types/lodash": "^4.17.24",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.4.2",
     "ts-node": "^10.9.2"
   }
 }

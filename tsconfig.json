@@ -3,5 +3,12 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react"
-  }
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "ds-bundle",
+    ".design-sync",
+    ".ds-sync"
+  ]
 }

@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './SearchBar.module.scss';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
-import { type Entry, type Index } from '../../lib/dictionary';
+import type { Entry, Index } from '../../lib/dictionary';
 import { getStemPrefix, getStems } from '../../lib/process';
 import debounce from 'lodash/debounce';
 import zip from 'lodash/zip';
 import intersectionBy from 'lodash/intersectionBy';
 import leven from 'leven';
+import { SEARCH_QUERY_PARAM } from '../../lib/search';
 
 const MAX_SUGGESTIONS = 10;
 
@@ -28,7 +29,7 @@ const loadSubIndex = debounce(
   ) => {
     const subIndexes = await Promise.all(prefixes.map(getOrFetchSubIndex));
 
-    if (subIndexes) {
+    if (subIndexes.every(Boolean)) {
       onSuccess(subIndexes);
     } else {
       onError();
@@ -130,6 +131,15 @@ const SearchBar = () => {
   };
 
   useEffect(() => {
+    const initialQuery = new URLSearchParams(window.location.search).get(
+      SEARCH_QUERY_PARAM
+    );
+    if (initialQuery) {
+      setQuery(initialQuery);
+    }
+  }, []);
+
+  useEffect(() => {
     handleQueryChange(query);
   }, [query]);
 
@@ -163,7 +173,7 @@ const SearchBar = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 20 }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ type: 'ease-in' }}
+              transition={{ ease: 'easeIn' }}
             >
               {suggestion.term} {suggestion.attributes}
             </motion.a>

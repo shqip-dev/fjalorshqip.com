@@ -1,0 +1,18 @@
+{
+  "shape": "package",
+  "pkg": "page",
+  "globalName": "FjalorShqip",
+  "tsconfig": "tsconfig.json",
+  "srcDir": "src",
+  "libOverrides": {
+    "bundle.mjs": "sass + css-modules loader for .module.scss (esbuild core has no scss loader)"
+  },
+  "componentSrcMap": {
+    "SearchBar": "src/components/searchbar/SearchBar.tsx",
+    "Entries": "src/components/entries/Entries.tsx",
+    "EntriesLoader": "src/components/entriesloader/EntriesLoader.tsx",
+    "DynamicEntries": "src/components/dynamicentries/DynamicEntries.tsx",
+    "NotFound": "src/components/notfound/NotFound.tsx",
+    "FooterLinks": "src/components/footerlinks/FooterLinks.tsx"
+  }
+}
