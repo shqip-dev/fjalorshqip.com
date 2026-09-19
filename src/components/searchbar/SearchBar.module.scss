@@ -41,6 +41,7 @@
 }
 
 .clear {
+  position: relative;
   flex: 0 0 auto;
   display: grid;
   place-items: center;
@@ -59,12 +60,36 @@
   color: var(--cloth);
 }
 
+/*
+ * The glyph stays the size the field wants; the thumb gets 44px. Drawn as an
+ * overlay so the reach grows without the row growing with it, and only where
+ * there is a thumb — on a mouse it would steal clicks meant for the end of
+ * the typed text.
+ */
+@media (pointer: coarse) {
+  .clear::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.75rem;
+    height: 2.75rem;
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* The running head of the search: the span of the sub-index the browser
    fetched at the margins, what the field is doing in the middle — the printed
    page's guide words, here also literally true of the machinery. */
 .head {
   margin-top: 0.7rem;
   padding-bottom: 0.45rem;
+}
+
+/* The rule closes the running head against the list beneath it. With no list
+   there is nothing to close, and an idle page would carry a line under a
+   sentence for no reason. */
+.headRuled {
   border-bottom: var(--rule-hair) solid var(--rule);
 }
 
@@ -151,7 +176,9 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
   column-gap: 0.55rem;
-  padding: 0.7rem 0.5rem;
+  /* No inline padding: the row's text, its separator rule and the band that
+     highlights it all stop at the same edge as every other line on the page. */
+  padding: 0.7rem 0;
   text-decoration: none;
   transition: background-color 140ms var(--ease-settle);
 }

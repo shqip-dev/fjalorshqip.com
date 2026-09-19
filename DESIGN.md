@@ -41,6 +41,11 @@ typography:
     fontSize: "1.075rem"
     fontWeight: 400
     lineHeight: 1.62
+  reading:
+    fontFamily: "Alegreya Variable, Alegreya, Georgia, serif"
+    fontSize: "1.075rem"
+    fontWeight: 400
+    lineHeight: 1.7
   small:
     fontFamily: "Alegreya Variable, Alegreya, Georgia, serif"
     fontSize: "0.9rem"
@@ -62,6 +67,12 @@ typography:
     fontSize: "clamp(1.4rem, 5.5vw, 1.9rem)"
     fontWeight: 500
     lineHeight: 1.3
+  day-word:
+    fontFamily: "Alegreya Variable, Alegreya, Georgia, serif"
+    fontSize: "clamp(1.9rem, 4.5vw, 2.6rem)"
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "0.015em"
 rounded:
   none: "0"
 spacing:
@@ -108,7 +119,7 @@ components:
     textColor: "{colors.ink}"
     typography: "{typography.title}"
     rounded: "{rounded.none}"
-    padding: "0.7rem 0.5rem"
+    padding: "0.7rem 0"
   result-row-active:
     backgroundColor: "{colors.stock-sunk}"
     textColor: "{colors.cloth}"
@@ -132,6 +143,18 @@ components:
   cross-reference:
     textColor: "{colors.cloth}"
     typography: "{typography.label}"
+  day-word-head:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-muted}"
+    typography: "{typography.label}"
+    rounded: "{rounded.none}"
+    padding: "0 0 0.45rem"
+  day-word-term:
+    backgroundColor: "transparent"
+    textColor: "{colors.cloth}"
+    typography: "{typography.day-word}"
+    rounded: "{rounded.none}"
+    padding: "0.35rem 0"
   skip-link-focus:
     backgroundColor: "{colors.cloth}"
     textColor: "{colors.on-cloth}"
@@ -214,7 +237,7 @@ lemma, the marks, the masthead's rule and the ground of the closing block.
   descriptor, status and loader lines, grammatical labels, result gists, idiom titles, placeholder text.
   6.09:1 on stock, 5.58:1 on sunk stock.
 - **Hairline Rule** (`--rule`): Every 1px rule: the guide-word underline, result-row separators, rail
-  leaders, the column rule in a two-column entry, the idiom block's left rule, the rule between
+  leaders, the idiom block's left rule, the rule between
   homograph versions, the loader's closing rule.
 - **Strong Rule** (`--rule-strong`): The resting 3px underline of the search field, link underlines at
   rest on stock, and the scrollbar thumb. Held at 3.35:1 on stock **because** it carries the field's
@@ -237,6 +260,18 @@ at the same weight; the red is what tells a lemma from a heading.
 resting underline, the only boundary in the system a user has to see before interacting, and it is set
 where it is (3.35:1 on stock) to clear the 3:1 a UI boundary owes. Decorative hairlines (`--rule`) are
 exempt; anything that *bounds a control* is not.
+
+**The Resting Affordance Rule.** A link carries its underline at rest, on every ground: guide-rail
+links at 40%-strength `--ink-muted`, colophon links at 45%-strength `--on-cloth`, prose links in full
+`--cloth`, and the day's word at 40%-strength `--cloth`. Hover only resolves that underline to
+`currentColor`; on the day's word the hover step is wrapped in `@media (hover: hover)` so a touch device
+is never left with oxblood as the only signal. Hover is an enhancement, never the affordance — the same
+commitment as "don't signal state with colour alone", read from the other side.
+
+**The Rule-Colours-Are-Not-Ink Rule.** `--rule-strong` and `--rule` draw lines; they never set type.
+`--rule-strong` sits at 3.35:1, correct for a boundary and short of the 4.5:1 text floor, so a label,
+date or caption that reads as apparatus takes `--ink-muted` (6.09:1) instead. The running head over the
+day's word sets both of its halves — the label and the UTC date — in that one colour for this reason.
 
 **The Single Appearance Rule.** This site ships one appearance. `color-scheme: light` is declared and no
 `prefers-color-scheme` query exists in the build; a dark-preference browser renders this exact sheet.
@@ -261,14 +296,22 @@ text rather than being it. `font-synthesis-weight: none` is set, so weights are 
   oxblood when the row is hovered or keyboard-active.
 - **Subhead** (700, 1.22rem, 1.25): Prose-page `h2`, sentence case, balanced wrap, 2.2rem of space above.
   Also the ceiling of the compact search field's clamp.
-- **Body** (400, 1.075rem, 1.62): Senses and definitions, held to the 68ch `--measure`. Prose paragraphs
-  are the same size but not the same block: they span the container and take 1.7 leading (see Layout).
+- **Body** (400, 1.075rem, 1.62): The body size, and the leading for text that does not wrap at column
+  width — the document default and short UI lines.
+- **Reading** (400, 1.075rem, `--leading-read` = 1.7): Every block of long-form text, whatever surface it
+  is on: a sense on a word page, the day's-word sense, prose paragraphs and list items, the not-found
+  note, the idiom lines. Same size and face as Body; the leading is what makes a full-column line
+  readable.
 - **Small** (400, 0.9rem, 1.45): Italic label stacks, result gists, idiom lines, homograph marks — and,
   in the regular upright face, every status sentence: the field's hint, "Po kërkohet…", the no-match and
   error lines, the loader line, and the colophon's static-site and copyright notes.
 - **Label** (Alegreya SC, 400, 0.82rem, +0.06em): Guide words, the running-head rail and its count, the
   masthead descriptor, homograph marks, colophon links, idiom-block titles, cross-references.
 - **Wordmark** (Alegreya SC, 700, 1.32rem, +0.11em, uppercase, oxblood; ink on hover): The masthead only.
+- **Day Word** (700, `clamp(1.9rem, 4.5vw, 2.6rem)`, 1.2, +0.015em, uppercase, oxblood): The home
+  page's idle lemma, and the only link in the system set at headline scale. It shares the `--step-title`
+  step with a prose `h1` and deliberately shares neither its weight nor its colour — it is a word the
+  dictionary defines, so it is cloth at 700.
 - **Field** (500, `clamp(1.4rem, 5.5vw, 1.9rem)`, 1.3): The search input at home scale; the `compact`
   variant on a word page steps down to `clamp(1.05rem, 3.2vw, 1.22rem)` at weight 400.
 
@@ -280,11 +323,25 @@ and every status, hint, pending, no-match, error, loader and colophon-note line 
 therefore set in the regular upright face at `--step-small` with normal tracking. If it has a verb, it
 is not in small caps.
 
-**The No-Hyphenation Rule.** `hyphens: auto` is deliberately absent everywhere, including in justified
-two-column entries. The browser's pattern set breaks Albanian wrongly (`ko-ckë` for `koc-kë`) and varies
-by engine; a bad break inside a dictionary *of that language* teaches the error. `text-align: justify`
-is kept on the two-column long-entry layout — the one page the book itself justified — because narrow
-measures need it and the ragged right of a 2.5rem-gapped column looks broken.
+**The One Leading Rule.** Text that wraps at column width is led at `--leading-read` (1.7), and it does
+not matter what the text *is*. A definition, a paragraph of prose, an idiom line and the not-found note
+are the same object at this width and take the same rhythm; 1.62 stays for text that does not wrap
+there. The build previously ran prose at 1.7 and definitions at 1.62 at the same size, and — once the
+caps came off — at the same width, which is two rhythms for one object. The rule has **no exception**:
+the one that existed, a sense returning to 1.62 inside the two-column mode for long entries, went when
+the two-column mode did. Every sense on every entry is led at 1.7.
+
+**The No-Hyphenation Rule.** `hyphens: auto` is deliberately absent everywhere, and a grep for
+`hyphens` returns nothing. The browser's pattern set breaks Albanian wrongly (`ko-ckë` for `koc-kë`) and
+varies by engine; a bad break inside a dictionary *of that language* teaches the error.
+
+**The Ragged Right Rule.** Every line in the build is set ragged right; `text-align: justify` appears
+nowhere. This is a reversal, and the reasoning is worth keeping: justification was argued for on the
+long-entry layout as the visible part of the printed-page claim, and it was kept while senses sat in
+~430px columns, which is the measure a flush edge needs. When the columns went and the senses opened to
+the full 896px, the case went with them — justifying a 98-character line with no hyphenation available
+opens rivers. Justification was tried and defended here, not overlooked; it is out because the measure
+changed under it.
 
 **The Tabular Numbers Rule.** Sense numbers are set `font-variant-numeric: tabular-nums lining-nums` in
 a fixed 1.6rem right-aligned column, so the sense text hangs on one axis from 1. through 36.
@@ -294,24 +351,20 @@ serif. There is no monospace face in this system.
 
 ## Layout
 
-One column, no grid — and, since the prose change, two reading widths inside it. `.container` is
-`min(100% - 2×gutter, 56rem)` centred, with the gutter itself
-fluid (`clamp(1.25rem, 5vw, 2.5rem)`). The colophon's cloth ground is the one element that breaks the
-container: the colour runs full-bleed while its contents stay on the same 56rem column as everything
-above.
+One column, no grid, and one width inside it. `.container` is `min(100% - 2×gutter, 56rem)` centred,
+with the gutter itself fluid (`clamp(1.25rem, 5vw, 2.5rem)`). The colophon's cloth ground is the one
+element that breaks the container: the colour runs full-bleed while its contents stay on the same 56rem
+column as everything above.
 
-**The two page types measure differently, on purpose.** Both span their structure across the full
-container, and there they agree: 896px of span at the 56rem container on a word page and on a prose
-page alike. Below the structure they diverge. A word page holds its sense list to the 68ch `--measure`
-— 623px, 68 characters, 1.62 leading. A prose page holds nothing back: `.prose h1`, `.prose h2`,
-`.prose p` and `.prose li` all run the full 896px, which is **98 characters** to the line, and the
-paragraphs open to **1.7** leading to carry it. That is the user's explicit choice — they asked for the
-Rreth page's text to sit on the same edge as its heading — and the line-length cost has been raised
-with them separately. It is recorded here as a stated tension, not as a target to copy blindly.
-
-`--measure` (68ch) still exists and still governs everything it governed before except prose: the sense
-list on a word page and the `.notfound` block. Search results are not measured; they are held by the
-container like the rest of the search column.
+**There is no measure token.** `--measure` was deleted and a repo-wide grep for `var(--measure)` returns
+nothing; every cap it held — the sense list on a word page, the day's-word sense, the `.notfound` block
+— is gone, and the prose page had already lost its own in an earlier round. Measured at a 1440 viewport
+against the container, every surface starts and ends on the same edge: container 0/896/0, search input
+0/896/0, status line 0/896/0, result headword and result gist 0/·/0 and 0/896/0, word-page headword
+0/896/0, word-page sense 0/896/0, day's-word sense 0/896/0, prose paragraph 0/896/0. A line of text is
+**98 characters** at that width, and `--leading-read` (1.7) is what carries it — the leading is the
+answer to the length, not a narrower box. This is the user's decision, stated plainly: the width of a
+definition is the width of its container, on a word page and on the day's word alike.
 
 Vertical rhythm is a small set of reused steps rather than a numeric scale:
 `clamp(1.75rem, 6vw, 3rem)` opens every major block (entry, not-found, loader, prose), 1.5rem separates
@@ -321,18 +374,42 @@ centre; a word page steps that down to `clamp(1.4rem, 4vh, 2.4rem)` so the entry
 `clamp(3rem, 10vw, 5.5rem)` of clearance above the colophon, and the body is a column flex with main
 flexed so the cloth block always closes the viewport.
 
-Responsive behaviour is two breakpoints and both are content-driven: below 30rem the rail's middle count
-is dropped and the leader closes to a single uninterrupted rule; at and above 60rem a long entry's sense
-list becomes two columns with a 2.5rem gap and a hairline column rule. Nothing reflows into a drawer, a
-modal or a hamburger — the field is the navigation at every width.
+Responsive behaviour is **one** breakpoint and it is content-driven: below 30rem the rail's middle
+count is dropped and the leader closes to a single uninterrupted rule. Nothing else changes with width —
+the type clamps carry the rest, and a 36-sense entry is one continuous column at every size. Nothing
+reflows into a drawer, a modal or a hamburger — the field is the navigation at every width.
 
 ### Named Rules
-**The Two Measures Rule.** This system has two reading widths and they are not reconciled. A *defined
-word* is read at the 68ch `--measure` at 1.62 leading; a *page of prose* is read at the full container,
-98 characters at 1.7 leading, because the user asked for heading and text on one edge. Structure — the
-h1, its 3px rule, the guide rail — spans the container on both. When you add a surface, decide which of
-the two it is and take that page's whole behaviour, measure and leading together; do not invent a third
-width and do not quietly re-cap the prose page.
+**The One Column Rule.** The container is the measure. Structure and text share one edge on every
+surface — headword, rule, guide rail, sense, paragraph, result row, status line — and nothing inside the
+column is narrower than the column. Do not add a `max-width` to a block of text, and do not inset a row
+with inline padding: both produce the same fault, a line that stops short of the rules above it. When a
+line at 98 characters feels long, the answer is leading (`--leading-read`), not a second width. The only
+rule is unconditional: no block of text is narrowed and none is split. A ≥60rem two-column mode for
+entries of six senses or more used to be the exception; it was removed after the user hit `/f/unë`,
+where one word carries two entries — a 2-sense entry and a 9-sense entry — and the threshold rendered
+them as two different layouts, ragged single column above justified double column, inside one word.
+A rule that splits one object by a count of its parts is what that looked like.
+
+**The Sibling-Island Flag Rule.** Islands coordinate through the document element, not through props.
+`SearchBar` writes `document.documentElement.dataset.searching`; the day's word answers in its own
+stylesheet with `:global(:root[data-searching='true']) .wordofday { display: none }`. The two have no
+shared parent — Astro mounts them as separate islands — and the system does not invent one by lifting
+state. The same channel carries a second thing in the build: `src/lib/analytics.ts` keeps the visit
+token on `document`, so the field and the day's word report against one visit without a shared ancestor
+either. A new surface that must react to another island's state reads a `data-` flag on `:root` and
+hides, shifts or recolours itself; it does not acquire a wrapper component.
+
+**The Thumb Target Rule.** A target a thumb has to hit clears 44px, and the build reaches it two ways.
+A link that opens an entry grows by its own padding: a result row is 48px (0.7rem of block padding under
+a 1.3rem/1.25 headword), the day's word is 48px at 320–390, 53px at 768 and 61px at desktop (0.35rem of
+block padding under the `--step-title` step). A control whose *glyph* must stay small grows by an
+overlay instead: the field's clear button keeps its 1.9rem box (1.6rem in the compact variant) and adds
+a centred, transparent `::after` of 2.75rem inside `@media (pointer: coarse)` — glyph 30px, target 44px
+— so the reach grows without the row growing with it. The overlay is deliberately absent on a fine
+pointer, where a 44px box would swallow clicks meant for the end of the typed text. Read the target, not
+the declared width: a small `width`/`height` on a control is not by itself a finding until you have
+looked for the overlay.
 
 ## Elevation & Depth
 
@@ -344,7 +421,7 @@ change of ground is already the strongest separation in the system.
 
 ### Rule Weight Vocabulary
 - **Hairline** (`1px solid var(--rule)`): Separation without hierarchy — result rows, the guide-word
-  underline, rail leaders, column rules, the idiom block's left rule, the rule between homograph
+  underline, rail leaders, the idiom block's left rule, the rule between homograph
   versions, the loader's closing rule.
 - **Bound** (`2px solid var(--cloth)` / `2px solid var(--rule-strong)`): The limits of a region or a
   control — the masthead's bottom edge in cloth; the compact search field's underline on a word page.
@@ -391,8 +468,10 @@ scoped styles do not reach.
   and 0.3rem of padding above it.
 - **Focus:** The underline turns oxblood over 160ms; the caret is already oxblood. The input's own
   outline is suppressed because the rule *is* the focus indicator.
-- **Clear:** A 1.9rem square hit area holding a 0.95rem inline SVG cross in muted ink, going oxblood on
-  hover; it appears only when the field has content.
+- **Clear:** A 1.9rem square box holding a 0.95rem inline SVG cross in muted ink, going oxblood on
+  hover; it appears only when the field has content. On a coarse pointer a transparent 2.75rem `::after`
+  centred on that box carries the target to 44px without changing anything visible or moving the row —
+  the declared 1.9rem (1.6rem compact) is the glyph, not the target.
 - **Status line:** Every non-result state — the "write without ë and ç" hint, "Po kërkohet…", the
   three-letter minimum, the no-match line, the index-read error — is a sentence in the regular face at
   `--step-small`, muted ink, on a reserved 1.5em line so nothing below it jumps.
@@ -410,7 +489,11 @@ neighbours; the end that *is* the current word is told apart by having no underl
 ### Result Row
 Baseline grid of headword plus italic label stack, with a truncated one-line gist beneath. Separated by
 hairlines, never boxed. Hover and keyboard-active share one treatment: a `--stock-sunk` wash plus the
-headword turning oxblood.
+headword turning oxblood. **The row has no inline padding** (`0.7rem 0`): its text, its separator rule
+and the wash that highlights it all stop at the column edge, measured 0/0 on all three. A padded row
+insets its headword 8px from the edge every other line on the page starts at; a negative margin to keep
+the wash padded was tried and rejected, because it made the band wider than the rules above and below
+it. The block padding stays — it is what carries the row to 48px.
 
 **Motion is scripted, not declarative.** A layout effect in `SearchBar.tsx` runs a FLIP pass over the
 list before paint: a row that survives a keystroke keeps its DOM node (its key is the entry, not the
@@ -426,9 +509,38 @@ The headword sets at display scale in oxblood at weight 600 — the lemma, in th
 the first homograph version is closed above by a 3px ink rule and each subsequent version by a hairline.
 Each version head carries a small-caps Roman-numeral homograph mark in oxblood beside its italic label
 stack. Senses are a counter-reset list with tabular numbers hanging in a 1.6rem column; a single-sense
-entry drops the number and the indent entirely. Long entries go two-column with a hairline column rule
-at 60rem. The idiom block sits below the senses behind a hairline left rule under a small-caps
-"Shprehje" title. Cross-references parsed from `shih te BËJ` render as small-caps oxblood links.
+entry drops the number and the indent entirely. Senses run the full column at `--leading-read`, ragged
+right, at every width and every length — the 36-sense entry at `/f/bëhem` is one continuous column, and
+the two entries under `/f/unë` are set identically. The idiom block sits below the senses behind a hairline left rule under a small-caps
+"Shprehje" title, its lines at `--step-small` and `--leading-read` — it was the tightest leading on the
+page (1.5) on what is now its longest line, ~118 characters at 14.4px. Cross-references parsed from `shih te BËJ` render as small-caps oxblood links.
+
+### Fjala e Ditës (signature)
+The home page's idle state, and the one place the site speaks before it is asked anything. It is **set as
+a small entry, not a card** — no border, no ground, no radius — using the entry's own parts in the
+entry's own order: a small-caps running head (the label at the left margin, the date at the right,
+closed by a hairline, both halves in `--ink-muted` at 6.09:1); then the headword as an oxblood link at
+`--step-title` / 700 with its italic label stack beside it; then the entry's first sense in
+`--ink-muted` at `--leading-read`. **Nothing in the block is measured**: the running head, the headword
+and the sense all run the container's full width — 0/896/0 at a 1440 viewport, the same edge the field
+rule and the hint rule above it stop at, and 20→370 on a phone. The
+link's underline is present at rest at 40%-strength cloth and resolves to `currentColor` on hover inside
+`@media (hover: hover)`; `padding-block: 0.35rem` carries the tap target to 48px at phone widths. The
+headword and its label stack sit 0.7rem apart, not the result row's 0.55rem: a fixed gap beside a 2.6rem
+headword reads about half as wide as it does beside a 1.3rem one, so the step is tuned per scale.
+
+It renders only on `/` — `DynamicEntries` picks it by pathname — and only while the field is empty: the
+moment a query exists, `:root[data-searching='true']` hides it and the results own the column, so the
+day's word steps aside rather than being scrolled past.
+
+The link is instrumented: clicking it fires one `track()` call through `src/lib/analytics.ts` before the
+navigation completes. That call is wrapped so a blocked or absent Umami cannot take the page down, and
+it changes nothing visual — no pixel of this component depends on analytics loading.
+
+The word and its date are both chosen from **UTC**, so every reader worldwide sees one word at one time
+without a daily build. The cost is recorded in the source: near midnight the date label can name a day
+the reader's own clock has left. That was accepted over the alternative of a label disagreeing with the
+word beneath it.
 
 ### Not-Found / Empty / Loading
 All three are set exactly where a real entry sets its parts, so the page stays inside the book: the
@@ -462,15 +574,26 @@ cloth chip: oxblood ground, `--on-cloth` text, 0.6rem/1rem padding, square.
   links, homograph marks, idiom titles, cross-references.
 - **Do** set every sentence — hints, status, pending, no-match, errors, the loader, colophon notes — in
   the regular upright face at `--step-small` with normal tracking.
-- **Do** span structure across the container on both page types (896px at the 56rem container), and
-  then follow the page: a word page's sense list and the `.notfound` block are capped at the 68ch
-  `--measure` (623px, 1.62 leading); a prose page is not capped at all and runs the full 896px at 1.7
-  leading. Don't split the difference on a new surface — pick the page type it belongs to.
+- **Do** run structure *and* text to the container edge on every surface (896px at the 56rem
+  container) — headword, rule, guide rail, sense, paragraph, result row, status line all start and end
+  on one edge.
+- **Do** lead every block that wraps at column width with `--leading-read` (1.7) — senses, prose
+  paragraphs and list items, the day's-word sense, the not-found note, idiom lines — and keep 1.62 for
+  text that does not wrap there.
 - **Do** keep `--rule-strong` at or above 3:1 on stock (it measures 3.35:1); it is the field's resting
   underline.
 - **Do** keep every text/background pair at or above 4.5:1 — ink 13.1:1, muted ink 6.09:1 and cloth
   9.09:1 on stock; `--on-cloth` 9.64:1 and `--on-cloth-muted` 6.26:1 on cloth — and make every state
   legible without relying on colour alone.
+- **Do** give every link its underline at rest and let hover only resolve it to `currentColor` — and
+  gate the hover step behind `@media (hover: hover)` when it is the only state change on the element.
+- **Do** give a thumb 44px: pad an entry-opening link until it reaches it (result row 48px, the day's
+  word 48–61px), or, where the glyph must stay small, add a centred transparent `::after` of 2.75rem
+  under `@media (pointer: coarse)` the way the field's clear button does.
+- **Do** set apparatus text — labels, dates, captions — in `--ink-muted` (6.09:1). `--rule-strong` is a
+  line colour at 3.35:1 and is never type.
+- **Do** coordinate sibling islands through a `data-` flag on `:root` read from the consuming
+  stylesheet, the way `data-searching` hides the day's word while a query exists.
 - **Do** use tabular lining figures for any number that stacks vertically.
 - **Do** animate list changes with a measured FLIP pass on real DOM nodes — survivors move, entrants
   fade in, leavers hold their slot and collapse — and skip the whole pass under
@@ -491,14 +614,31 @@ cloth chip: oxblood ground, `--on-cloth` text, 0.6rem/1rem padding, square.
 - **Don't** put `--ink`, `--ink-muted` or `--rule-strong` on the cloth ground, or `--on-cloth` /
   `--on-cloth-muted` on stock. Each pair belongs to one ground.
 - **Don't** enable `hyphens: auto` — the engine hyphenates Albanian wrongly, and this is a dictionary of
-  Albanian. Justification in two-column long entries is allowed and intended.
+  Albanian.
+- **Don't** justify text. The build is ragged right throughout; justification was tried on the old
+  narrow-column entry layout and dropped when the measure widened, because a 98-character line with no
+  hyphenation available rivers.
+- **Don't** split a text block into columns, and don't branch a layout on a count of an entry's parts.
+  One word can hold two entries of different lengths, and a threshold sets them in two different
+  layouts side by side.
 - **Don't** add a `prefers-color-scheme: dark` block or a second palette. The site is light-only by
   decision.
 - **Don't** draw a four-sided border, a card or a rounded well around the search field or a result row.
 - **Don't** add an icon font, an emoji or a third typeface. Icons are inline SVG geometry at
   currentColor.
 - **Don't** put a kicker or eyebrow label above a title — the not-found page comments this refusal
-  explicitly and sets its short verdict where an entry sets its label stack instead.
+  explicitly and sets its short verdict where an entry sets its label stack instead. A *running head* is
+  a different object and the book's own: a small-caps label with its counterpart at the opposite margin,
+  closed by a hairline, as the guide rail and the day's word both set it.
+- **Don't** let hover be the thing that tells a reader something is a link, and don't ship a `:hover`
+  rule as the only state an element has.
+- **Don't** set text in `--rule-strong`. It measures 3.35:1 — a boundary colour, below the 4.5:1 floor
+  every text/background pair in this system holds.
+- **Don't** re-introduce a `max-width` on a block of text, and don't inset a row from the column edge
+  with inline padding. Both make a line stop short of the rules above it. A long line is answered with
+  leading, not with a second width.
+- **Don't** wrap a new home-page block in a card to separate it from the one above. Separation is a
+  small-caps running head over a hairline, the same parts an entry already uses.
 - **Don't** signal state with colour alone, and don't convey the current-page rail end by fading it.
 - **Don't** reach for an animation library or `@keyframes` for list motion; the system's motion is
   measured in a layout effect and played through the Web Animations API.

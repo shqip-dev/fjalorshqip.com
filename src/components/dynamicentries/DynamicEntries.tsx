@@ -1,5 +1,6 @@
 import NotFound from '../notfound/NotFound';
 import EntriesLoader from '../entriesloader/EntriesLoader';
+import WordOfDay from '../wordofday/WordOfDay';
 
 const WORD_PATH_PREFIX = '/f/';
 const SLUG_PATTERN = /^[a-z-]+$/;
@@ -9,7 +10,13 @@ const DynamicEntries = () => {
   const homepage = isHomepage(path);
   const word = requestedWord(path);
 
-  return homepage ? <></> : word ? <EntriesLoader slug={word} /> : <NotFound />;
+  return homepage ? (
+    <WordOfDay />
+  ) : word ? (
+    <EntriesLoader slug={word} />
+  ) : (
+    <NotFound />
+  );
 };
 
 const isHomepage = (path: string) => {

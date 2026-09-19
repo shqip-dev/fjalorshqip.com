@@ -1,0 +1,68 @@
+/* Set as a small entry, in the same parts and the same order as a real one. */
+
+.wordofday {
+  margin-top: clamp(2.5rem, 9vh, 4.5rem);
+}
+
+/* The moment a query exists the results own the column; the day's word steps
+   aside rather than being scrolled past. */
+:global(:root[data-searching='true']) .wordofday {
+  display: none;
+}
+
+.label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.date {
+  color: var(--ink-muted);
+}
+
+.entry {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 0.7rem;
+  margin-top: 0.45rem;
+  padding-block: 0.35rem;
+  text-decoration: none;
+}
+
+.term {
+  font-size: var(--step-title);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 40%, transparent);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 140ms var(--ease-settle);
+}
+
+@media (hover: hover) {
+  .entry:hover .term {
+    text-decoration-color: currentColor;
+  }
+}
+
+.attributes {
+  font-style: italic;
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+}
+
+.gist {
+  margin-top: 0.35rem;
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}

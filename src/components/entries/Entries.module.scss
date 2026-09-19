@@ -75,7 +75,6 @@
 
 .senses {
   counter-reset: sense;
-  max-width: var(--measure);
 }
 
 .sense {
@@ -83,6 +82,7 @@
   position: relative;
   padding-left: 2.1rem;
   margin-top: 0.85rem;
+  line-height: var(--leading-read);
   break-inside: avoid;
 }
 
@@ -106,26 +106,6 @@
   content: none;
 }
 
-/* Thirty-six senses is a real entry in this dictionary, and the book set that
-   page in two narrow columns for the same reason. */
-@media (min-width: 60rem) {
-  .columns {
-    column-count: 2;
-    column-gap: 2.5rem;
-    column-rule: var(--rule-hair) solid var(--rule);
-    max-width: none;
-    /* The one page the book itself justified: a long entry in narrow measure.
-       No `hyphens: auto` — the engine's pattern set breaks Albanian wrongly
-       (`ko-ckë` for `koc-kë`) and varies by browser, and a bad break inside a
-       dictionary of this language teaches the error. */
-    text-align: justify;
-  }
-
-  .columns .sense:first-child {
-    margin-top: 0;
-  }
-}
-
 .ref {
   font-weight: 500;
   color: var(--cloth);
@@ -147,6 +127,6 @@
 
 .idiom {
   font-size: var(--step-small);
-  line-height: 1.5;
+  line-height: var(--leading-read);
   margin-top: 0.4rem;
 }

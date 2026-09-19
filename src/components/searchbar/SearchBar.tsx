@@ -6,17 +6,11 @@ import { debounce, intersectBy } from '../../lib/utils';
 import { getGist } from '../../lib/entryFormat';
 import leven from 'leven';
 import { SEARCH_QUERY_PARAM } from '../../lib/search';
+import { track } from '../../lib/analytics';
 
 const MAX_SUGGESTIONS = 10;
 const MAX_CANDIDATES = 800;
 const PREFIX_LENGTH = 3;
-
-declare global {
-  interface Document {
-    __fjalorshqip__: string;
-  }
-  const umami: any;
-}
 
 type Status = 'idle' | 'pending' | 'ok' | 'none' | 'error';
 
@@ -63,20 +57,8 @@ const fetchSubIndex = async (prefix: string) => {
   }
 };
 
-const random_string = () => {
-  return Math.random().toString(36).substring(2, 8);
-}
-
-const push_query = async (query: string) => {
-  try {
-    if (!document.__fjalorshqip__) {
-      document.__fjalorshqip__ = random_string();
-    }
-
-    umami.track('search_v2', {q: query, rs: document.__fjalorshqip__});
-  } catch (e) {
-    console.error('unexpected error', e);
-  }
+const push_query = (query: string) => {
+  track('search_v2', { q: query });
 };
 
 /*
@@ -379,6 +361,12 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
     handleQueryChange(query);
   }, [query]);
 
+  // Searching and the day's word are two states of one column, and the islands
+  // that render them are siblings; the document carries the flag between them.
+  useEffect(() => {
+    document.documentElement.dataset.searching = query !== '' ? 'true' : 'false';
+  }, [query]);
+
   // `/` puts the caret in the field from anywhere on the page, the way every
   // reference tool its readers already use behaves.
   useEffect(() => {
@@ -501,7 +489,12 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
         )}
       </div>
 
-      <div className={styles.head} aria-live="polite">
+      <div
+        className={`${styles.head} ${
+          status === 'ok' && span ? styles.headRuled : ''
+        }`}
+        aria-live="polite"
+      >
         {status === 'ok' && span ? (
           <p className={`${styles.rail} sc`}>
             <span className={styles.railEnd}>{span[0]}</span>

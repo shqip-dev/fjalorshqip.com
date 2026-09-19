@@ -7,8 +7,6 @@ import {
 } from '../../lib/entryFormat';
 import styles from './Entries.module.scss';
 
-const MANY_SENSES = 6;
-
 interface EntriesProps {
   entries: Entry[];
   prev?: Neighbour | null;
@@ -85,13 +83,9 @@ const Entries = ({ entries = [], prev, next }: EntriesProps) => {
             </div>
 
             <ol
-              className={[
-                styles.senses,
-                senses.length === 1 ? styles.single : '',
-                senses.length >= MANY_SENSES ? styles.columns : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
+              className={`${styles.senses} ${
+                senses.length === 1 ? styles.single : ''
+              }`}
             >
               {senses.map((sense, senseIdx) => (
                 <li key={`sense-${senseIdx}`} className={styles.sense}>

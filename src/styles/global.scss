@@ -27,7 +27,6 @@
   --on-cloth: #f0eae0;
   --on-cloth-muted: #cdbcae;
 
-  --measure: 68ch;
   --gutter: clamp(1.25rem, 5vw, 2.5rem);
   --rule-hair: 1px;
 
@@ -37,6 +36,10 @@
   --step-lead: 1.3rem;
   --step-title: clamp(1.9rem, 4.5vw, 2.6rem);
   --step-display: clamp(2.4rem, 9vw, 4rem);
+
+  /* Long-form text runs the full column, so it is led like prose wherever it
+     appears — a definition and a paragraph are the same object at this width. */
+  --leading-read: 1.7;
 
   --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -259,7 +262,7 @@ button {
 .prose p,
 .prose li {
   margin-top: 0.85rem;
-  line-height: 1.7;
+  line-height: var(--leading-read);
 }
 
 .prose a {

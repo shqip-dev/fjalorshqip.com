@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-19T00:00:00Z",
+  "generatedAt": "2026-09-19T16:00:00Z",
   "title": "Design System: Fjalori 1980",
   "extensions": {
     "colorMeta": {
@@ -163,9 +163,17 @@
         "displayName": "Prose Subhead",
         "purpose": "Prose-page h2. Sentence case, balanced wrap, 2.2rem above, spanning the container like the rest of the prose page. Also the ceiling of the compact search field's clamp."
       },
+      "day-word": {
+        "displayName": "Day Word",
+        "purpose": "The home page's idle lemma and the only link in the system set at headline scale (--step-title). Uppercase oxblood at weight 700, underlined at rest in 40%-strength cloth, resolving to currentColor on hover inside @media (hover: hover). Shares the step with a prose h1 and deliberately shares neither its weight nor its colour."
+      },
       "body": {
         "displayName": "Body",
-        "purpose": "Senses and definitions, held to the 68ch --measure at 1.62 leading. Prose paragraphs are the same size but not the same block: they span the full container (98 characters) at 1.7 leading."
+        "purpose": "The body size, and the leading (1.62) for text that does not wrap at column width — the document default and short UI lines."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Every block of long-form text, whatever surface it is on: a sense on a word page, the day's-word sense, prose paragraphs and list items, the not-found note, the idiom lines. Same size and face as Body at --leading-read (1.7); the leading is what makes a 98-character line readable."
       },
       "small": {
         "displayName": "Small Text",
@@ -213,20 +221,16 @@
         "value": "30rem"
       },
       {
-        "name": "entry-columns",
-        "value": "60rem"
-      },
-      {
         "name": "container-max",
         "value": "56rem"
       },
       {
-        "name": "measure",
-        "value": "68ch (623px at container width) — the sense list and .notfound only; prose is uncapped at 896px"
+        "name": "tap-floor",
+        "value": "44px — every target a thumb hits: result row 48px, the day's word 48px at 320–390, 53px at 768, 61px at desktop, and the field's clear button 44px via a 2.75rem transparent ::after under @media (pointer: coarse) over a 30px glyph"
       },
       {
-        "name": "prose-measure",
-        "value": "none — prose runs the full 896px container, 98 characters at 1.7 leading"
+        "name": "column",
+        "value": "56rem container (896px at a 1440 viewport) — the one width; --measure was deleted and nothing inside the column is narrower than the column"
       }
     ]
   },
@@ -243,9 +247,9 @@
       "name": "Search Field",
       "kind": "input",
       "refersTo": "search-field",
-      "description": "The primary action on every page: a ruled line, not a box. The 3px underline turns oxblood on focus and is the focus indicator. The line under it is a sentence in the regular face, never small caps.",
+      "description": "The primary action on every page: a ruled line, not a box. The 3px underline turns oxblood on focus and is the focus indicator. The line under it is a sentence in the regular face, never small caps. The clear button's declared 1.9rem is its glyph; a transparent 2.75rem ::after under @media (pointer: coarse) carries its target to 44px.",
       "html": "<div class=\"ds-field-wrap\"><div class=\"ds-field\"><input class=\"ds-field-input\" type=\"search\" placeholder=\"Kërko një fjalë\" value=\"mal\" /><button class=\"ds-field-clear\" aria-label=\"Pastro kërkimin\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M3.5 3.5 L12.5 12.5 M12.5 3.5 L3.5 12.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"square\"/></svg></button></div><p class=\"ds-field-status\">Shkruani pa «ë» dhe «ç» — fjala gjendet njësoj.</p></div>",
-      "css": ".ds-field { display: flex; align-items: center; gap: 0.5rem; border-bottom: 3px solid var(--rule-strong, #837a66); padding-bottom: 0.3rem; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-field:focus-within { border-bottom-color: var(--cloth, #6b1d1f); } .ds-field-input { flex: 1 1 auto; min-width: 0; font-family: 'Alegreya Variable', Georgia, serif; font-size: clamp(1.4rem, 5.5vw, 1.9rem); font-weight: 500; line-height: 1.3; color: var(--ink, #241d17); background: transparent; border: 0; border-radius: 0; padding: 0.1em 0; caret-color: var(--cloth, #6b1d1f); } .ds-field-input:focus { outline: none; } .ds-field-input::placeholder { color: var(--ink-muted, #5c5145); opacity: 1; } .ds-field-clear { flex: 0 0 auto; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ink-muted, #5c5145); transition: color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-field-clear svg { width: 0.95rem; height: 0.95rem; } .ds-field-clear:hover { color: var(--cloth, #6b1d1f); } .ds-field-clear:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; } .ds-field-status { margin: 0.7rem 0 0; min-height: 1.5em; font-family: 'Alegreya Variable', Georgia, serif; font-size: 0.9rem; line-height: 1.5; letter-spacing: normal; color: var(--ink-muted, #5c5145); }"
+      "css": ".ds-field { display: flex; align-items: center; gap: 0.5rem; border-bottom: 3px solid var(--rule-strong, #837a66); padding-bottom: 0.3rem; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-field:focus-within { border-bottom-color: var(--cloth, #6b1d1f); } .ds-field-input { flex: 1 1 auto; min-width: 0; font-family: 'Alegreya Variable', Georgia, serif; font-size: clamp(1.4rem, 5.5vw, 1.9rem); font-weight: 500; line-height: 1.3; color: var(--ink, #241d17); background: transparent; border: 0; border-radius: 0; padding: 0.1em 0; caret-color: var(--cloth, #6b1d1f); } .ds-field-input:focus { outline: none; } .ds-field-input::placeholder { color: var(--ink-muted, #5c5145); opacity: 1; } .ds-field-clear { position: relative; flex: 0 0 auto; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ink-muted, #5c5145); transition: color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-field-clear svg { width: 0.95rem; height: 0.95rem; } .ds-field-clear:hover { color: var(--cloth, #6b1d1f); } .ds-field-clear:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; } @media (pointer: coarse) { .ds-field-clear::after { content: ''; position: absolute; top: 50%; left: 50%; width: 2.75rem; height: 2.75rem; transform: translate(-50%, -50%); } } .ds-field-status { margin: 0.7rem 0 0; min-height: 1.5em; font-family: 'Alegreya Variable', Georgia, serif; font-size: 0.9rem; line-height: 1.5; letter-spacing: normal; color: var(--ink-muted, #5c5145); }"
     },
     {
       "name": "Running-Head Rail",
@@ -259,17 +263,17 @@
       "name": "Result Row",
       "kind": "card",
       "refersTo": "result-row",
-      "description": "A search suggestion: headword, italic label stack, one truncated gist line. Hairline-separated, never boxed; hover and keyboard-active share one treatment. A row leaving the list keeps its slot (data-leaving=\"true\") while script collapses its height.",
+      "description": "A search suggestion: headword, italic label stack, one truncated gist line. Hairline-separated, never boxed, and with no inline padding (0.7rem 0) so its text, its separator rule and its hover wash all stop at the column edge; hover and keyboard-active share one treatment. A row leaving the list keeps its slot (data-leaving=\"true\") while script collapses its height.",
       "html": "<ul class=\"ds-results\"><li class=\"ds-result\" data-leaving=\"false\"><a class=\"ds-result-link\" href=\"#\"><span class=\"ds-result-term\">MALARIE</span><span class=\"ds-result-attrs\">f. vet. nj. mjek.</span><span class=\"ds-result-gist\">Sëmundje e rëndë që shkaktohet nga parazitë shumë të vegjël…</span></a></li></ul>",
-      "css": ".ds-results { margin: 0; padding: 0; list-style: none; } .ds-result { border-bottom: 1px solid var(--rule, #c4bba7); } .ds-result[data-leaving='true'] { overflow: hidden; pointer-events: none; } .ds-result-link { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 0.55rem; padding: 0.7rem 0.5rem; text-decoration: none; color: var(--ink, #241d17); font-family: 'Alegreya Variable', Georgia, serif; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-result-term { font-weight: 700; font-size: 1.3rem; line-height: 1.25; text-transform: uppercase; letter-spacing: 0.015em; } .ds-result-attrs { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-result-gist { grid-column: 1 / -1; margin-top: 0.15rem; font-size: 0.9rem; line-height: 1.45; color: var(--ink-muted, #5c5145); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-result-link:hover { background-color: var(--stock-sunk, #e0dbcc); } .ds-result-link:hover .ds-result-term { color: var(--cloth, #6b1d1f); } .ds-result-link:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; }"
+      "css": ".ds-results { margin: 0; padding: 0; list-style: none; } .ds-result { border-bottom: 1px solid var(--rule, #c4bba7); } .ds-result[data-leaving='true'] { overflow: hidden; pointer-events: none; } .ds-result-link { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 0.55rem; padding: 0.7rem 0; text-decoration: none; color: var(--ink, #241d17); font-family: 'Alegreya Variable', Georgia, serif; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-result-term { font-weight: 700; font-size: 1.3rem; line-height: 1.25; text-transform: uppercase; letter-spacing: 0.015em; } .ds-result-attrs { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-result-gist { grid-column: 1 / -1; margin-top: 0.15rem; font-size: 0.9rem; line-height: 1.45; color: var(--ink-muted, #5c5145); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-result-link:hover { background-color: var(--stock-sunk, #e0dbcc); } .ds-result-link:hover .ds-result-term { color: var(--cloth, #6b1d1f); } .ds-result-link:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; }"
     },
     {
       "name": "Entry",
       "kind": "custom",
       "refersTo": "headword",
-      "description": "The entry as the book sets it: the lemma in oxblood at weight 600 over a 3px ink rule, homograph mark and italic label stack, senses numbered with tabular figures hanging in a fixed column.",
+      "description": "The entry as the book sets it: the lemma in oxblood at weight 600 over a 3px ink rule, homograph mark and italic label stack, senses numbered with tabular figures hanging in a fixed column, running the full width of the column at --leading-read, ragged right, at every width and every length.",
       "html": "<article class=\"ds-entry\"><h1 class=\"ds-entry-headword\">ACAR</h1><section class=\"ds-entry-version\"><div class=\"ds-entry-head\"><span class=\"ds-entry-mark\">I</span><span class=\"ds-entry-labels\">m.</span></div><ol class=\"ds-entry-senses\"><li class=\"ds-entry-sense\">Të ftohtë i madh, i thatë e me ngricë; fraq, cingërimë, thëllim.</li><li class=\"ds-entry-sense\">fig. Ashpërsi, vrazhdësi; zemërim. <a class=\"ds-entry-ref\" href=\"#\">BËJ</a></li></ol></section></article>",
-      "css": ".ds-entry { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-entry-headword { margin: 0; font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; text-wrap: balance; overflow-wrap: break-word; color: var(--cloth, #6b1d1f); } .ds-entry-version { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 3px solid var(--ink, #241d17); } .ds-entry-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 0.6rem; margin-bottom: 0.7rem; min-height: 1em; } .ds-entry-mark { font-family: 'Alegreya SC', Georgia, serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.12em; color: var(--cloth, #6b1d1f); } .ds-entry-labels { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); word-spacing: 0.12em; } .ds-entry-senses { counter-reset: sense; max-width: 68ch; margin: 0; padding: 0; list-style: none; } .ds-entry-sense { counter-increment: sense; position: relative; padding-left: 2.1rem; margin-top: 0.85rem; line-height: 1.62; break-inside: avoid; } .ds-entry-sense::before { content: counter(sense) '.'; position: absolute; left: 0; top: 0; width: 1.6rem; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; color: var(--cloth, #6b1d1f); } .ds-entry-ref { font-family: 'Alegreya SC', Georgia, serif; font-weight: 500; letter-spacing: 0.06em; color: var(--cloth, #6b1d1f); text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+      "css": ".ds-entry { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-entry-headword { margin: 0; font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; text-wrap: balance; overflow-wrap: break-word; color: var(--cloth, #6b1d1f); } .ds-entry-version { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 3px solid var(--ink, #241d17); } .ds-entry-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 0.6rem; margin-bottom: 0.7rem; min-height: 1em; } .ds-entry-mark { font-family: 'Alegreya SC', Georgia, serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.12em; color: var(--cloth, #6b1d1f); } .ds-entry-labels { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); word-spacing: 0.12em; } .ds-entry-senses { counter-reset: sense; margin: 0; padding: 0; list-style: none; } .ds-entry-sense { counter-increment: sense; position: relative; padding-left: 2.1rem; margin-top: 0.85rem; line-height: var(--leading-read, 1.7); break-inside: avoid; } .ds-entry-sense::before { content: counter(sense) '.'; position: absolute; left: 0; top: 0; width: 1.6rem; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; color: var(--cloth, #6b1d1f); } .ds-entry-ref { font-family: 'Alegreya SC', Georgia, serif; font-weight: 500; letter-spacing: 0.06em; color: var(--cloth, #6b1d1f); text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
     },
     {
       "name": "Prose Page Head",
@@ -277,7 +281,7 @@
       "refersTo": "page-title",
       "description": "A page that is not a word: the title stays ink at the same weight a lemma uses, and heading, rule and text all share one edge — the prose page is uncapped, running the full container at 1.7 leading.",
       "html": "<div class=\"ds-prose\"><h1 class=\"ds-prose-title\">Rreth FjalorShqip</h1><h2 class=\"ds-prose-sub\">Pse ekziston ky projekt</h2><p class=\"ds-prose-p\">Si përdorues i faqes fjalorshqip.com, vendosa ta rindërtoj pas skadimit të domain-it. Synimi është që kjo faqe të jetë një burim i hapur (<code class=\"ds-prose-code\">open source</code>).</p></div>",
-      "css": ".ds-prose { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); font-size: 1.075rem; line-height: 1.62; } .ds-prose-title { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.012em; text-transform: uppercase; text-wrap: balance; padding-bottom: 0.5rem; border-bottom: 3px solid var(--ink, #241d17); } .ds-prose-sub { margin: 2.2rem 0 0.3rem; font-size: 1.22rem; font-weight: 700; line-height: 1.25; text-wrap: balance; } .ds-prose-p { margin: 0.85rem 0 0; line-height: 1.7; } .ds-prose-code { font-family: inherit; font-style: italic; letter-spacing: 0.01em; } .ds-prose a { color: inherit; text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+      "css": ".ds-prose { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); font-size: 1.075rem; line-height: 1.62; } .ds-prose-title { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.012em; text-transform: uppercase; text-wrap: balance; padding-bottom: 0.5rem; border-bottom: 3px solid var(--ink, #241d17); } .ds-prose-sub { margin: 2.2rem 0 0.3rem; font-size: 1.22rem; font-weight: 700; line-height: 1.25; text-wrap: balance; } .ds-prose-p { margin: 0.85rem 0 0; line-height: var(--leading-read, 1.7); } .ds-prose-code { font-family: inherit; font-style: italic; letter-spacing: 0.01em; } .ds-prose a { color: inherit; text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
     },
     {
       "name": "Idiom Block",
@@ -285,7 +289,7 @@
       "refersTo": "cross-reference",
       "description": "The entry's `*` idiom block, parsed at render time and set behind a hairline left rule under a small-caps title.",
       "html": "<div class=\"ds-idioms\"><h2 class=\"ds-idioms-title\">Shprehje</h2><ul class=\"ds-idioms-list\"><li class=\"ds-idiom\">E merr me acar.</li><li class=\"ds-idiom\">I hyri acari në shpirt.</li></ul></div>",
-      "css": ".ds-idioms { margin: 0.8rem 0 0.3rem; padding-left: 0.9rem; border-left: 1px solid var(--rule, #c4bba7); font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-idioms-title { margin: 0 0 0.2rem; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em; color: var(--ink-muted, #5c5145); } .ds-idioms-list { margin: 0; padding: 0; list-style: none; } .ds-idiom { font-size: 0.9rem; line-height: 1.5; margin-top: 0.4rem; }"
+      "css": ".ds-idioms { margin: 0.8rem 0 0.3rem; padding-left: 0.9rem; border-left: 1px solid var(--rule, #c4bba7); font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-idioms-title { margin: 0 0 0.2rem; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em; color: var(--ink-muted, #5c5145); } .ds-idioms-list { margin: 0; padding: 0; list-style: none; } .ds-idiom { font-size: 0.9rem; line-height: var(--leading-read, 1.7); margin-top: 0.4rem; }"
     },
     {
       "name": "Colophon",
@@ -296,12 +300,20 @@
       "css": ".ds-colophon { background-color: var(--cloth, #6b1d1f); color: var(--on-cloth, #f0eae0); padding: 1.6rem 2rem 2.4rem; font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; letter-spacing: 0.06em; } .ds-colophon-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.55rem; } .ds-colophon-links a { color: var(--on-cloth, #f0eae0); text-decoration-color: color-mix(in srgb, var(--on-cloth, #f0eae0) 45%, transparent); text-decoration-thickness: from-font; text-underline-offset: 0.18em; transition: text-decoration-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-colophon-links a:hover { text-decoration-color: currentColor; } .ds-colophon :focus-visible, .ds-colophon-links a:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; outline-color: var(--on-cloth, #f0eae0); } .ds-colophon-sep { color: var(--on-cloth-muted, #cdbcae); } .ds-colophon-note { margin: 0.4rem 0 0; font-family: 'Alegreya Variable', Georgia, serif; font-size: 0.9rem; letter-spacing: normal; }"
     },
     {
+      "name": "Fjala e Ditës",
+      "kind": "custom",
+      "refersTo": "day-word-term",
+      "description": "The home page's idle state, set as a small entry rather than a card — no border, no ground, no radius. A small-caps running head (label left, UTC date right, both in --ink-muted, closed by a hairline), the headword as an oxblood link at --step-title/700 with its italic label stack, then the first sense in --ink-muted. Nothing in the block is measured: running head, headword and sense all run the container's full width. It renders only on / and hides itself the moment :root[data-searching='true'] is set by the sibling SearchBar island; clicking it fires one guarded analytics call, which changes nothing visual.",
+      "html": "<section class=\"ds-wod\" aria-labelledby=\"ds-wod-label\"><h2 class=\"ds-wod-head\" id=\"ds-wod-label\"><span>Fjala e ditës</span><span class=\"ds-wod-date\">19 shtator 2026</span></h2><a class=\"ds-wod-link\" href=\"/f/abetare\"><span class=\"ds-wod-term\">ABETARE</span><span class=\"ds-wod-attrs\">f. sh.</span></a><p class=\"ds-wod-gist\">Libër fillestar për të mësuar shkrim e këndim. Abetare e gjuhës shqipe. Abetare për të rritur. Festa e abetares.</p></section>",
+      "css": ".ds-wod { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); font-size: 1.075rem; line-height: 1.62; } .ds-wod-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0 1rem; margin: 0; padding-bottom: 0.45rem; border-bottom: 1px solid var(--rule, #c4bba7); font-family: 'Alegreya SC', Georgia, serif; font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em; color: var(--ink-muted, #5c5145); } .ds-wod-date { color: var(--ink-muted, #5c5145); } .ds-wod-link { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 0.7rem; margin-top: 0.45rem; padding-block: 0.35rem; text-decoration: none; } .ds-wod-term { font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 700; line-height: 1.2; letter-spacing: 0.015em; text-transform: uppercase; color: var(--cloth, #6b1d1f); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--cloth, #6b1d1f) 40%, transparent); text-underline-offset: 0.18em; transition: text-decoration-color 140ms cubic-bezier(0.16,1,0.3,1); } @media (hover: hover) { .ds-wod-link:hover .ds-wod-term { text-decoration-color: currentColor; } } .ds-wod-link:focus-visible { outline: 2px solid var(--cloth, #6b1d1f); outline-offset: 3px; } .ds-wod-attrs { font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-wod-gist { margin: 0.35rem 0 0; line-height: var(--leading-read, 1.7); color: var(--ink-muted, #5c5145); }"
+    },
+    {
       "name": "Not-Found Notice",
       "kind": "custom",
       "refersTo": "headword",
       "description": "The missing-word page, set exactly where a real entry sets its parts so the page stays inside the book — the asked-for word as a lemma in oxblood, no eyebrow, no illustration.",
       "html": "<div class=\"ds-notfound\"><h1 class=\"ds-notfound-title\">ACARUES</h1><p class=\"ds-notfound-labels\">nuk u gjet në fjalor</p><p class=\"ds-notfound-note\">Provoni trajtën e paskajuar të fjalës — kërkimi nuk i njeh format e lakuara. Kthehuni te <a href=\"/\">ballina</a>.</p></div>",
-      "css": ".ds-notfound { max-width: 68ch; font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-notfound-title { margin: 0; padding-bottom: 0.4rem; border-bottom: 3px solid var(--ink, #241d17); font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; overflow-wrap: break-word; color: var(--cloth, #6b1d1f); } .ds-notfound-labels { margin: 0.7rem 0 0; font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-notfound-note { margin: 0.9rem 0 0; line-height: 1.62; color: var(--ink-muted, #5c5145); } .ds-notfound-note a { color: var(--ink, #241d17); text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
+      "css": ".ds-notfound { font-family: 'Alegreya Variable', Georgia, serif; color: var(--ink, #241d17); } .ds-notfound-title { margin: 0; padding-bottom: 0.4rem; border-bottom: 3px solid var(--ink, #241d17); font-size: clamp(2.4rem, 9vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; overflow-wrap: break-word; color: var(--cloth, #6b1d1f); } .ds-notfound-labels { margin: 0.7rem 0 0; font-style: italic; font-size: 0.9rem; color: var(--ink-muted, #5c5145); } .ds-notfound-note { margin: 0.9rem 0 0; line-height: var(--leading-read, 1.7); color: var(--ink-muted, #5c5145); } .ds-notfound-note a { color: var(--ink, #241d17); text-decoration-color: var(--cloth, #6b1d1f); text-underline-offset: 0.18em; }"
     },
     {
       "name": "Skip Link",
@@ -339,6 +351,16 @@
         "section": "colors"
       },
       {
+        "name": "The Resting Affordance Rule",
+        "body": "A link carries its underline at rest, on every ground: guide-rail links at 40%-strength --ink-muted, colophon links at 45%-strength --on-cloth, prose links in full --cloth, and the day's word at 40%-strength --cloth. Hover only resolves that underline to currentColor; on the day's word the hover step is wrapped in @media (hover: hover) so a touch device is never left with oxblood as the only signal. Hover is an enhancement, never the affordance — the same commitment as \"don't signal state with colour alone\", read from the other side.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rule-Colours-Are-Not-Ink Rule",
+        "body": "--rule-strong and --rule draw lines; they never set type. --rule-strong sits at 3.35:1, correct for a boundary and short of the 4.5:1 text floor, so a label, date or caption that reads as apparatus takes --ink-muted (6.09:1) instead. The running head over the day's word sets both of its halves — the label and the UTC date — in that one colour for this reason.",
+        "section": "colors"
+      },
+      {
         "name": "The Single Appearance Rule",
         "body": "This site ships one appearance. color-scheme: light is declared and no prefers-color-scheme query exists in the build; a dark-preference browser renders this exact sheet. Do not add a dark variant to a new surface.",
         "section": "colors"
@@ -349,8 +371,18 @@
         "section": "typography"
       },
       {
+        "name": "The One Leading Rule",
+        "body": "Text that wraps at column width is led at --leading-read (1.7), and it does not matter what the text is. A definition, a paragraph of prose, an idiom line and the not-found note are the same object at this width and take the same rhythm; 1.62 stays for text that does not wrap there. The build previously ran prose at 1.7 and definitions at 1.62 at the same size, and — once the caps came off — at the same width, which is two rhythms for one object. The rule has no exception: the one that existed, a sense returning to 1.62 inside the two-column mode for long entries, went when the two-column mode did. Every sense on every entry is led at 1.7.",
+        "section": "typography"
+      },
+      {
         "name": "The No-Hyphenation Rule",
-        "body": "`hyphens: auto` is deliberately absent everywhere, including in justified two-column entries. The browser's pattern set breaks Albanian wrongly (`ko-ckë` for `koc-kë`) and varies by engine; a bad break inside a dictionary of that language teaches the error. `text-align: justify` is kept on the two-column long-entry layout — the one page the book itself justified — because narrow measures need it and the ragged right of a 2.5rem-gapped column looks broken.",
+        "body": "`hyphens: auto` is deliberately absent everywhere, and a grep for `hyphens` returns nothing. The browser's pattern set breaks Albanian wrongly (`ko-ckë` for `koc-kë`) and varies by engine; a bad break inside a dictionary of that language teaches the error.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ragged Right Rule",
+        "body": "Every line in the build is set ragged right; text-align: justify appears nowhere. This is a reversal, and the reasoning is worth keeping: justification was argued for on the long-entry layout as the visible part of the printed-page claim, and it was kept while senses sat in ~430px columns, which is the measure a flush edge needs. When the columns went and the senses opened to the full 896px, the case went with them — justifying a 98-character line with no hyphenation available opens rivers. Justification was tried and defended here, not overlooked; it is out because the measure changed under it.",
         "section": "typography"
       },
       {
@@ -369,8 +401,18 @@
         "section": "elevation"
       },
       {
-        "name": "The Two Measures Rule",
-        "body": "This system has two reading widths and they are not reconciled. A defined word is read at the 68ch --measure at 1.62 leading; a page of prose is read at the full container, 98 characters at 1.7 leading, because the user asked for heading and text on one edge. Structure — the h1, its 3px rule, the guide rail — spans the container on both. When you add a surface, decide which of the two it is and take that page's whole behaviour, measure and leading together; do not invent a third width and do not quietly re-cap the prose page.",
+        "name": "The One Column Rule",
+        "body": "The container is the measure. Structure and text share one edge on every surface — headword, rule, guide rail, sense, paragraph, result row, status line — and nothing inside the column is narrower than the column. Do not add a max-width to a block of text, and do not inset a row with inline padding: both produce the same fault, a line that stops short of the rules above it. When a line at 98 characters feels long, the answer is leading (--leading-read), not a second width. The rule is unconditional: no block of text is narrowed and none is split. A >=60rem two-column mode for entries of six senses or more used to be the exception; it was removed after the user hit /f/unë, where one word carries two entries — a 2-sense entry and a 9-sense entry — and the threshold rendered them as two different layouts, ragged single column above justified double column, inside one word. A rule that splits one object by a count of its parts is what that looked like.",
+        "section": "layout"
+      },
+      {
+        "name": "The Sibling-Island Flag Rule",
+        "body": "Islands coordinate through the document element, not through props. SearchBar writes document.documentElement.dataset.searching; the day's word answers in its own stylesheet with :global(:root[data-searching='true']) .wordofday { display: none }. The two have no shared parent — Astro mounts them as separate islands — and the system does not invent one by lifting state. The same channel carries a second thing in the build: src/lib/analytics.ts keeps the visit token on document, so the field and the day's word report against one visit without a shared ancestor either. A new surface that must react to another island's state reads a data- flag on :root and hides, shifts or recolours itself; it does not acquire a wrapper component.",
+        "section": "layout"
+      },
+      {
+        "name": "The Thumb Target Rule",
+        "body": "A target a thumb has to hit clears 44px, and the build reaches it two ways. A link that opens an entry grows by its own padding: a result row is 48px (0.7rem of block padding under a 1.3rem/1.25 headword), the day's word is 48px at 320–390, 53px at 768 and 61px at desktop (0.35rem of block padding under the --step-title step). A control whose glyph must stay small grows by an overlay instead: the field's clear button keeps its 1.9rem box (1.6rem in the compact variant) and adds a centred, transparent ::after of 2.75rem inside @media (pointer: coarse) — glyph 30px, target 44px — so the reach grows without the row growing with it. The overlay is deliberately absent on a fine pointer, where a 44px box would swallow clicks meant for the end of the typed text. Read the target, not the declared width: a small width/height on a control is not by itself a finding until you have looked for the overlay.",
         "section": "layout"
       }
     ],
@@ -382,9 +424,14 @@
       "Do express depth as rule weight — 1px separates, 2px bounds, 3px closes.",
       "Do set labels in Alegreya SC at 0.82rem / +0.06em: guide words, the rail and its count, colophon links, homograph marks, idiom titles, cross-references.",
       "Do set every sentence — hints, status, pending, no-match, errors, the loader, colophon notes — in the regular upright face at --step-small with normal tracking.",
-      "Do span structure across the container on both page types (896px at the 56rem container), and then follow the page: a word page's sense list and the .notfound block are capped at the 68ch --measure (623px, 1.62 leading); a prose page is not capped at all and runs the full 896px at 1.7 leading. Don't split the difference on a new surface — pick the page type it belongs to.",
+      "Do run structure and text to the container edge on every surface (896px at the 56rem container) — headword, rule, guide rail, sense, paragraph, result row, status line all start and end on one edge.",
+      "Do lead every block that wraps at column width with --leading-read (1.7) — senses, prose paragraphs and list items, the day's-word sense, the not-found note, idiom lines — and keep 1.62 for text that does not wrap there.",
       "Do keep --rule-strong at or above 3:1 on stock (it measures 3.35:1); it is the field's resting underline.",
       "Do keep every text/background pair at or above 4.5:1 — ink 13.1:1, muted ink 6.09:1 and cloth 9.09:1 on stock; --on-cloth 9.64:1 and --on-cloth-muted 6.26:1 on cloth — and make every state legible without relying on colour alone.",
+      "Do give every link its underline at rest and let hover only resolve it to currentColor — and gate the hover step behind @media (hover: hover) when it is the only state change on the element.",
+      "Do give a thumb 44px: pad an entry-opening link until it reaches it (result row 48px, the day's word 48–61px), or, where the glyph must stay small, add a centred transparent ::after of 2.75rem under @media (pointer: coarse) the way the field's clear button does.",
+      "Do set apparatus text — labels, dates, captions — in --ink-muted (6.09:1). --rule-strong is a line colour at 3.35:1 and is never type.",
+      "Do coordinate sibling islands through a data- flag on :root read from the consuming stylesheet, the way data-searching hides the day's word while a query exists.",
       "Do use tabular lining figures for any number that stacks vertically.",
       "Do animate list changes with a measured FLIP pass on real DOM nodes — survivors move, entrants fade in, leavers hold their slot and collapse — and skip the whole pass under prefers-reduced-motion: reduce."
     ],
@@ -395,11 +442,17 @@
       "Don't lighten --rule-strong, --ink-muted or --ink to soften the page. The warmth comes from the hue of the stock and the ink, not from lower contrast.",
       "Don't set body text, a sense or a prose paragraph in oxblood; cloth is the lemma and the marks.",
       "Don't put --ink, --ink-muted or --rule-strong on the cloth ground, or --on-cloth / --on-cloth-muted on stock. Each pair belongs to one ground.",
-      "Don't enable hyphens: auto — the engine hyphenates Albanian wrongly, and this is a dictionary of Albanian. Justification in two-column long entries is allowed and intended.",
+      "Don't enable hyphens: auto — the engine hyphenates Albanian wrongly, and this is a dictionary of Albanian.",
+      "Don't justify text. The build is ragged right throughout; justification was tried on the old narrow-column entry layout and dropped when the measure widened, because a 98-character line with no hyphenation available rivers.",
+      "Don't split a text block into columns, and don't branch a layout on a count of an entry's parts. One word can hold two entries of different lengths, and a threshold sets them in two different layouts side by side.",
       "Don't add a prefers-color-scheme: dark block or a second palette. The site is light-only by decision.",
       "Don't draw a four-sided border, a card or a rounded well around the search field or a result row.",
       "Don't add an icon font, an emoji or a third typeface. Icons are inline SVG geometry at currentColor.",
-      "Don't put a kicker or eyebrow label above a title — the not-found page comments this refusal explicitly and sets its short verdict where an entry sets its label stack instead.",
+      "Don't put a kicker or eyebrow label above a title — the not-found page comments this refusal explicitly and sets its short verdict where an entry sets its label stack instead. A running head is a different object and the book's own: a small-caps label with its counterpart at the opposite margin, closed by a hairline, as the guide rail and the day's word both set it.",
+      "Don't let hover be the thing that tells a reader something is a link, and don't ship a :hover rule as the only state an element has.",
+      "Don't set text in --rule-strong. It measures 3.35:1 — a boundary colour, below the 4.5:1 floor every text/background pair in this system holds.",
+      "Don't re-introduce a max-width on a block of text, and don't inset a row from the column edge with inline padding. Both make a line stop short of the rules above it. A long line is answered with leading, not with a second width.",
+      "Don't wrap a new home-page block in a card to separate it from the one above. Separation is a small-caps running head over a hairline, the same parts an entry already uses.",
       "Don't signal state with colour alone, and don't convey the current-page rail end by fading it.",
       "Don't reach for an animation library or @keyframes for list motion; the system's motion is measured in a layout effect and played through the Web Animations API."
     ]
