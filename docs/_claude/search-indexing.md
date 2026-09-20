@@ -69,8 +69,17 @@ change to the generated indexes. Multi-word queries fetch one sub-index per word
 `Intl.Collator('sq')` on the term, then `leven` between the joined stems and the joined query stems as a
 tie-break — so edit distance only separates entries the collator calls equal, i.e. homographs sharing a
 headword. Capped at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at
-`MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty index, not an error. Queries
-are reported to Umami as a `search_v2` event with a per-document random id (`document.__fjalorshqip__`).
+`MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty index, not an error.
+
+Queries are reported to Umami as a `search_v3` event with a per-document random id
+(`document.__fjalorshqip__`, from `src/lib/analytics.ts`) — **one event per search, not per keystroke**.
+Every keystroke settles into a result list, and `search_v2` reported each of them, so «fjal», «fjalo» and
+«fjalor» all arrived as searches and a word the dictionary lacks was buried under its own prefixes. A
+settled query is now held for `SETTLE_MS = 1200` and only then reported; the next keystroke cancels it,
+and opening a result flushes it early. Each query reports at most once, so the idle report and the open
+report cannot both land. The event carries `q` (the query), `n` (how many suggestions it produced — `0`
+is the missing word) and `r` (`idle` or `open`). The event name was bumped because the meaning of a row
+changed, as `search` → `search_v2` was bumped before it.
 
 ## Known limitations (documented for users in `docs/kerkimi.md`)
 

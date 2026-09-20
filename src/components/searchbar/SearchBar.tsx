@@ -56,8 +56,19 @@ const fetchSubIndex = async (prefix: string) => {
   }
 };
 
-const push_query = (query: string) => {
-  track('search_v2', { q: query });
+/*
+ * A search is what the reader stopped at, not what they passed through on the
+ * way. Every keystroke settles into a result list of its own, so reporting
+ * each one files «fjal», «fjalo» and «fjalor» as three searches and buries the
+ * one query that matters — the word the dictionary turned out not to have —
+ * under its own prefixes. A settled query is held back until the field has
+ * been quiet for `SETTLE_MS`, and flushed early when the reader opens a
+ * result, which says the same thing sooner. `r` is which of the two ended it.
+ */
+const SETTLE_MS = 1200;
+
+const push_query = (query: string, found: number, reason: 'idle' | 'open') => {
+  track('search_v3', { q: query, n: String(found), r: reason });
 };
 
 /*
@@ -187,6 +198,28 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
   const rows = useRef(new Map<string, HTMLLIElement>());
   const previousRects = useRef(new Map<string, DOMRect>());
   const exitTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  const settled = useRef<{ query: string; found: number } | null>(null);
+  const reported = useRef('');
+
+  /*
+   * At most one report to a query, whichever end comes first: a reader who
+   * pauses over the list and then clicks has already been counted, and the
+   * word page they open is a pageview of its own.
+   */
+  const report = (reason: 'idle' | 'open') => {
+    clearTimeout(settleTimer.current);
+
+    const pending = settled.current;
+    if (!pending || pending.query === reported.current) {
+      return;
+    }
+
+    reported.current = pending.query;
+    push_query(pending.query, pending.found, reason);
+  };
 
   /*
    * A row that stops matching has to be given the chance to leave. It stays in
@@ -284,6 +317,11 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
   const handleQueryChange = async (query: string) => {
     latestQuery.current = query;
 
+    // Another keystroke: whatever was waiting to be reported was a prefix of
+    // this, not a search of its own.
+    clearTimeout(settleTimer.current);
+    settled.current = null;
+
     if (!query) {
       setSuggestions([]);
       setStatus('idle');
@@ -329,7 +367,9 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
         setSpan(getSpan(prefixes[0]));
         setStatus(topSuggestions.length !== 0 ? 'ok' : 'none');
         setActive(-1);
-        push_query(query);
+
+        settled.current = { query, found: topSuggestions.length };
+        settleTimer.current = setTimeout(() => report('idle'), SETTLE_MS);
       },
       () => {
         if (latestQuery.current !== query) {
@@ -385,9 +425,12 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  useEffect(() => () => clearTimeout(settleTimer.current), []);
+
   const open = (index: number) => {
     const suggestion = suggestions[index];
     if (suggestion) {
+      report('open');
       window.location.href = `/f/${suggestion.slug}`;
     }
   };
@@ -539,6 +582,7 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
                 className={`${styles.link} ${idx === active ? styles.active : ''}`}
                 tabIndex={-1}
                 onMouseEnter={() => !leaving && setActive(idx)}
+                onClick={() => !leaving && report('open')}
               >
                 <span className={styles.term}>{suggestion.term}</span>
                 {suggestion.attributes.length !== 0 && (
