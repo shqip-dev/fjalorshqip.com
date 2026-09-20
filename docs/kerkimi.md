@@ -77,7 +77,7 @@ src/data/gen/
 ```
 
 Prefiksi prej tri shkronjash është një kompromis: sa më i gjatë, aq më të vogla skedarët, por aq më
-shumë skedarë gjithsej (dhe hostingu ka kufij — CloudFlare Pages lejon 20 mijë skedarë). Tri shkronja i
+shumë skedarë gjithsej (dhe hostingu statik mund të ketë kufij për numrin e tyre). Tri shkronja i
 mbajnë nënindekset në disa kilobajt secili.
 
 Kjo dosje **nuk ruhet në git**; ajo rikrijohet në çdo ndërtim.
@@ -128,8 +128,7 @@ Faqja `/f/<fjala>` ka dy rrugë, dhe kjo është pasojë e drejtpërdrejtë e ku
 pa pritur `JavaScript`.
 
 **Rruga dinamike.** Kur faqet nuk janë parandërtuar — sepse `SHOULD_SKIP_STATIC_WORD_PAGES` është i
-ndezur, ose sepse `CLOUDFLARE` e kufizoi numrin në ~14 mijë për shkak të kufirit prej 20 mijë skedarësh —
-serveri statik e kthen `index.html` si faqe `404`. Aty `DynamicEntries` (`client:only`) lexon adresën nga
+ndezur — serveri statik e kthen `index.html` si faqe `404`. Aty `DynamicEntries` (`client:only`) lexon adresën nga
 `window.location.pathname`, nxjerr `slug`-un prej saj, dhe `EntriesLoader` shkarkon nënindeksin
 `/api/slug-index/<prefiksi>.json` për ta shfaqur zërin. Nëse as aty nuk gjendet, shfaqet `404`.
 

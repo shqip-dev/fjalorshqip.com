@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `fjalorshqip.com` — an Albanian dictionary site built with Astro 7 + React 19 islands. It ships as
 **static files only**: no application server, no database, no request-time code. Search runs entirely in
-the browser against JSON indexes generated at build time. Deployed to Cloudflare Pages, plus a Docker
-image published to ghcr.io by `.github/workflows/docker-publish.yml`.
+the browser against JSON indexes generated at build time. It is served from any static host; a Docker
+image is published to ghcr.io by `.github/workflows/docker-publish.yml`.
 
 ## Docs
 
@@ -46,8 +46,7 @@ build:
 DICTIONARY_SUBSET='["AÇ","ACAR"]' pnpm build
 ```
 
-Other env vars: `SHOULD_SKIP_STATIC_WORD_PAGES=true` skips prerendering `/f/<slug>` pages;
-`CLOUDFLARE=true` caps static word pages at ~14k (Cloudflare Pages' 20k-file limit); `META_TAGS` is a
+Other env vars: `SHOULD_SKIP_STATIC_WORD_PAGES=true` skips prerendering `/f/<slug>` pages; `META_TAGS` is a
 JSON object injected as `<meta>` tags by `MainLayout.astro`; `SITE_URL`,
 `OPENSEARCH_SHORT_NAME` and `OPENSEARCH_DESCRIPTION` override what
 `src/pages/opensearch.xml.ts` emits (it falls back to `Astro.site`, then to

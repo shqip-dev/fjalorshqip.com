@@ -18,10 +18,10 @@ interface Neighbours {
 const NO_NEIGHBOURS: Neighbours = { prev: null, next: null };
 
 /*
- * Most word pages are not prerendered — Cloudflare Pages caps a deployment at
- * 20k files — so the sub-index the browser fetched is where their guide words
- * have to come from. It holds every slug sharing the first three characters,
- * which is the same span the printed dictionary would have had on one page.
+ * A word page rendered in the browser — one the build did not prerender — has
+ * no guide words handed to it, so they come from the sub-index it fetched
+ * anyway. It holds every slug sharing the first three characters, which is the
+ * same span the printed dictionary would have had on one page.
  */
 const getNeighbours = (index: Index, slug: string): Neighbours => {
   const collator = new Intl.Collator('sq');

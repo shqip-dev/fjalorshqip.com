@@ -48,7 +48,7 @@ The speed and the quiet *are* the product.
   query the site directly via `/?q={searchTerms}`, and `SearchBar` seeds itself from that `q` param.
 - Sessions are short and often mobile. A lookup is rarely the task — it interrupts writing, reading, or
   studying, and must return the user to it quickly.
-- Deployed to Cloudflare Pages; also published as a Docker image serving the same static output.
+- Deployed to a static host; also published as a Docker image serving the same static output.
 
 ## Capabilities and Constraints
 
@@ -71,8 +71,6 @@ The speed and the quiet *are* the product.
   lightweight Umami setup.
 - **Albanian-only interface.** All UI copy, page content, and the user-facing docs (`docs/README.md`,
   `docs/kerkimi.md`) stay in Albanian. No English or multilingual UI.
-- Hosting file-count limits are real: Cloudflare Pages allows 20k files, so prerendered word pages are
-  capped around 14k and the rest are served dynamically from the sub-indexes.
 - The 3-character prefix contract is a shared contract between the build-time generator and the browser
   client; keys shorter than 3 characters live in a `_` bucket.
 

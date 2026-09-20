@@ -43,8 +43,8 @@ Three artifacts land in `src/data/gen/`:
    and reversible as URLs. Do not unify them.
 3. **`getStemPrefix` (first 3 chars, else `_`) is the file-name contract.** It decides both the generated
    file names and the URL `SearchBar`/`EntriesLoader` fetch. Any change is a coordinated change across
-   generation and both clients. Longer prefixes mean smaller files but more of them, against Cloudflare
-   Pages' 20k-file cap.
+   generation and both clients. Longer prefixes mean smaller files but more of them, which a static host
+   may cap.
 4. **`index.astro` is also the 404 catch-all.** The Docker image serves it for unknown paths
    (`static-web-server --page404 index.html`), and the hosting is expected to do the same, which is how
    `DynamicEntries` gets a chance to render a non-prerendered `/f/<slug>`. Don't make the homepage assume

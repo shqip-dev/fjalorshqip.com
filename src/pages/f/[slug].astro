@@ -4,7 +4,7 @@ import SearchBar from '../../components/searchbar/SearchBar';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
 import type { Neighbour } from '../../lib/entryFormat.ts';
-import { isCloudflarePages, shouldSkipStaticWordPages } from '../../lib/env';
+import { shouldSkipStaticWordPages } from '../../lib/env';
 import { getStemPrefix } from '../../lib/process.ts';
 
 export async function getStaticPaths() {
@@ -12,7 +12,7 @@ export async function getStaticPaths() {
     ? {}
     : await getSlugDictionary();
 
-  let entries = Object.entries(slugDictionary);
+  const entries = Object.entries(slugDictionary);
 
   // Guide words span the sub-index the word lives in — the same 3-character
   // bucket the browser fetches — so a prerendered page and a page rendered in
@@ -39,12 +39,6 @@ export async function getStaticPaths() {
         next: bucket[index + 1] || null,
       });
     });
-  }
-
-  if (isCloudflarePages() && entries.length > 14_000) {
-    // We have to filter some entries out since cloudflare pages has a limit on 20k files
-    const ratio = 14_000 / entries.length;
-    entries = entries.filter((_, idx) => idx % 100 < ratio * 100);
   }
 
   return entries.map(([key, value]) => ({

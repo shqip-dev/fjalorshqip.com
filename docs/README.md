@@ -8,8 +8,7 @@ Përveç fjalorit, faqja mban edhe dy lojëra: **Fjalëzën** — fjala e ditës
 
 Faqja është **tërësisht statike**: nuk ka server aplikacioni, nuk ka bazë të dhënash dhe nuk ka API që
 ekzekutohet gjatë kërkimit. Gjithçka që shpërndahet janë skedarë `HTML`, `CSS`, `JS` dhe `JSON`, të cilët
-mund të vendosen në çfarëdo hostingu statik (aktualisht CloudFlare Pages, por edhe një `static-web-server`
-brenda Docker-it). I gjithë kërkimi ndodh në shfletuesin e përdoruesit — shih
+mund të vendosen në çfarëdo hostingu statik (mes tjerash edhe një `static-web-server` brenda Docker-it). I gjithë kërkimi ndodh në shfletuesin e përdoruesit — shih
 [Si funksionon kërkimi](kerkimi.md).
 
 ## Struktura e projektit
@@ -74,7 +73,6 @@ Variablat e tjera:
 | `DICTIONARY_SUBSET`             | Listë `JSON` termash; gjeneron indekse vetëm për ta (për zhvillim)        |
 | `NODE_ENV=production`           | Gjeneron të gjithë fjalorin dhe e shkruan `JSON`-in pa formatim           |
 | `SHOULD_SKIP_STATIC_WORD_PAGES` | Nuk parandërton faqet `/f/<fjala>`; ato shërbehen dinamikisht nga shfletuesi |
-| `CLOUDFLARE`                    | Kufizon faqet statike të fjalëve në ~14 mijë (CloudFlare Pages lejon 20 mijë skedarë) |
 | `META_TAGS`                     | Objekt `JSON` që shtohet si `<meta>` në çdo faqe                          |
 | `SITE_URL`                      | Adresa bazë e përdorur në `opensearch.xml` (parazgjedhje `https://fjalorshqip.com/`) |
 | `OPENSEARCH_SHORT_NAME`         | Emri i shkurtër i motorit të kërkimit në `opensearch.xml`                 |
