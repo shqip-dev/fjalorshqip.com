@@ -10,7 +10,9 @@ purpose — it is invisible to a reader and only matters to a crawler or a chat 
 | The strings and the JSON-LD | `src/lib/seo.ts` |
 | The `<head>` of a prerendered page | `src/layouts/MainLayout.astro` |
 | The `<head>` of a page rendered in the browser | `src/lib/documentMeta.ts` |
-| The card image | `public/og.png`, drawn by `tools/og-image.mjs` |
+| The card drawing | `src/lib/ogCard.ts` (node-only — never import it from a component) |
+| The card build step | `src/scripts/ogCards.ts`, run as `postbuild` |
+| The fonts it draws with | `src/assets/fonts/*.ttf` (see the README there) |
 
 `MainLayout` emits, for every page: `description`, `canonical`, the Open Graph set
 (`type`, `site_name`, `locale`, `title`, `description`, `url`, `image` + dimensions + `alt`), the
@@ -64,13 +66,55 @@ point `opensearch.xml.ts` uses, through the shared `SEARCH_QUERY_PARAM`) plus th
 `serializeSchema` escapes `<` in the serialized JSON. A definition containing one would otherwise end
 the inline `<script>` early.
 
-## The card image
+## The cards
 
-One image for the whole site, at `public/og.png` (1200×630, ~15 KB). A per-word card would be 40k
-renders, which a static build with no image pipeline is not going to do — and it would buy little: the
-preview's own text already names the word.
+**Every word page has its own card**, and everything else shares `public/og.png`. A link to a word
+unfurls in WhatsApp, Discord, Slack or a timeline as that word — headword in small caps, its labels,
+the hairline rule, the opening of its first sense — drawn on the same sheet the page is.
 
-`tools/og-image.mjs` draws it and is run **by hand**, never by the build. Its header has the exact
-commands; the shape of it is that `sharp` is not a dependency of this site (it is added and removed
-around the run) and that pango needs real font files, so the packaged Alegreya woff2 has to be
-decompressed first. Re-run it when the palette in `src/styles/global.scss` moves or Alegreya changes.
+`src/lib/ogCard.ts` draws both, so the site's card and 40k word cards cannot drift apart.
+`src/scripts/ogCards.ts` drives it:
+
+    pnpm build            # astro check && astro build, then postbuild draws the cards
+    pnpm og:cards         # redraw the word cards into an existing dist/
+    pnpm og:site          # redraw public/og.png
+
+Things worth knowing before changing any of it:
+
+- **The cards are written into `dist/og/`, not `public/og/`.** Anything in `public/` is copied into
+  `dist` by `astro build`; at ~400 MB that copy is not worth paying for. This is why the step is
+  `postbuild` rather than part of `prebuild` — it needs a `dist` to write into, and says so if there
+  isn't one.
+- **The set of cards is the set of prerendered pages.** Both come from `src/data/gen/slugDictionary.json`,
+  so a card exists exactly when the page does — in a development build that is the env-gated subset,
+  in production it is all of them. `f/[slug].astro` asks `shouldSkipWordCards()` before pointing at
+  one, and falls back to the site card, so a build that skipped them never advertises an image that
+  was never drawn. `SHOULD_SKIP_WORD_CARDS=true` skips them; `SHOULD_SKIP_STATIC_WORD_PAGES` skips
+  them too, since there would be no page to hang them on.
+- In `astro dev` the cards do not exist — `postbuild` only runs for a real build — so a word page
+  there names a `/og/<slug>.png` that would 404 if anything fetched it. Nothing does: an unfurler
+  reads the tag off a deployed page, and the browser never requests `og:image`.
+- **The browser-side head does not touch `og:image`.** `documentMeta` could point at a word's card,
+  but nothing that unfurls a link runs JavaScript, so the only thing that would ever see it is
+  something that does not need it — and on a build with the cards skipped it would point at a 404.
+- **`sharp` is a devDependency, not a new dependency.** `astro` already depends on the same version,
+  and the lockfile already carried `@img/sharp-linuxmusl-x64` for the alpine build stage; declaring it
+  is what lets our own code import it under pnpm's strict layout. It is build-time only — the runtime
+  image is `static-web-server` and a directory of files.
+- **The fonts are committed as TrueType** in `src/assets/fonts/`, because pango reads font files
+  through FreeType and will not take the woff2 the pages load. Silently falling back to a system sans
+  is what a wrong path looks like, not an error. Their README has the `woff2_decompress` recipe.
+
+Costs, measured on the real dictionary (39,898 words, 16 cores):
+
+| | |
+| :-- | :-- |
+| Per card | ~11 ms, ~10 KB (1200×630, 16-colour palette PNG) |
+| The word cards | ~400 MB, a few minutes of wall clock |
+| `dist` | ~790 MB of HTML and JSON before the cards, ~1.2 GB after |
+
+The sheet and the footer are rasterized once and composited into every card, which is most of why a
+card costs milliseconds. 16 colours is chosen deliberately: the art is flat, so nothing bands, and a
+full palette costs a third more across 40k files. Re-run `pnpm og:site` when the palette in
+`src/styles/global.scss` moves or Alegreya is upgraded — and remember the word cards are drawn from
+that same module, so they change with it on the next build.

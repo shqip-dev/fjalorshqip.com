@@ -26,6 +26,12 @@ WORKDIR /app
 
 RUN corepack enable
 
+# The `postbuild` step draws the social cards with sharp, whose text rendering goes
+# through pango and fontconfig. It works without this package — the cards come out
+# with the same glyphs and the same metrics — but fontconfig then prints
+# "Cannot load default config file" twice per card, which is ~75k lines of build log.
+RUN apk add --no-cache fontconfig
+
 # .npmrc carries enable-pre-post-scripts=true, without which `pnpm build` skips `prebuild`.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 # --prod=false because NODE_ENV=production would otherwise drop the devDependencies that

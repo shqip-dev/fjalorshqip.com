@@ -34,6 +34,8 @@ Package manager is **pnpm** (migrated from npm). `.npmrc` sets `enable-pre-post-
 | `pnpm preview` | Serve `./dist` |
 | `pnpm fjalez:words` | Regenerate `src/data/fjalez/guesses.json` (Fjalëz guess list) |
 | `pnpm lemsh:words` | Regenerate `src/data/lemsh/rounds.json` (Lëmsh days) |
+| `pnpm og:cards` | Redraw the per-word social cards into an existing `dist/og/` |
+| `pnpm og:site` | Redraw `public/og.png`, the card every non-word page shares |
 
 There is no test suite and no linter beyond `astro check` (`.prettierrc`: 2 spaces, single quotes).
 
@@ -48,7 +50,8 @@ build:
 DICTIONARY_SUBSET='["AÇ","ACAR"]' pnpm build
 ```
 
-Other env vars: `SHOULD_SKIP_STATIC_WORD_PAGES=true` skips prerendering `/f/<slug>` pages; `META_TAGS` is a
+Other env vars: `SHOULD_SKIP_STATIC_WORD_PAGES=true` skips prerendering `/f/<slug>` pages (and with
+them the per-word social cards); `SHOULD_SKIP_WORD_CARDS=true` skips only the cards; `META_TAGS` is a
 JSON object injected as `<meta>` tags by `MainLayout.astro`; `SITE_URL`,
 `OPENSEARCH_SHORT_NAME` and `OPENSEARCH_DESCRIPTION` override what
 `src/pages/opensearch.xml.ts` emits (it falls back to `Astro.site`, then to
@@ -131,7 +134,7 @@ that is not the word: `g` is what was built and `n` which attempt it was at that
 `lemsh_shuffle`, `lemsh_finish`, `lemsh_share` and `lemsh_definition`. The board raises what happened
 and the page tracks it — `LemshRound` holds no analytics of its own.
 
-## Head metadata
+## Head metadata and social cards
 
 Every page's `<head>` — description, canonical, Open Graph, Twitter card and JSON-LD — is written by
 `MainLayout.astro` from the strings in `src/lib/seo.ts`, and a word page the build did not prerender
@@ -140,9 +143,19 @@ must keep calling `seo.ts` rather than spelling a title or a description out: `i
 catch-all, so the same word is described by whichever of the two rendered it. A word page carries
 `DefinedTerm` (one node per homograph) inside the site's `DefinedTermSet`; the home page carries
 `WebSite` with the `?q=` `SearchAction`. Canonicals name the directory (`/f/acar/`) because that is
-what `@astrojs/sitemap` lists. The one social card, `public/og.png`, is drawn by hand with
-`tools/og-image.mjs` — it is not part of the build and `sharp` is not a dependency. Details in
-[`docs/_claude/seo.md`](docs/_claude/seo.md).
+what `@astrojs/sitemap` lists. Nothing on the 404 path asks to be indexed.
+
+**Every word page has its own social card.** `src/lib/ogCard.ts` draws them — the headword, its
+labels and its first sense on the page's own sheet — and `src/scripts/ogCards.ts` runs as `postbuild`
+to write one per prerendered slug into `dist/og/<slug>.png`, plus `public/og.png` for everything else.
+Three things make that affordable and are easy to undo: the cards go into `dist`, never `public`,
+which `astro build` would copy a second time; they are drawn from the same slug dictionary the pages
+are, so a card exists exactly when its page does; and `sharp` is a devDependency of a version `astro`
+already depends on, so it adds no package — it is build-time only, the runtime image is still
+`static-web-server` over static files. The fonts it draws with are committed as TrueType in
+`src/assets/fonts/` because pango cannot read the woff2 the pages load. In production this is ~40k
+images, ~400 MB and a few minutes; `SHOULD_SKIP_WORD_CARDS=true` turns it off and every page falls
+back to the site card. Details in [`docs/_claude/seo.md`](docs/_claude/seo.md).
 
 ## Notes
 

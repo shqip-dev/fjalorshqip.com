@@ -17,6 +17,17 @@ export const shouldSkipStaticWordPages = () => {
   return process.env.SHOULD_SKIP_STATIC_WORD_PAGES === 'true';
 };
 
+/*
+ * The per-word social cards are the expensive half of a production build — ~40k
+ * images, a few minutes and ~400 MB. Skipping the word pages skips them too:
+ * there would be no prerendered page to hang them on.
+ */
+export const shouldSkipWordCards = () => {
+  return (
+    process.env.SHOULD_SKIP_WORD_CARDS === 'true' || shouldSkipStaticWordPages()
+  );
+};
+
 export const getDictionarySubset = (): string[] => {
   return JSON.parse(process.env.DICTIONARY_SUBSET || '[]');
 };

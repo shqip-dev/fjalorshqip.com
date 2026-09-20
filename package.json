@@ -12,7 +12,10 @@
     "prebuild": "node ./src/scripts/preprocess.ts",
     "fjalez:words": "node ./src/scripts/fjalezWords.ts",
     "lemsh:words": "node ./src/scripts/lemshWords.ts",
+    "og:cards": "node ./src/scripts/ogCards.ts",
+    "og:site": "node ./src/scripts/ogCards.ts --site",
     "build": "astro check && astro build",
+    "postbuild": "node ./src/scripts/ogCards.ts",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "sharp": "^0.35.4",
     "typescript": "^6.0.3"
   }
 }

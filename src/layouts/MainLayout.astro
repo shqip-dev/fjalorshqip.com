@@ -23,6 +23,9 @@ interface Props {
   /** What a shared link is titled, when the page title is too long for a card. */
   socialTitle?: string;
   type?: 'website' | 'article';
+  /** A site-absolute path to this page's own social card; defaults to the site's. */
+  image?: string;
+  imageAlt?: string;
   /** JSON-LD nodes; they are emitted as one `@graph`. */
   schema?: Record<string, unknown>[];
 }
@@ -32,6 +35,8 @@ const {
   description,
   socialTitle,
   type = 'website',
+  image = OG_IMAGE,
+  imageAlt = OG_IMAGE_ALT,
   schema,
 } = Astro.props;
 
@@ -40,7 +45,7 @@ const {
 // somewhere else without its own addresses pointing home.
 const siteUrl = getSiteUrl(Astro.site?.href);
 const canonical = getCanonicalUrl(Astro.url.pathname, siteUrl);
-const imageUrl = getAssetUrl(OG_IMAGE, siteUrl);
+const imageUrl = getAssetUrl(image, siteUrl);
 const cardTitle = socialTitle || title;
 
 const metaStr = import.meta.env.META_TAGS;
@@ -69,7 +74,7 @@ const meta: [string, string][] = metaStr ? Object.entries(JSON.parse(metaStr)) :
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:width" content={OG_IMAGE_WIDTH} />
     <meta property="og:image:height" content={OG_IMAGE_HEIGHT} />
-    <meta property="og:image:alt" content={OG_IMAGE_ALT} />
+    <meta property="og:image:alt" content={imageAlt} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={cardTitle} />

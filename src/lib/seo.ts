@@ -23,14 +23,23 @@ export const LANGUAGE = 'sq';
 export const LOCALE = 'sq_AL';
 
 /*
- * One card for the whole site. A per-word image would mean 40k of them, which
- * is a rendering pipeline the build does not have and does not want; the sheet
- * is `public/og.png` and `tools/og-image.mjs` is how it was drawn.
+ * The social cards. Every word page has its own — `src/scripts/ogCards.ts`
+ * draws them into `dist/og/` after the build — and everything else shares the
+ * site's card, which is also the fallback when a build skips the word cards.
+ * Both are drawn by `src/lib/ogCard.ts`, which this file must not import: that
+ * one is node-only and this one is bundled into the islands.
  */
-export const OG_IMAGE = '/og.png';
+export const SITE_CARD_FILENAME = 'og.png';
+export const WORD_CARD_DIR = 'og';
+export const OG_IMAGE = `/${SITE_CARD_FILENAME}`;
 export const OG_IMAGE_WIDTH = '1200';
 export const OG_IMAGE_HEIGHT = '630';
 export const OG_IMAGE_ALT = `${SITE_NAME} — ${SITE_TAGLINE.toLowerCase()}`;
+
+export const getWordCardPath = (slug: string) => `/${WORD_CARD_DIR}/${slug}.png`;
+
+export const getWordImageAlt = (term: string) =>
+  `${term} — ${SITE_TAGLINE.toLowerCase()}`;
 
 /** The longest a `<meta name="description">` is worth writing. */
 const DESCRIPTION_LIMIT = 155;
