@@ -64,11 +64,13 @@ stem index would cost every search the difference.
 prefix, so typing further characters within the same 3-char prefix costs no network. Within the fetched
 bucket it takes the exact stem key *plus every key that starts with it* (`matchStem`), which is what makes
 three characters behave as type-ahead — the bucket is already in memory, so this costs no request and no
-change to the generated indexes. Multi-word queries fetch one sub-index per word and `intersectionBy(term)`
-the results. Ranking is exact-stem first, then `Intl.Collator('sq')` on the term, then
-`leven(entry.stems, queryStems)` as a tie-break, capped at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at `MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty
-index, not an error. Queries are reported to Umami as a `search_v2` event with a per-document random id
-(`document.__fjalorshqip__`).
+change to the generated indexes. Multi-word queries fetch one sub-index per word and `intersectBy(term)`
+(`src/lib/utils.ts` — there is no lodash) the results. Ranking is exact-stem first, then
+`Intl.Collator('sq')` on the term, then `leven` between the joined stems and the joined query stems as a
+tie-break — so edit distance only separates entries the collator calls equal, i.e. homographs sharing a
+headword. Capped at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at
+`MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty index, not an error. Queries
+are reported to Umami as a `search_v2` event with a per-document random id (`document.__fjalorshqip__`).
 
 ## Known limitations (documented for users in `docs/kerkimi.md`)
 
