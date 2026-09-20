@@ -2,11 +2,17 @@
 import DynamicEntries from '../components/dynamicentries/DynamicEntries';
 import SearchBar from '../components/searchbar/SearchBar.tsx';
 import MainLayout from '../layouts/MainLayout.astro';
+import { getSiteUrl } from '../lib/env.ts';
+import { SITE_DESCRIPTION, SITE_NAME, getSiteSchema } from '../lib/seo.ts';
+
+const siteUrl = getSiteUrl(Astro.site?.href);
 ---
 
 <MainLayout
   title="Fjalor Shqip | fjalorshqip.com"
-  description="Fjalori i gjuhës shqipe"
+  socialTitle={SITE_NAME}
+  description={SITE_DESCRIPTION}
+  schema={getSiteSchema(siteUrl)}
 >
   <div class="lookup">
     <SearchBar client:load autoFocus />

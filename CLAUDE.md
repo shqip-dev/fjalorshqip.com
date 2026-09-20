@@ -15,7 +15,9 @@ image is published to ghcr.io by `.github/workflows/docker-publish.yml`.
   **written in Albanian — keep them that way**, as is all UI copy and page content.
 - `docs/_claude/` holds English detail referenced from here. Read
   [`docs/_claude/search-indexing.md`](docs/_claude/search-indexing.md) before touching the indexing
-  pipeline, the search bar, or the word-page routes.
+  pipeline, the search bar, or the word-page routes, and
+  [`docs/_claude/seo.md`](docs/_claude/seo.md) before touching what a page says about itself — the
+  head, the social card or the JSON-LD.
 
 ## Commands
 
@@ -128,6 +130,19 @@ Scoring is `10 × letters + seconds left` for a solved word and nothing for a mi
 that is not the word: `g` is what was built and `n` which attempt it was at that word),
 `lemsh_shuffle`, `lemsh_finish`, `lemsh_share` and `lemsh_definition`. The board raises what happened
 and the page tracks it — `LemshRound` holds no analytics of its own.
+
+## Head metadata
+
+Every page's `<head>` — description, canonical, Open Graph, Twitter card and JSON-LD — is written by
+`MainLayout.astro` from the strings in `src/lib/seo.ts`, and a word page the build did not prerender
+has its head rewritten in the browser by `src/lib/documentMeta.ts` from those same helpers. Both sides
+must keep calling `seo.ts` rather than spelling a title or a description out: `index.astro` is the 404
+catch-all, so the same word is described by whichever of the two rendered it. A word page carries
+`DefinedTerm` (one node per homograph) inside the site's `DefinedTermSet`; the home page carries
+`WebSite` with the `?q=` `SearchAction`. Canonicals name the directory (`/f/acar/`) because that is
+what `@astrojs/sitemap` lists. The one social card, `public/og.png`, is drawn by hand with
+`tools/og-image.mjs` — it is not part of the build and `sharp` is not a dependency. Details in
+[`docs/_claude/seo.md`](docs/_claude/seo.md).
 
 ## Notes
 

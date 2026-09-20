@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Entry, Index } from '../../lib/dictionary';
 import NotFound from '../notfound/NotFound';
 import Entries from '../entries/Entries';
+import { applyMissingMeta, applyWordMeta } from '../../lib/documentMeta';
 import { getStemPrefix } from '../../lib/process';
 import { getTermFromSlug, type Neighbour } from '../../lib/entryFormat';
 import styles from './EntriesLoader.module.scss';
@@ -45,7 +46,18 @@ const EntriesLoader = (props: EntriesLoaderProps) => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [neighbours, setNeighbours] = useState<Neighbours>(NO_NEIGHBOURS);
 
+  /*
+   * The head this page arrived with is the home page's — it is the 404
+   * catch-all rendering a word — so whatever the fetch settled on is said
+   * there too, not just drawn on the page.
+   */
   const setReponse = (entries: Entry[], neighbours = NO_NEIGHBOURS) => {
+    if (entries.length !== 0) {
+      applyWordMeta(entries);
+    } else {
+      applyMissingMeta(getTermFromSlug(props.slug));
+    }
+
     setEntries(entries);
     setNeighbours(neighbours);
     setLoading(false);

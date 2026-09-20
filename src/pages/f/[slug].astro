@@ -4,8 +4,14 @@ import SearchBar from '../../components/searchbar/SearchBar';
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getSlugDictionary, type Entry } from '../../lib/dictionary.ts';
 import type { Neighbour } from '../../lib/entryFormat.ts';
-import { shouldSkipStaticWordPages } from '../../lib/env';
+import { getSiteUrl, shouldSkipStaticWordPages } from '../../lib/env';
 import { getStemPrefix } from '../../lib/process.ts';
+import {
+  getWordDescription,
+  getWordSchema,
+  getWordSocialTitle,
+  getWordTitle,
+} from '../../lib/seo.ts';
 
 export async function getStaticPaths() {
   const slugDictionary = shouldSkipStaticWordPages()
@@ -54,11 +60,15 @@ export async function getStaticPaths() {
 
 const { entries, prev, next } = Astro.props;
 const term = entries[0].term;
+const siteUrl = getSiteUrl(Astro.site?.href);
 ---
 
 <MainLayout
-  title={`${term} | Kuptimi i fjalës | fjalorshqip.com`}
-  description={`Kuptimi i fjalës ${term} në gjuhën shqipe. Definicioni i ${term}.`}
+  title={getWordTitle(term)}
+  socialTitle={getWordSocialTitle(term)}
+  description={getWordDescription(entries)}
+  type="article"
+  schema={getWordSchema(entries, siteUrl)}
 >
   <div class="lookup">
     <SearchBar client:load compact />

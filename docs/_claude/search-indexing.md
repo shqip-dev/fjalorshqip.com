@@ -54,7 +54,8 @@ stem index would cost every search the difference.
 4. **`index.astro` is also the 404 catch-all.** The Docker image serves it for unknown paths
    (`static-web-server --page404 index.html`), and the hosting is expected to do the same, which is how
    `DynamicEntries` gets a chance to render a non-prerendered `/f/<slug>`. Don't make the homepage assume
-   it is only ever `/`.
+   it is only ever `/`. That includes its `<head>`, which arrives describing the home page and is
+   rewritten by `src/lib/documentMeta.ts` — see [`seo.md`](seo.md).
 5. **`src/data/gen/` is generated and gitignored.** Never hand-edit; run `pnpm prebuild`.
 
 ## Client details

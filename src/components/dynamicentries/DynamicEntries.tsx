@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { applyMissingMeta } from '../../lib/documentMeta';
 import NotFound from '../notfound/NotFound';
 import EntriesLoader from '../entriesloader/EntriesLoader';
 import WordOfDay from '../wordofday/WordOfDay';
@@ -9,6 +11,15 @@ const DynamicEntries = () => {
   let path = window?.location?.pathname || '';
   const homepage = isHomepage(path);
   const word = requestedWord(path);
+
+  // An address that is neither the home page nor a word page is the 404 the
+  // home page's head does not describe; `EntriesLoader` owns the word case,
+  // where the answer is only known once the sub-index has been fetched.
+  useEffect(() => {
+    if (!homepage && !word) {
+      applyMissingMeta();
+    }
+  }, [homepage, word]);
 
   return homepage ? (
     <WordOfDay />

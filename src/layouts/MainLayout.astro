@@ -1,5 +1,17 @@
 ---
 import FooterLinks from '../components/footerlinks/FooterLinks';
+import { getSiteUrl } from '../lib/env.ts';
+import {
+  LOCALE,
+  OG_IMAGE,
+  OG_IMAGE_ALT,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
+  SITE_NAME,
+  getAssetUrl,
+  getCanonicalUrl,
+  serializeSchema,
+} from '../lib/seo.ts';
 import '../styles/fonts.scss';
 import '@fontsource/alegreya-sc/latin-400.css';
 import '@fontsource/alegreya-sc/latin-700.css';
@@ -8,9 +20,29 @@ import '../styles/global.scss';
 interface Props {
   title: string;
   description: string;
+  /** What a shared link is titled, when the page title is too long for a card. */
+  socialTitle?: string;
+  type?: 'website' | 'article';
+  /** JSON-LD nodes; they are emitted as one `@graph`. */
+  schema?: Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  socialTitle,
+  type = 'website',
+  schema,
+} = Astro.props;
+
+// `Astro.site` is the configured site; `getSiteUrl` lets SITE_URL override it,
+// the way `opensearch.xml.ts` already does, so one build can be served from
+// somewhere else without its own addresses pointing home.
+const siteUrl = getSiteUrl(Astro.site?.href);
+const canonical = getCanonicalUrl(Astro.url.pathname, siteUrl);
+const imageUrl = getAssetUrl(OG_IMAGE, siteUrl);
+const cardTitle = socialTitle || title;
+
 const metaStr = import.meta.env.META_TAGS;
 const meta: [string, string][] = metaStr ? Object.entries(JSON.parse(metaStr)) : [];
 ---
@@ -26,9 +58,37 @@ const meta: [string, string][] = metaStr ? Object.entries(JSON.parse(metaStr)) :
     {
         meta.map(([key, val]) => <meta name={key} content={val} />)
     }
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content={LOCALE} />
+    <meta property="og:title" content={cardTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content={OG_IMAGE_WIDTH} />
+    <meta property="og:image:height" content={OG_IMAGE_HEIGHT} />
+    <meta property="og:image:alt" content={OG_IMAGE_ALT} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={cardTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="search" type="application/opensearchdescription+xml" title="FjalorShqip Search" href="/opensearch.xml">
     <title>{title}</title>
+    {
+        schema && schema.length !== 0 && (
+          <script
+            id="schema-org"
+            type="application/ld+json"
+            is:inline
+            set:html={serializeSchema(schema)}
+          />
+        )
+    }
     <script defer src="https://cloud.umami.is/script.js" data-website-id="2a305a59-e47b-4fc7-bf6c-0af934b1860e"></script>
   </head>
   <body>
