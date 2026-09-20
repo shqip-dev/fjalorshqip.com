@@ -1,6 +1,6 @@
 # FjalorShqip.com
 
-Fjalor i gjuhës shqipe, i ndërtuar me [Astro](https://astro.build) dhe ishuj [React](https://react.dev).
+Fjalor i gjuhës shqipe, i ndërtuar me [Astro](https://astro.build) dhe ishuj [Preact](https://preactjs.com).
 
 Përveç fjalorit, faqja mban edhe dy lojëra: **Fjalëzën** — fjala e ditës me pesë shkronja (shih
 [Fjalëza](fjalez.md)) — dhe **Lëmshin** — pesë a gjashtë fjalë të përziera në ditë, secila me orën e vet
@@ -20,7 +20,7 @@ mund të vendosen në çfarëdo hostingu statik (mes tjerash edhe një `static-w
 ├── docs/                      # dokumentimi i projektit
 ├── public/                    # skedarë statikë (favicon, robots.txt)
 └── src/
-    ├── components/            # ishujt React (SearchBar, Entries, ...)
+    ├── components/            # ishujt Preact (SearchBar, Entries, ...)
     ├── data/fjalez/           # lista e fjalëve pesëshkronjore të Fjalëzës (ruhet në git)
     ├── data/lemsh/            # ditët e Lëmshit: fjalët, lidhjet dhe rendi i përzier (ruhet në git)
     ├── data/gen/              # indekset e gjeneruara gjatë ndërtimit (nuk ruhen në git)

@@ -12,7 +12,7 @@ import MainLayout from '../layouts/MainLayout.astro';
        browser has already played — none of which exists at build time, so the
        page ships the frame and the island renders the game. */
   }
-  <Lemsh client:only="react" />
+  <Lemsh client:only="preact" />
 
   <noscript>
     <p class="noscript">

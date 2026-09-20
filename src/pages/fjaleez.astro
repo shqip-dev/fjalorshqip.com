@@ -12,7 +12,7 @@ import MainLayout from '../layouts/MainLayout.astro';
        browser has already played — none of which exists at build time, so the
        page ships the frame and the island renders the game. */
   }
-  <Fjalez client:only="react" />
+  <Fjalez client:only="preact" />
 
   <noscript>
     <p class="noscript">

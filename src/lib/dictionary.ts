@@ -35,12 +35,32 @@ export interface Entry {
   slug: string;
 }
 
+/*
+ * What a search result row actually shows. The stem index carries this instead
+ * of a full `Entry`: a row renders the term, its attributes and the opening of
+ * the first sense, so shipping every definition to the search field means
+ * downloading the dictionary to draw ten lines of it. The definitions live in
+ * the slug index, which is what a word page reads.
+ */
+export interface SearchEntry {
+  term: string;
+  attributes: string[];
+  stems: string[];
+  slug: string;
+  /** `getGist` of the entry's definitions, computed at build time. */
+  gist: string;
+}
+
 export type Dictionary = {
   [key: string]: Entry;
 };
 
 export type Index = {
   [key: string]: Entry[];
+};
+
+export type SearchIndex = {
+  [key: string]: SearchEntry[];
 };
 
 export const getScrapedDictionary = async () => {
@@ -66,14 +86,14 @@ export const saveSlugSubIndex = async (
 };
 
 export const getSlugSubIndexes = async () => {
-  return await getSubIndexes(
+  return await getSubIndexes<Index>(
     SLUG_SUBINDEX_FILENAME_DIR,
     SLUG_SUBINDEX_FILENAME_TEMPLATE
   );
 };
 
 export const saveStemSubIndex = async (
-  content: Index,
+  content: SearchIndex,
   prefix: string,
   prod?: boolean
 ) => {
@@ -81,21 +101,21 @@ export const saveStemSubIndex = async (
 };
 
 export const getStemSubIndexes = async () => {
-  return await getSubIndexes(
+  return await getSubIndexes<SearchIndex>(
     STEM_SUBINDEX_FILENAME_DIR,
     STEM_SUBINDEX_FILENAME_TEMPLATE
   );
 };
 
-const getSubIndex = async (
+const getSubIndex = async <T>(
   prefix: string,
   template: (prefix: string) => string
 ) => {
-  return await readJson<Index>(template(prefix));
+  return await readJson<T>(template(prefix));
 };
 
-const saveSubIndex = async (
-  content: Index,
+const saveSubIndex = async <T>(
+  content: T,
   template: (prefix: string) => string,
   prefix: string,
   prod?: boolean
@@ -106,7 +126,7 @@ const saveSubIndex = async (
   });
 };
 
-const getSubIndexes = async (
+const getSubIndexes = async <T>(
   subindexDir: string,
   template: (prefix: string) => string
 ) => {
@@ -119,7 +139,7 @@ const getSubIndexes = async (
     indexPrefixes.map(async (prefix) => {
       return {
         prefix,
-        index: await getSubIndex(prefix, template),
+        index: await getSubIndex<T>(prefix, template),
       };
     })
   );

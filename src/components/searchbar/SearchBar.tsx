@@ -1,9 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from './SearchBar.module.scss';
-import type { Entry, Index } from '../../lib/dictionary';
+import type { SearchEntry, SearchIndex } from '../../lib/dictionary';
 import { getStemPrefix, getStems } from '../../lib/process';
 import { debounce, intersectBy } from '../../lib/utils';
-import { getGist } from '../../lib/entryFormat';
 import leven from 'leven';
 import { SEARCH_QUERY_PARAM } from '../../lib/search';
 import { track } from '../../lib/analytics';
@@ -14,12 +13,12 @@ const PREFIX_LENGTH = 3;
 
 type Status = 'idle' | 'pending' | 'ok' | 'none' | 'error';
 
-const stems: { [prefix: string]: Index } = {};
+const stems: { [prefix: string]: SearchIndex } = {};
 
 const loadSubIndex = debounce(
   async (
     prefixes: string[],
-    onSuccess: (subIndex: Index[]) => any,
+    onSuccess: (subIndex: SearchIndex[]) => any,
     onError: () => any
   ) => {
     const subIndexes = await Promise.all(prefixes.map(getOrFetchSubIndex));
@@ -51,7 +50,7 @@ const fetchSubIndex = async (prefix: string) => {
       return response.status === 404 ? {} : null;
     }
 
-    return (await response.json()) as Index;
+    return (await response.json()) as SearchIndex;
   } catch (e) {
     return null;
   }
@@ -67,9 +66,9 @@ const push_query = (query: string) => {
  * request and no change to the generated indexes — it is the difference
  * between having to know the word and being able to look it up.
  */
-const matchStem = (subIndex: Index, stem: string) => {
+const matchStem = (subIndex: SearchIndex, stem: string) => {
   const exact = subIndex[stem];
-  const matched: Entry[] = exact ? [...exact] : [];
+  const matched: SearchEntry[] = exact ? [...exact] : [];
 
   for (const key of Object.keys(subIndex)) {
     if (key !== stem && key.startsWith(stem)) {
@@ -90,7 +89,7 @@ const collator = new Intl.Collator('sq');
  * this is a dictionary and the alphabet is the order its readers expect. Edit
  * distance only breaks ties between entries sharing a headword.
  */
-const rank = (entries: Entry[], queryStems: string[]) => {
+const rank = (entries: SearchEntry[], queryStems: string[]) => {
   const typed = queryStems.join(' ');
 
   return entries
@@ -142,7 +141,7 @@ const getSpan = (prefix: string) => {
  * word that survives the next keystroke keeps its DOM node instead of being
  * torn down and rebuilt.
  */
-const getRowKey = (entry: Entry) =>
+const getRowKey = (entry: SearchEntry) =>
   `${entry.slug}|${entry.attributes.join('-')}|${entry.term}`;
 
 // React runs layout effects before paint; on the server there is no layout.
@@ -153,7 +152,7 @@ const MOTION = { duration: 260, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' };
 const EXIT_MS = 200;
 
 interface Row {
-  entry: Entry;
+  entry: SearchEntry;
   leaving: boolean;
 }
 
@@ -178,7 +177,7 @@ interface SearchBarProps {
 
 const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<Entry[]>([]);
+  const [suggestions, setSuggestions] = useState<SearchEntry[]>([]);
   const [status, setStatus] = useState<Status>('idle');
   const [active, setActive] = useState(-1);
   const [span, setSpan] = useState<[string, string] | null>(null);
@@ -187,7 +186,7 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
   const [rendered, setRendered] = useState<Row[]>([]);
   const rows = useRef(new Map<string, HTMLLIElement>());
   const previousRects = useRef(new Map<string, DOMRect>());
-  const exitTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const exitTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   /*
    * A row that stops matching has to be given the chance to leave. It stays in
@@ -460,12 +459,12 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
           placeholder="Kërko një fjalë"
           ref={inputRef}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.currentTarget.value)}
           onKeyDown={handleKeyDown}
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
-          spellCheck={false}
+          spellcheck={false}
           role="combobox"
           aria-expanded={suggestions.length !== 0}
           aria-controls="rezultatet"
@@ -547,9 +546,7 @@ const SearchBar = ({ autoFocus = false, compact = false }: SearchBarProps) => {
                     {suggestion.attributes.join(' ')}
                   </span>
                 )}
-                <span className={styles.gist}>
-                  {getGist(suggestion.definitions)}
-                </span>
+                <span className={styles.gist}>{suggestion.gist}</span>
               </a>
             </li>
           );

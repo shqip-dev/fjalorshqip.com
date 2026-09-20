@@ -2,7 +2,14 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "preact/compat",
+    // `preact({ compat: true })` aliases these at build time; TypeScript needs
+    // to be told the same thing, or every `from 'react'` import goes unresolved.
+    "paths": {
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"],
+      "react/jsx-runtime": ["./node_modules/preact/jsx-runtime/"]
+    }
   },
   "exclude": [
     "dist",

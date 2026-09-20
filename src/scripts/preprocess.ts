@@ -3,16 +3,17 @@ import {
   getScrapedDictionary,
   type Entry,
   saveSlugDictionary,
-  type Index,
+  type SearchEntry,
   saveStemSubIndex,
   saveSlugSubIndex,
 } from '../lib/dictionary.ts';
 import { isProduction, getDictionarySubset } from '../lib/env.ts';
+import { getGist } from '../lib/entryFormat.ts';
 import { getStems, getSlug, getStemPrefix } from '../lib/process.ts';
 import { groupBy, isSameList, sortByKey } from '../lib/utils.ts';
 
-type Indexes = {
-  [prefix: string]: Index;
+type Indexes<T> = {
+  [prefix: string]: { [key: string]: T[] };
 };
 
 const main = async () => {
@@ -35,16 +36,19 @@ const main = async () => {
   );
   await saveSlugDictionary(slugDictionary, production);
 
+  // The search field draws a row, not an entry, so the stem index carries only
+  // what a row shows. A word page reads the slug index below, which keeps the
+  // definitions whole.
   const stemSubIndexes = entriesSubSet
     .filter((entry) => !!entry.stems)
     .flatMap((entry) =>
       entry.stems.map((stem) => ({
         prefix: stem,
-        entry,
+        entry: toSearchEntry(entry),
       }))
     )
     .filter((stemEntry) => !!stemEntry.prefix)
-    .reduce(accumulateEntriesInSubIndexes, {} as Indexes);
+    .reduce(accumulateEntriesInSubIndexes, {} as Indexes<SearchEntry>);
 
   await Promise.all(
     Object.entries(stemSubIndexes).map(([prefix, index]) =>
@@ -58,7 +62,7 @@ const main = async () => {
       prefix: entry.slug,
       entry,
     }))
-    .reduce(accumulateEntriesInSubIndexes, {} as Indexes);
+    .reduce(accumulateEntriesInSubIndexes, {} as Indexes<Entry>);
 
   await Promise.all(
     Object.entries(slugSubIndexes).map(([prefix, index]) =>
@@ -72,6 +76,14 @@ const main = async () => {
     } slug sub indexes and ${entriesSubSet.length} entries`
   );
 };
+
+const toSearchEntry = (entry: Entry): SearchEntry => ({
+  term: entry.term,
+  attributes: entry.attributes,
+  stems: entry.stems,
+  slug: entry.slug,
+  gist: getGist(entry.definitions),
+});
 
 const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
   const scrapedTermParts = scrapedEntry.term
@@ -133,9 +145,9 @@ const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
   return sortedScrapedEntries;
 };
 
-const accumulateEntriesInSubIndexes = (
-  acc: Indexes,
-  stemEntry: { prefix: string; entry: Entry }
+const accumulateEntriesInSubIndexes = <T>(
+  acc: Indexes<T>,
+  stemEntry: { prefix: string; entry: T }
 ) => {
   const firstKey = getStemPrefix(stemEntry.prefix);
   const secondKey = stemEntry.prefix;

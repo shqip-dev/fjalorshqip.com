@@ -83,9 +83,9 @@ const LemshRound = ({
   const [message, setMessage] = useState('');
 
   const deadline = useRef(Date.now() + limit * 1000);
-  const clock = useRef<ReturnType<typeof setInterval>>(undefined);
-  const messageTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const revealTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const clock = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const revealTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const slots = useRef<HTMLDivElement | null>(null);
   const shuffled = useRef(false);
   // How many orders this word has refused so far. The component is keyed by the

@@ -30,8 +30,14 @@ more than one definition.
 
 Three artifacts land in `src/data/gen/`:
 - `slugDictionary.json` — `slug → Entry[]`, consumed by `getStaticPaths` in `f/[slug].astro`.
-- `stem/<prefix>.json` — `stem → Entry[]`, the search index.
+- `stem/<prefix>.json` — `stem → SearchEntry[]`, the search index.
 - `slug/<prefix>.json` — `slug → Entry[]`, the client-side fallback index.
+
+`SearchEntry` is not `Entry`: it is `{term, attributes, stems, slug, gist}`, where `gist` is
+`getGist(entry.definitions)` computed at build time. A result row renders exactly those fields, so the
+definitions never travel with a search — the `shk` bucket is 87 KB / 22 KB gzip instead of 198 KB /
+61 KB. The definitions are in the slug index, which is what a word page reads. Putting them back in the
+stem index would cost every search the difference.
 
 ## Invariants
 
@@ -58,8 +64,8 @@ prefix, so typing further characters within the same 3-char prefix costs no netw
 bucket it takes the exact stem key *plus every key that starts with it* (`matchStem`), which is what makes
 three characters behave as type-ahead — the bucket is already in memory, so this costs no request and no
 change to the generated indexes. Multi-word queries fetch one sub-index per word and `intersectionBy(term)`
-the results. Ranking is exact-stem first, then `leven(entry.stems, queryStems)`, then term length, capped
-at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at `MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty
+the results. Ranking is exact-stem first, then `Intl.Collator('sq')` on the term, then
+`leven(entry.stems, queryStems)` as a tie-break, capped at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at `MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty
 index, not an error. Queries are reported to Umami as a `search_v2` event with a per-document random id
 (`document.__fjalorshqip__`).
 

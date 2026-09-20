@@ -6,10 +6,11 @@ import { getSlug } from './process.ts';
  * written as `shih te BËJ` with the target set in capitals. This module turns
  * both into something renderable.
  *
- * It runs at render time on purpose — `src/scripts/preprocess.ts` and the
- * generated indexes stay untouched, so the 3-char prefix contract and the
- * shape of `src/data/gen/` are unaffected. Moving it to build time later is a
- * pure optimisation, not a rewrite.
+ * `formatDefinition` runs at render time on purpose — `src/scripts/preprocess.ts`
+ * and the generated indexes stay untouched, so the 3-char prefix contract and
+ * the shape of `src/data/gen/` are unaffected. `getGist` below is the one part
+ * that does run at build time, because what it produces is all the search index
+ * needs to keep.
  */
 
 export interface TextPart {
@@ -77,7 +78,9 @@ export const formatDefinition = (definition: string): FormattedDefinition => {
 };
 
 // The first sense, flattened and shortened — what a search result shows so the
-// visitor chooses a word instead of guessing at one.
+// visitor chooses a word instead of guessing at one. `preprocess.ts` calls this
+// and stores the result as `SearchEntry.gist`, so the definitions themselves
+// never have to be downloaded to draw a row.
 export const getGist = (definitions: string[], limit = 120) => {
   const first = (definitions[0] || '').split(IDIOM_SEPARATOR)[0].trim();
   if (first.length <= limit) {

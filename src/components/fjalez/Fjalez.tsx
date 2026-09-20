@@ -92,7 +92,7 @@ const Fjalez = () => {
   const [copied, setCopied] = useState(false);
   const [played, setPlayed] = useState<PlayedDay[]>([]);
   const [revealed, setRevealed] = useState(-1);
-  const messageTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const activeRow = useRef<HTMLDivElement | null>(null);
   // Checking a guess awaits the word list, so two fast Enters could otherwise
   // both get through with the same row.

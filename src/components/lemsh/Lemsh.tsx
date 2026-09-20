@@ -61,7 +61,7 @@ const Lemsh = () => {
   const [played, setPlayed] = useState<PlayedDay[]>([]);
   const [copied, setCopied] = useState(false);
   const [message, setMessage] = useState('');
-  const messageTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const round = getRound(day);
   const future = day > today;

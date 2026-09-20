@@ -464,7 +464,7 @@ static-site note and the copyright below are sentences, so they drop out of smal
 face at `--step-small` with normal tracking. Because this is the one region whose ground is not stock,
 it is also the one region that recolours the focus ring: `.colophon :focus-visible` overrides
 `outline-color` to `--on-cloth` (9.64:1 on cloth) while keeping the 2px width and 3px offset. The
-override is global rather than layout-scoped on purpose — the link row is a React island, which Astro's
+override is global rather than layout-scoped on purpose — the link row is a Preact island, which Astro's
 scoped styles do not reach.
 
 ### Search Field (signature)

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`fjalorshqip.com` — an Albanian dictionary site built with Astro 7 + React 19 islands. It ships as
+`fjalorshqip.com` — an Albanian dictionary site built with Astro 7 + Preact 10 islands. It ships as
 **static files only**: no application server, no database, no request-time code. Search runs entirely in
 the browser against JSON indexes generated at build time. It is served from any static host; a Docker
 image is published to ghcr.io by `.github/workflows/docker-publish.yml`.
@@ -60,6 +60,12 @@ seeds itself from that `q` param — the name lives in `src/lib/search.ts`, shar
 bucketed by the first 3 characters of the key. Astro publishes those sub-indexes as plain static JSON at
 `/api/{stem,slug}-index/<prefix>.json`. `SearchBar` normalizes the typed query with the *same*
 `getStems` used at build time, fetches the one matching sub-index, and intersects/ranks locally.
+
+The two sub-indexes deliberately do **not** carry the same record. The slug index holds whole `Entry`
+objects, because a word page renders from it. The stem index holds `SearchEntry` — term, attributes,
+slug, stems and a `gist` computed at build time by `getGist` — because a result row shows nothing else;
+putting the definitions back would mean downloading the dictionary to draw ten lines of it (the `shk`
+bucket costs 22 KB gzip this way, 61 KB with definitions).
 
 Load-bearing details that are easy to break — the stem/slug normalization split, the 3-char prefix
 contract shared by generator and clients, and `index.astro` doubling as the 404 catch-all that renders
@@ -147,6 +153,20 @@ and the page tracks it — `LemshRound` holds no analytics of its own.
   `intersectBy`, `debounce`). `intersectBy` deliberately keeps lodash `intersectionBy`'s dedupe-by-key
   behaviour, and `SearchBar` relies on an absent stem key staying `undefined` rather than `[]` — an
   empty list there would wipe out the intersection instead of being skipped.
-- `.design-sync/`, `.ds-sync/` and `ds-bundle/` are tooling for bundling the React components as a
+- **The islands are Preact with `compat` on**, which is what `preact({ compat: true })` in
+  `astro.config.mjs` buys: the components still `import … from 'react'` and Vite aliases that to
+  `preact/compat`. Three things hang off that and are easy to undo by accident. `compat` is what
+  rewrites `onChange` to `oninput` on a text input — turn it off and the search field stops filtering
+  until it loses focus, silently. `client:only` islands must say `"preact"`, not `"react"`, or they
+  never mount. And `tsconfig.json` repeats the alias in `paths`, because Vite's alias means nothing to
+  `astro check`. Preact's typings are stricter in two places worth knowing: a timer ref is
+  `useRef<ReturnType<typeof setTimeout> | undefined>(undefined)`, and DOM props are spelled the HTML
+  way (`spellcheck`), not React's.
+- `src/styles/fonts.scss` declares Alegreya's `@font-face` blocks by hand instead of importing
+  `@fontsource-variable/alegreya/index.css`, which would also ship Cyrillic, Greek and Vietnamese —
+  ten woff2 files no page here can ask for. Only the Latin subsets are declared, pointing straight at
+  the package's `files/*.woff2`. When the package is upgraded, check those file names: nothing fails
+  loudly if one is renamed.
+- `.design-sync/`, `.ds-sync/` and `ds-bundle/` are tooling for bundling the UI components as a
   design-system package — not part of the site build. `.design-sync/NOTES.md` records the pnpm migration
   and dependency-upgrade details.

@@ -64,6 +64,12 @@ Një indeks i vetëm me të gjithë fjalorin do ta zhbënte qëllimin — shflet
 dhjetëra megabajt. Prandaj zërat grupohen sipas **tri shkronjave të para** të çelësit
 (funksioni `getStemPrefix`), dhe secili grup shkruhet si skedar më vete:
 
+Dy nënindekset nuk mbajnë të njëjtën gjë. Ai i `slug`-ut i mban zërat të plotë, sepse prej tij
+ndërtohet faqja e fjalës. Ai i `stem`-it mban vetëm atë që duket në një rresht rezultati — termin,
+atributet, `slug`-un, `stems` dhe fillimin e kuptimit të parë (`gist`), i llogaritur gjatë ndërtimit.
+Kështu kërkimi nuk shkarkon kuptimet e plota: nënindeksi `shk`, për shembull, peshon rreth 22 KB të
+ngjeshur në vend të 61 KB.
+
 ```text
 src/data/gen/
 ├── slugDictionary.json   # slug → zërat, përdoret për të parandërtuar faqet /f/<fjala>
