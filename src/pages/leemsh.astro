@@ -1,12 +1,15 @@
 ---
 import Lemsh from '../components/lemsh/Lemsh';
 import MainLayout from '../layouts/MainLayout.astro';
+import { getGameCardPath } from '../lib/seo.ts';
 ---
 
 <MainLayout
   title="Lëmsh | Loja e shkronjave shqipe | fjalorshqip.com"
   socialTitle="Lëmsh — loja e shkronjave shqipe"
   description="Lëmsh — rendit shkronjat e përziera dhe nxirr fjalët e ditës. Pesë a gjashtë fjalë, secila me orën e vet."
+  image={getGameCardPath('lemsh')}
+  imageAlt="Lëmsh — loja e shkronjave shqipe"
 >
   {
     /* The board knows which day it is, which day was asked for and what this

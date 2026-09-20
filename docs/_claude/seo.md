@@ -68,16 +68,19 @@ the inline `<script>` early.
 
 ## The cards
 
-**Every word page has its own card**, and everything else shares `public/og.png`. A link to a word
-unfurls in WhatsApp, Discord, Slack or a timeline as that word — headword in small caps, its labels,
-the hairline rule, the opening of its first sense — drawn on the same sheet the page is.
+**Every word page has its own card**, the two games have one each, and everything else shares
+`public/og.png`. A link to a word unfurls in WhatsApp, Discord, Slack or a timeline as that word —
+headword in small caps, its labels, the hairline rule, the opening of its first sense — drawn on the
+same sheet the page is. A link to a game unfurls as its board: one row of the game's own cells over
+the name and a line of its own, Fjalëz's coloured the way a guessed row is (in place, elsewhere,
+absent) and Lëmsh's a tray still shuffled, which the name under the rule then solves.
 
-`src/lib/ogCard.ts` draws both, so the site's card and 40k word cards cannot drift apart.
-`src/scripts/ogCards.ts` drives it:
+`src/lib/ogCard.ts` draws all of them, so the site's card, the games' and 40k word cards cannot drift
+apart. `src/scripts/ogCards.ts` drives it:
 
-    pnpm build            # astro check && astro build, then postbuild draws the cards
+    pnpm build            # astro check && astro build, then postbuild draws the word cards
     pnpm og:cards         # redraw the word cards into an existing dist/
-    pnpm og:site          # redraw public/og.png
+    pnpm og:site          # redraw public/og.png and the two game cards
 
 Things worth knowing before changing any of it:
 
@@ -91,7 +94,19 @@ Things worth knowing before changing any of it:
   one, and falls back to the site card, so a build that skipped them never advertises an image that
   was never drawn. `SHOULD_SKIP_WORD_CARDS=true` skips them; `SHOULD_SKIP_STATIC_WORD_PAGES` skips
   them too, since there would be no page to hang them on.
-- In `astro dev` the cards do not exist — `postbuild` only runs for a real build — so a word page
+- **The game cards go the other way — into `public/`, and into git.** There are two of them at ~9 KB,
+  so the copy `astro build` makes costs nothing, and being committed they are there for `astro dev`
+  and for a build that skipped the word cards. `GAME_CARD_FILENAMES` in `seo.ts` names them and
+  `getGameCardPath` is what `fjaleez.astro` and `leemsh.astro` pass as `image`; the drawing recipe —
+  name, tagline and the row of cells — is `GAME_CARDS` in `ogCard.ts`, node-side, where the colours
+  are. Redraw them with `pnpm og:site` whenever the palette moves, the same as the site's.
+- **A cell's letter is drawn between two invisible anchors.** Pango returns the glyph's ink box and
+  nothing else — `Ë` is 47px tall where `L` is 37 — so centring those boxes in their cells would set
+  a row on five different baselines. `drawCellLetter` draws the letter between two `alpha="1"` spans
+  reading `ËJ`, the tallest and the deepest thing a row holds, which pins every raster to the same
+  extents, then crops the ink back to its own columns: centred on its ink across the cell, on the
+  shared baseline down it.
+- In `astro dev` the word cards do not exist — `postbuild` only runs for a real build — so a word page
   there names a `/og/<slug>.png` that would 404 if anything fetched it. Nothing does: an unfurler
   reads the tag off a deployed page, and the browser never requests `og:image`.
 - **The browser-side head does not touch `og:image`.** `documentMeta` could point at a word's card,

@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import sharp, { type Sharp } from 'sharp';
 import type { Entry } from './dictionary.ts';
 import { getGist } from './entryFormat.ts';
-import { SITE_HOST, SITE_TAGLINE, SITE_NAME } from './seo.ts';
+import { SITE_HOST, SITE_TAGLINE, SITE_NAME, type GameKey } from './seo.ts';
 
 export const CARD_WIDTH = 1200;
 export const CARD_HEIGHT = 630;
@@ -26,6 +26,18 @@ const INK = '#241d17';
 const INK_MUTED = '#5c5145';
 const RULE = '#837a66';
 const ON_CLOTH = '#f0eae0';
+
+// The board's own greys: a cell the guess ruled out, and the cloth at 22% over
+// the stock — `--stock-sunk` and `--cloth-wash` in `global.scss`, resolved here
+// because pango takes a hex and not a `color-mix`.
+const STOCK_SUNK = '#e0dbcc';
+const CLOTH_WASH = '#cdb8af';
+// The hairline between two cells is 1px on a page and 2px here: the card is
+// drawn at roughly twice the board's size, and a 1px rule at that scale reads
+// as a seam rather than as the ruled ground it is.
+const CELL_RULE = 2;
+const CELL = 96;
+const CELL_TEXT = 54;
 
 const HEAD_RULE = 14;
 const FOOT_BAND = 96;
@@ -113,6 +125,149 @@ const drawHeadword = async (term: string) => {
   }
 
   throw new Error(`Could not draw the headword ${term}`);
+};
+
+/*
+ * One row of the games' board, drawn the way both boards are drawn: a single
+ * rule-coloured ground under a hairline grid, cells laid on top of it, no cell
+ * carrying a border of its own.
+ */
+type CellState = 'plain' | 'placed' | 'elsewhere' | 'absent';
+
+const CELL_FILL: Record<CellState, string> = {
+  plain: STOCK,
+  placed: CLOTH,
+  elsewhere: CLOTH_WASH,
+  absent: STOCK_SUNK,
+};
+
+const CELL_INK: Record<CellState, string> = {
+  plain: INK,
+  placed: ON_CLOTH,
+  elsewhere: INK,
+  absent: INK_MUTED,
+};
+
+/*
+ * A letter for one cell. Pango hands back the glyph's ink box and nothing else
+ * — `Ë` is 47px tall where `L` is 37 — so centring those boxes in their cells
+ * would set the row on five different baselines. The letter is therefore drawn
+ * between two invisible anchors, `ËJ` being the tallest and the deepest thing
+ * a row holds: they pin every raster to the same extents, and the ink is then
+ * cropped back to its own columns, so a letter is centred on its ink across the
+ * cell and on the shared baseline down it.
+ */
+const CELL_ANCHOR = '<span alpha="1">ËJ</span>';
+
+const drawCellLetter = async (
+  letter: string,
+  colour: string
+): Promise<Drawn> => {
+  const framed = await sharp({
+    text: {
+      text: `${CELL_ANCHOR}<span foreground="${colour}">${escape(letter)}</span>${CELL_ANCHOR}`,
+      font: `Alegreya SC ${CELL_TEXT}`,
+      fontfile: FONT_SC,
+      rgba: true,
+    },
+  })
+    .png()
+    .toBuffer();
+
+  // The anchors draw nothing, so every pixel with ink here is the letter's.
+  const { data, info } = await sharp(framed)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  let left = info.width;
+  let right = 0;
+  for (let y = 0; y < info.height; y++) {
+    for (let x = 0; x < info.width; x++) {
+      if (data[(y * info.width + x) * info.channels + 3] !== 0) {
+        left = Math.min(left, x);
+        right = Math.max(right, x);
+      }
+    }
+  }
+
+  const width = right - left + 1;
+  const buffer = await sharp(framed)
+    .extract({ left, top: 0, width, height: info.height })
+    .png()
+    .toBuffer();
+
+  return { buffer, width, height: info.height, offset: 0 };
+};
+
+const drawRow = async (row: [string, CellState][]): Promise<Drawn> => {
+  const step = CELL + CELL_RULE;
+  const width = row.length * step + CELL_RULE;
+  const height = CELL + CELL_RULE * 2;
+
+  const cells = row
+    .map(
+      ([, state], index) =>
+        `<rect x="${CELL_RULE + index * step}" y="${CELL_RULE}" width="${CELL}" height="${CELL}" fill="${CELL_FILL[state]}"/>`
+    )
+    .join('');
+
+  const ground = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${RULE}"/>${cells}</svg>`
+  );
+
+  const letters = await Promise.all(
+    row.map(([letter, state]) => drawCellLetter(letter, CELL_INK[state]))
+  );
+
+  const buffer = await sharp(ground)
+    .composite(
+      letters.map((letter, index) => ({
+        input: letter.buffer,
+        left: CELL_RULE + index * step + Math.round((CELL - letter.width) / 2),
+        top: CELL_RULE + Math.round((CELL - letter.height) / 2),
+      }))
+    )
+    .png()
+    .toBuffer();
+
+  return { buffer, width, height, offset: 0 };
+};
+
+/*
+ * What each game's card says. The row is the game itself rather than an
+ * ornament: Fjalëz shows a guessed row as the board would colour it — in place,
+ * elsewhere, absent — and Lëmsh a tray still shuffled, which the name under the
+ * rule then solves.
+ */
+interface GameCardSpec {
+  name: string;
+  tagline: string;
+  row: [string, CellState][];
+}
+
+const GAME_CARDS: Record<GameKey, GameCardSpec> = {
+  fjalez: {
+    name: 'Fjalëz',
+    tagline: 'Një fjalë e re çdo ditë, gjashtë mundësi',
+    row: [
+      ['F', 'placed'],
+      ['J', 'absent'],
+      ['A', 'elsewhere'],
+      ['L', 'placed'],
+      ['Ë', 'absent'],
+    ],
+  },
+  lemsh: {
+    name: 'Lëmsh',
+    tagline: 'Rendit shkronjat e përziera, nxirr fjalët e ditës',
+    row: [
+      ['M', 'plain'],
+      ['H', 'plain'],
+      ['Ë', 'plain'],
+      ['L', 'plain'],
+      ['S', 'plain'],
+    ],
+  },
 };
 
 const centre = (drawn: Drawn) =>
@@ -217,6 +372,27 @@ export const createCardRenderer = async () => {
       }
 
       return await compose(parts, gaps);
+    },
+
+    /** A game's card: one row of its board over the name and the tagline. */
+    renderGameCard: async (game: GameKey) => {
+      const spec = GAME_CARDS[game];
+
+      const row = await drawRow(spec.row);
+      const name = await draw(spec.name.toUpperCase(), {
+        size: 84,
+        font: FONT_SC,
+        colour: CLOTH,
+        spacing: 10000,
+      });
+      const tagline = await draw(spec.tagline, {
+        size: 36,
+        font: FONT_ROMAN,
+        colour: INK,
+        width: COLUMN,
+      });
+
+      return await compose([row, name, 'rule', tagline], [46, 24, 30, 0]);
     },
 
     /** The card every other page shares — `public/og.png`. */

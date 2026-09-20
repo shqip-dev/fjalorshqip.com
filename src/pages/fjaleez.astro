@@ -1,12 +1,15 @@
 ---
 import Fjalez from '../components/fjalez/Fjalez';
 import MainLayout from '../layouts/MainLayout.astro';
+import { getGameCardPath } from '../lib/seo.ts';
 ---
 
 <MainLayout
   title="Fjalëz | Loja e fjalëve shqipe | fjalorshqip.com"
   socialTitle="Fjalëz — loja e fjalëve shqipe"
   description="Fjalëz — gjeje fjalën e ditës me pesë shkronja shqipe. Gjashtë mundësi, një fjalë e re çdo ditë."
+  image={getGameCardPath('fjalez')}
+  imageAlt="Fjalëz — loja e fjalëve shqipe"
 >
   {
     /* The board knows which day it is, which day was asked for and what this

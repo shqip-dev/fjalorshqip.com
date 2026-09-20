@@ -2,7 +2,7 @@
  * Draws one social card per word page, plus the site's own card:
  *
  *   node ./src/scripts/ogCards.ts          # dist/og/<slug>.png
- *   node ./src/scripts/ogCards.ts --site   # public/og.png, the shared card
+ *   node ./src/scripts/ogCards.ts --site   # public/og*.png, the committed cards
  *
  * `pnpm build` runs this as `postbuild`, after `astro build` has written
  * `dist`, because that is where the cards go. Going through `public/` instead
@@ -22,7 +22,12 @@ import path from 'path';
 import { getSlugDictionary } from '../lib/dictionary.ts';
 import { shouldSkipWordCards } from '../lib/env.ts';
 import { createCardRenderer } from '../lib/ogCard.ts';
-import { SITE_CARD_FILENAME, WORD_CARD_DIR } from '../lib/seo.ts';
+import {
+  GAME_CARD_FILENAMES,
+  SITE_CARD_FILENAME,
+  WORD_CARD_DIR,
+  type GameKey,
+} from '../lib/seo.ts';
 
 const DIST_DIR = 'dist';
 const SITE_CARD_PATH = `public/${SITE_CARD_FILENAME}`;
@@ -39,9 +44,27 @@ const PROGRESS_EVERY = 2000;
 const main = async () => {
   const renderer = await createCardRenderer();
 
+  /*
+   * The cards that are not a word's: the site's own and one per game. There
+   * are three of them, they are committed rather than built, and they go to
+   * `public/` — see `GAME_CARD_FILENAMES` in `src/lib/seo.ts`.
+   */
   if (process.argv.includes('--site')) {
-    await fs.writeFile(SITE_CARD_PATH, await renderer.renderSiteCard());
-    console.log(`Wrote ${SITE_CARD_PATH}`);
+    const cards: [string, Buffer][] = [
+      [SITE_CARD_PATH, await renderer.renderSiteCard()],
+    ];
+
+    for (const game of Object.keys(GAME_CARD_FILENAMES) as GameKey[]) {
+      cards.push([
+        `public/${GAME_CARD_FILENAMES[game]}`,
+        await renderer.renderGameCard(game),
+      ]);
+    }
+
+    for (const [file, card] of cards) {
+      await fs.writeFile(file, card);
+      console.log(`Wrote ${file}`);
+    }
     return;
   }
 

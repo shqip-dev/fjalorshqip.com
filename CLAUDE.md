@@ -148,6 +148,9 @@ what `@astrojs/sitemap` lists. Nothing on the 404 path asks to be indexed.
 **Every word page has its own social card.** `src/lib/ogCard.ts` draws them — the headword, its
 labels and its first sense on the page's own sheet — and `src/scripts/ogCards.ts` runs as `postbuild`
 to write one per prerendered slug into `dist/og/<slug>.png`, plus `public/og.png` for everything else.
+Fjalëz and Lëmsh have a card each as well, drawn by the same module as a row of the game's own cells:
+they are two files, so they live in `public/` beside the site's card and are committed rather than
+built, and `pnpm og:site` redraws all three.
 Three things make that affordable and are easy to undo: the cards go into `dist`, never `public`,
 which `astro build` would copy a second time; they are drawn from the same slug dictionary the pages
 are, so a card exists exactly when its page does; and `sharp` is a devDependency of a version `astro`
