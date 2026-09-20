@@ -1,0 +1,90 @@
+---
+/*
+ * The people who built the site, set as a ruled list — the same construction
+ * the result list and the game archives use: hairline-separated rows, each row
+ * a full-width target that starts and ends on the column's edge. The name sits
+ * at the left margin and the site it links to at the right, the way a guide
+ * rail carries its counterpart, so the block reads as a printed table rather
+ * than as two paragraphs that happen to be links.
+ */
+
+interface Contributor {
+  /** How the person is credited. */
+  name: string;
+  /** Their own site; the row links here and the right margin names it. */
+  href: string;
+}
+
+const CONTRIBUTORS: Contributor[] = [
+  { name: 'Dardan H', href: 'https://dardan.dev' },
+  { name: 'Labinot B', href: 'https://bashk.eu' },
+];
+
+/* The right margin names the destination, so it is the bare host — a label,
+   not a URL to be typed back in. */
+const hostOf = (href: string) => new URL(href).host.replace(/^www\./, '');
+---
+
+<ul class="list">
+  {
+    CONTRIBUTORS.map((contributor) => (
+      <li class="row">
+        <a class="link" href={contributor.href} target="_blank" rel="noopener">
+          <span class="name">{contributor.name}</span>
+          <span class="site sc">{hostOf(contributor.href)}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .list {
+    margin-top: 1.3rem;
+    border-top: var(--rule-hair) solid var(--rule);
+  }
+
+  .row {
+    margin-top: 0;
+    border-bottom: var(--rule-hair) solid var(--rule);
+  }
+
+  .link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 1.2rem;
+    flex-wrap: wrap;
+    padding-block: 0.7rem;
+    min-height: 2.75rem;
+    text-decoration: none;
+    transition: background-color 140ms var(--ease-settle);
+  }
+
+  /* The row carries the wash and the name turns oxblood together, the way a
+     result row answers a pointer. */
+  .link:hover {
+    background-color: var(--stock-sunk);
+  }
+
+  .name {
+    color: var(--ink);
+    line-height: var(--leading-read);
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in srgb, var(--cloth) 40%, transparent);
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.18em;
+    transition: color 140ms var(--ease-settle),
+      text-decoration-color 140ms var(--ease-settle);
+  }
+
+  .link:hover .name {
+    color: var(--cloth);
+    text-decoration-color: currentColor;
+  }
+
+  .site {
+    font-size: var(--step-guide);
+    color: var(--ink-muted);
+  }
+</style>

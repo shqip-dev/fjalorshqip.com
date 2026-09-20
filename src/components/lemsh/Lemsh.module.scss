@@ -8,11 +8,28 @@
 .lemsh {
   padding-top: clamp(1.75rem, 6vw, 3rem);
 
+  /* A tile's own floor. A cell that a thumb has to hit wants 44px; 2.9rem is
+     that with a hair to spare, and it is what the board is measured from. */
+  --cell-min: 2.9rem;
+
+  /* What the widest word in the series needs: one cell per column, plus the
+     hairline ground between and around them. This is the board at its
+     smallest, and the measure below may not go under it. */
+  --board-min: calc(
+    var(--columns) * var(--cell-min) + (var(--columns) + 1) * var(--rule-hair)
+  );
+
   /* The measure the boards and the keys share — wider than Fjalëz's, because a
      word here can be seven tiles instead of five, and answering to the
      viewport's height as well as its width so that the tiles, the tray and the
-     three keys under them are seen at once rather than scrolled through. */
-  --play: min(100%, 30rem, max(18rem, calc(100svh - 24rem)));
+     three keys under them are seen at once rather than scrolled through. The
+     height-driven shrink is floored by the board itself rather than by a round
+     number: squeezed under `--board-min` the tiles stop fitting the measure,
+     spill past it, and the ruled ground — which is every tile's border here —
+     stops partway through the last one. Only the container (`100%`) may take
+     the board below that, on a screen where seven tiles at 44px cannot fit at
+     any measure. */
+  --play: min(100%, 30rem, max(var(--board-min), calc(100svh - 24rem)));
 }
 
 .head {

@@ -119,8 +119,10 @@ rules, the day arithmetic and the scoring; `src/lib/lemshStore.ts` the storage. 
 
 Scoring is `10 × letters + seconds left` for a solved word and nothing for a missed one; the clock is
 `max(30, 8 × letters)` seconds. Umami events are `lemsh_open`, `lemsh_start`, `lemsh_word_solved`,
-`lemsh_word_missed` (`r` is `timeout` or `skip`), `lemsh_shuffle`, `lemsh_finish`, `lemsh_share` and
-`lemsh_definition`.
+`lemsh_word_missed` (`r` is `timeout` or `skip`), `lemsh_word_wrong` (the slots filled with something
+that is not the word: `g` is what was built and `n` which attempt it was at that word),
+`lemsh_shuffle`, `lemsh_finish`, `lemsh_share` and `lemsh_definition`. The board raises what happened
+and the page tracks it — `LemshRound` holds no analytics of its own.
 
 ## Notes
 

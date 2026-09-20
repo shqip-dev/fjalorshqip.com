@@ -5,9 +5,10 @@
  * border, a radius or a shadow of its own.
  *
  * Both grids are laid out over the series' longest word and cut to the current
- * word's share of it (`--slots / --columns`), the way a keyboard row is sized
- * against the widest row. A tile is therefore the same size in every word, and
- * a four-letter round does not arrive as four enormous squares.
+ * word's share of it (`--slots / --columns`, the page's own count), the way a
+ * keyboard row is sized against the widest row. A tile is therefore the same
+ * size in every word, and a four-letter round does not arrive as four enormous
+ * squares.
  *
  * The clock is a rule, because rule weight is this system's whole depth
  * vocabulary: a 3px oxblood line over a hairline track, shortening. Its length
@@ -81,7 +82,13 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
-  min-height: 2.9rem;
+  /* A grid item's automatic minimum size is its content's, and a square cell
+     asked for `--cell-min` of height claims that much width with it. Held
+     above the track it was given, the cell spills to the right of the grid —
+     and the ground only paints the grid, so the last tile loses the hairline
+     that is its border. The cell takes the track it is given; the board's own
+     measure (`--board-min`) is where the thumb's 44px is kept. */
+  min-width: 0;
   background-color: var(--stock);
   font-size: clamp(1.1rem, 4.6vw, 1.5rem);
   font-weight: 700;

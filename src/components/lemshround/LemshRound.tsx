@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  MAX_LETTERS,
   formatSeconds,
   getLetters,
   getSeconds,
@@ -33,6 +32,11 @@ interface LemshRoundProps {
   onDone: (result: WordResult, reason: Reason) => void;
   /** Raised once per word, the first time the tiles are re-dealt. */
   onShuffle: () => void;
+  /**
+   * Raised every time the slots fill with something that is not the word —
+   * the arrangement the reader built, and which attempt at this word it was.
+   */
+  onWrong: (guess: string, attempt: number) => void;
 }
 
 /** Long enough to read the word that was just won or lost, and no longer. */
@@ -63,6 +67,7 @@ const LemshRound = ({
   points,
   onDone,
   onShuffle,
+  onWrong,
 }: LemshRoundProps) => {
   const letters = useMemo(() => getLetters(entry.word), [entry.word]);
   const limit = useMemo(() => getSeconds(entry.word), [entry.word]);
@@ -83,6 +88,9 @@ const LemshRound = ({
   const revealTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const slots = useRef<HTMLDivElement | null>(null);
   const shuffled = useRef(false);
+  // How many orders this word has refused so far. The component is keyed by the
+  // word, so the count starts again with each one.
+  const refused = useRef(0);
   // The word ends once: a solve landing in the same tick as the clock running
   // out may not report twice.
   const ended = useRef(false);
@@ -175,11 +183,14 @@ const LemshRound = ({
       return;
     }
 
-    if (next.map(letterOf).join('') === letters.join('')) {
+    const guess = next.map(letterOf).join('');
+    if (guess === letters.join('')) {
       finish('solved');
       return;
     }
 
+    refused.current += 1;
+    onWrong(guess, refused.current);
     flash('Jo kjo — provoni një rend tjetër.');
     nudge();
   };
@@ -278,7 +289,6 @@ const LemshRound = ({
    */
   const measure = {
     '--slots': letters.length,
-    '--columns': MAX_LETTERS,
   } as React.CSSProperties;
 
   return (

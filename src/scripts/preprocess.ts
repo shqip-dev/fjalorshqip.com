@@ -91,6 +91,12 @@ const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
       definition.replace(/^\d+\.\s*/, '')
     );
   }
+  // The scrape left stray sense numbers behind as definitions of their own
+  // ('  5. ', ' 2.3.'), which the strip above turns into empty strings; a word
+  // page then numbers a sense that says nothing. A definition with no letter in
+  // it is not a definition, so it never reaches the index. This drops nothing
+  // the dictionary says: no entry in the corpus loses its last definition.
+  definitions = definitions.filter((definition) => hasLetter(definition));
 
   return {
     term: term,
@@ -100,6 +106,10 @@ const mapScrapedEntryToEntry = (scrapedEntry: ScrapedEntry): Entry => {
     slug: getSlug(term),
   };
 };
+
+// Albanian, and any other alphabet: a character that is a letter in Unicode
+// terms, as opposed to a digit, a punctuation mark or a space.
+const hasLetter = (text: string) => /\p{L}/u.test(text);
 
 const dedupScrapedEntries = (scrapedEntries: ScrapedEntry[]) => {
   const sortedScrapedEntries = sortByKey(scrapedEntries, (entry) => entry.term);

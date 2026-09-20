@@ -15,6 +15,12 @@
 .fjalez {
   padding-top: clamp(1.75rem, 6vw, 3rem);
 
+  /* The keyboard measures itself against the column rather than against the
+     play block it sits inside, so it needs the column to be a container it can
+     ask. Everything absolutely positioned under here is a `::after` anchored to
+     its own tile or key, so the containment this brings reaches nothing. */
+  container-type: inline-size;
+
   /* The board, the keyboard and the keys that commit a guess are one object and
      share one measure — narrower than the reading column, because a square grid
      set to 56rem would be a wall. The measure answers to the viewport's height

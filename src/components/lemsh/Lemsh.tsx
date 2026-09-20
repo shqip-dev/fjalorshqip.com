@@ -9,6 +9,7 @@ import {
   getDayIndex,
   getRound,
   getRoundSeconds,
+  MAX_LETTERS,
   scoreRound,
   toDayParam,
   type WordResult,
@@ -199,6 +200,16 @@ const Lemsh = () => {
   const stats = getStats(played);
   const archiveToday = Math.min(today, ROUNDS.length - 1);
 
+  /*
+   * How wide the widest word in the series is. It belongs to the page rather
+   * than to a round, because the play measure below is floored by it: the
+   * board may not be squeezed narrower than its own tiles, or the ruled ground
+   * stops short of the last one.
+   */
+  const measure = {
+    '--columns': MAX_LETTERS,
+  } as React.CSSProperties;
+
   const title = (
     <header className={styles.head}>
       <h1 className={styles.title}>Lëmsh</h1>
@@ -215,7 +226,7 @@ const Lemsh = () => {
 
   if (!playable || !round) {
     return (
-      <div className={styles.lemsh}>
+      <div className={styles.lemsh} style={measure}>
         {title}
         <p className={styles.closed}>
           {future
@@ -243,7 +254,7 @@ const Lemsh = () => {
   }
 
   return (
-    <div className={styles.lemsh}>
+    <div className={styles.lemsh} style={measure}>
       {title}
 
       <p className={styles.intro}>
@@ -273,6 +284,15 @@ const Lemsh = () => {
               track('lemsh_shuffle', {
                 d: toDayParam(day),
                 i: String(results.length + 1),
+              })
+            }
+            onWrong={(guess, attempt) =>
+              track('lemsh_word_wrong', {
+                d: toDayParam(day),
+                i: String(results.length + 1),
+                w: round[results.length]!.word,
+                g: guess,
+                n: String(attempt),
               })
             }
           />

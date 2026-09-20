@@ -1,16 +1,29 @@
 /*
- * Three ruled strips, staggered the way a keyboard is. Each row is its own
- * table — one hairline shared between neighbouring keys, drawn by the grid's
- * own gap over a rule-coloured ground — and is centred against the widest row,
- * so no key carries a border, a radius or a shadow of its own.
+ * One ruled table, staggered the way a keyboard is. A hairline is shared
+ * between neighbouring keys — drawn by the grid's own gap over a rule-coloured
+ * ground — and between neighbouring rows, which overlap the 1px ground each of
+ * them carries rather than standing apart. No key carries a border, a radius
+ * or a shadow of its own, and the shorter rows centre against the widest.
  *
  * A row's width is its share of the keyboard (`--keys / --columns`), which
  * keeps every key the same width across rows without measuring anything.
  */
 
 .keyboard {
-  width: 100%;
+  /*
+   * The keys answer to the width of the column and to nothing else. The board
+   * above them keeps `--play`, which shrinks with the viewport's *height* so
+   * that six rows and three rows of keys are seen at once — but a key that
+   * shrinks with the height is a key a thumb misses, and reading a board and
+   * hitting a letter are not the same task. So the keyboard steps out of that
+   * measure, takes the column, and centres itself back on the block it sits
+   * in. It is capped where `--play` caps, so a desktop sheet is unchanged.
+   */
+  --keys-width: min(100cqi, 26rem);
+
+  width: var(--keys-width);
   margin-top: clamp(1.1rem, 4vh, 2rem);
+  margin-inline: calc((var(--play) - var(--keys-width)) / 2);
 }
 
 .row,
@@ -27,8 +40,11 @@
   width: calc(var(--keys) / var(--columns) * 100%);
 }
 
+/* Rows are not separate strips with air between them: they meet on one shared
+   hairline, the way two neighbouring keys do. Each row carries a 1px ground all
+   round, so overlapping by exactly that leaves one rule, not two. */
 .row + .row {
-  margin-top: 0.3rem;
+  margin-top: calc(var(--rule-hair) * -1);
 }
 
 .key {
