@@ -13,7 +13,8 @@
  * GARDH belongs here and SHTËPI, which is six characters, does not.
  */
 import { getScrapedDictionary } from '../lib/dictionary.ts';
-import { WORD_LENGTH, splitLetters } from '../lib/fjalez.ts';
+import { WORD_LENGTH } from '../lib/fjalez.ts';
+import { splitLetters } from '../lib/letters.ts';
 import { writeJson } from '../lib/files.ts';
 
 const GUESSES_FILENAME = 'src/data/fjalez/guesses.json';

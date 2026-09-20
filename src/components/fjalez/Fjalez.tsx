@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ALPHABET,
   DAY_QUERY_PARAM,
   MAX_GUESSES,
   PUZZLES,
@@ -13,10 +12,10 @@ import {
   getOutcome,
   getPuzzle,
   scoreGuess,
-  splitLetters,
   toDayParam,
   type Mark,
 } from '../../lib/fjalez';
+import { ALPHABET, splitLetters } from '../../lib/letters';
 import {
   getStats,
   readDay,

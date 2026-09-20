@@ -1,0 +1,67 @@
+/* A ruled list, set like the result list: rows separated by hairlines, each row
+   a full-width target that starts and ends on the column's edge — the same
+   construction the Fjalëz archive is set in, kept here rather than shared so
+   each game owns its own surface. */
+
+.archive {
+  margin-top: clamp(2.5rem, 8vh, 4rem);
+}
+
+.label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.row + .row {
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.link {
+  display: flex;
+  align-items: baseline;
+  gap: 0 0.9rem;
+  padding-block: 0.7rem;
+  min-height: 2.75rem;
+  text-decoration: none;
+  transition: background-color 140ms var(--ease-settle);
+}
+
+.link:hover {
+  background-color: var(--stock-sunk);
+}
+
+.link[aria-current='page'] .number {
+  color: var(--cloth);
+}
+
+.number {
+  flex: 0 0 auto;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.date {
+  flex: 1 1 auto;
+  font-size: var(--step-small);
+  color: var(--ink);
+}
+
+.score {
+  flex: 0 0 auto;
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* A finished day states its score in ink; an open one stays apparatus. */
+.score[data-done='true'] {
+  color: var(--ink);
+}

@@ -583,6 +583,34 @@ the day's word is set: an oxblood headword at `--step-title` / 700 with its unde
 to the entry. The archive below is the result list's construction — hairline-separated rows, each a
 full-width target, the current day's number in oxblood.
 
+### Lëmsh Board (signature)
+The scramble game at `/leemsh`, and the Fjalëz board's construction used twice on one sheet: the word
+being built above, the tiles it is being built from below, each a rule-coloured ground under a 1px grid
+gap with cells in `--stock`. Both grids are laid out over the **longest word in the series** and cut to
+the current word's share of it (`--slots / --columns * 100%`), the same trick that holds a keyboard row
+to one key width — so a tile is the same size in a four-letter word as in a seven-letter one, and the
+board does not swell between words. The play block keeps its own measure (`--play`, 30rem, answering to
+the viewport's height as well as its width) and is centred as a block while the title, the running head,
+the intro and the archive keep the column's left edge.
+
+The clock is a **rule**, not a bar: a 3px `--cloth` line over a hairline `--rule` track, shortening as
+the seconds go. Under ten seconds it thickens to 5px and the figure beside it turns oxblood and bold —
+length, weight and the figure itself all say the same thing, so nothing is told by colour alone. A cell
+waiting for a tile wears the search field's caret (3px oxblood along the bottom); a solved word is set
+cell by cell in the binding (`--cloth` / `--on-cloth`, settling); a word the clock took is revealed sunk
+(`--stock-sunk` / `--ink-muted`) — the answer is shown, but it is not the reader's, so it is not set in
+the binding. A tile already placed keeps its cell on `--stock-sunk` with the letter withheld, so the row
+never reflows under the finger picking from it. A wrong order nudges the slots once and says why in the
+status line, both skipped under `prefers-reduced-motion`.
+
+Before the clock there is an opening card — three small-caps figures (words, total time, progress) over
+a hairline, the rules as one paragraph, and a single full-width oxblood key in a ruled strip of its own,
+because starting is the only thing on that page to do. After it there is the result: the score as a
+`--step-display` figure in ink, then one ruled row per word — number, the word set as an oxblood lemma
+linking to its entry, its time, its points — a word that was missed keeping the same row in muted ink
+with a zero beside it. The archive below is the Fjalëz archive's construction, carrying points instead
+of guesses.
+
 ### Not-Found / Empty / Loading
 All three are set exactly where a real entry sets its parts, so the page stays inside the book: the
 not-found title at display scale in oxblood at 600 over a 3px ink rule, its short verdict in the italic

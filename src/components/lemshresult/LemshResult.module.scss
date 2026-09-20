@@ -1,0 +1,146 @@
+/* The round read back as a ruled list — the result list's own construction:
+   hairline-separated rows, each a full-width target that starts and ends on
+   the column's edge. The score above it is set as a figure, not as a badge. */
+
+.result {
+  margin-top: clamp(1.1rem, 4vh, 2rem);
+}
+
+.score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.points {
+  font-size: var(--step-display);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.unit {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+}
+
+.summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1.4rem;
+  margin-top: 0.5rem;
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.row + .row {
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.link {
+  display: flex;
+  align-items: baseline;
+  gap: 0 0.9rem;
+  padding-block: 0.7rem;
+  min-height: 2.75rem;
+  text-decoration: none;
+}
+
+.link:hover {
+  background-color: var(--stock-sunk);
+}
+
+.number {
+  flex: 0 0 1.4rem;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* The word is a lemma and is set as one: oxblood, underlined at rest. A word
+   that was not solved is the same lemma in muted ink — the score column says
+   the same thing in figures, so the colour is never the only signal. */
+.term {
+  flex: 1 1 auto;
+  font-size: var(--step-lead);
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 40%, transparent);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 140ms var(--ease-settle);
+}
+
+.term[data-solved='false'] {
+  color: var(--ink-muted);
+  text-decoration-color: color-mix(in srgb, var(--ink-muted) 40%, transparent);
+}
+
+@media (hover: hover) {
+  .link:hover .term {
+    text-decoration-color: currentColor;
+  }
+}
+
+.note {
+  flex: 0 0 auto;
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.won {
+  flex: 0 0 2.6rem;
+  text-align: right;
+  font-size: var(--step-small);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.formula {
+  margin-top: 0.9rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.actions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.share {
+  padding-block: 0.5rem;
+  font-size: var(--step-guide);
+  text-transform: uppercase;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 45%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.share:hover {
+  text-decoration-color: currentColor;
+}
+
+.todayLink {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  text-decoration-color: color-mix(in srgb, var(--ink-muted) 40%, transparent);
+}
+
+.todayLink:hover {
+  color: var(--cloth);
+}

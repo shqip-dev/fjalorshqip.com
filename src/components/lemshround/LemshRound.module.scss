@@ -1,0 +1,205 @@
+/*
+ * Lëmsh — the same ruled table the Fjalëz board is drawn as, twice: the word
+ * being built above, the tiles it is being built from below. One rule-coloured
+ * ground under a 1px grid gap, cells in stock on top, and no cell with a
+ * border, a radius or a shadow of its own.
+ *
+ * Both grids are laid out over the series' longest word and cut to the current
+ * word's share of it (`--slots / --columns`), the way a keyboard row is sized
+ * against the widest row. A tile is therefore the same size in every word, and
+ * a four-letter round does not arrive as four enormous squares.
+ *
+ * The clock is a rule, because rule weight is this system's whole depth
+ * vocabulary: a 3px oxblood line over a hairline track, shortening. Its length
+ * is the signal and the figure beside it says the same thing in numbers, so
+ * nothing here is told by colour alone.
+ */
+
+.round {
+  margin-top: clamp(1.1rem, 4vh, 2rem);
+}
+
+.rail {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1.2rem;
+  padding-bottom: 0.4rem;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.clock {
+  color: var(--ink);
+}
+
+.clock[data-urgent='true'] {
+  color: var(--cloth);
+  font-weight: 700;
+}
+
+.gauge {
+  height: 3px;
+  background-color: var(--rule);
+}
+
+.gauge span {
+  display: block;
+  height: 100%;
+  background-color: var(--cloth);
+}
+
+/* Under ten seconds the rule thickens as well as reddening — the last signal
+   a reader glancing at the corner of the board needs to be a shape. */
+.gauge[data-urgent='true'] {
+  height: 5px;
+}
+
+.slots,
+.tray {
+  display: grid;
+  grid-template-columns: repeat(var(--slots), 1fr);
+  gap: var(--rule-hair);
+  padding: var(--rule-hair);
+  background-color: var(--rule);
+  width: calc(var(--slots) / var(--columns) * 100%);
+}
+
+.slots {
+  margin-top: clamp(1rem, 4vh, 1.8rem);
+}
+
+.tray {
+  margin-top: 0.4rem;
+}
+
+.slot,
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-height: 2.9rem;
+  background-color: var(--stock);
+  font-size: clamp(1.1rem, 4.6vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  transition:
+    background-color 140ms var(--ease-settle),
+    color 140ms var(--ease-settle);
+}
+
+/* A two-character letter is one letter and has to fit in one cell. */
+.slot[data-wide='true'],
+.tile[data-wide='true'] {
+  font-size: clamp(0.85rem, 3.4vw, 1.15rem);
+  letter-spacing: 0;
+}
+
+/* The caret of the search field, moved onto the board: the cell waiting for a
+   tile carries the same 3px oxblood rule. */
+.slot[data-caret='true']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background-color: var(--cloth);
+}
+
+/* The word, once it is the word: set in the binding, one cell at a time. */
+.slot[data-state='solved'] {
+  background-color: var(--cloth);
+  color: var(--on-cloth);
+  animation: settle 300ms var(--ease-settle) both;
+}
+
+/* The answer a reader did not reach is still an answer, and is shown sunk
+   rather than in the binding — the day's word was not theirs. */
+.slot[data-state='missed'] {
+  background-color: var(--stock-sunk);
+  color: var(--ink-muted);
+}
+
+.slot:disabled,
+.tile:disabled {
+  cursor: default;
+}
+
+/* A tile already placed keeps its cell — the row of remaining letters may not
+   reflow under the finger picking from it — and gives up its letter. */
+.tile[data-used='true'] {
+  background-color: var(--stock-sunk);
+  color: transparent;
+}
+
+@media (hover: hover) {
+  .slot:not(:disabled):hover,
+  .tile:not(:disabled):hover {
+    background-color: var(--stock-sunk);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0.55;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.status {
+  min-height: 1.6em;
+  margin-top: 0.7rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--rule-hair);
+  padding: var(--rule-hair);
+  margin-top: 0.6rem;
+  background-color: var(--rule);
+}
+
+.action {
+  padding: 0.7rem 0.6rem;
+  font-size: var(--step-guide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background-color: var(--stock);
+  transition:
+    color 140ms var(--ease-settle),
+    background-color 140ms var(--ease-settle);
+}
+
+.action:not(:disabled):hover {
+  background-color: var(--stock-sunk);
+  color: var(--ink);
+}
+
+.action:disabled {
+  cursor: default;
+  color: var(--ink-muted);
+  opacity: 0.55;
+}
+
+/* Giving a word up is the one thing here that cannot be undone, so it is the
+   one label in oxblood — the same mark the key that commits a Fjalëz guess
+   carries. */
+.skip {
+  color: var(--cloth);
+}
+
+.skip:not(:disabled):hover {
+  color: var(--cloth);
+}

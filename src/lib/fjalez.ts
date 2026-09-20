@@ -4,7 +4,7 @@
  * The rules are Wordle's and the alphabet is Albanian's, one character to a
  * box: Ë and Ç have keys of their own, and a letter written with two
  * characters — DH, SH, RR and the rest — fills two boxes, the way it is typed.
- * GARDH is five boxes.
+ * GARDH is five boxes. That count lives in `letters.ts`, shared with Lëmsh.
  *
  * Everything here is pure and runs in the browser: no node imports.
  */
@@ -12,20 +12,6 @@ import { formatDay } from './wordOfDay.ts';
 
 export const WORD_LENGTH = 5;
 export const MAX_GUESSES = 6;
-
-/** The Albanian alphabet as it is typed — one character each. */
-export const ALPHABET = [
-  'a', 'b', 'c', 'ç', 'd', 'e', 'ë', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z',
-];
-
-const LETTERS = new Set(ALPHABET);
-
-/** The word's characters, or `null` if it holds anything outside the alphabet. */
-export const splitLetters = (word: string): string[] | null => {
-  const letters = [...word.toLowerCase()];
-  return letters.every((letter) => LETTERS.has(letter)) ? letters : null;
-};
 
 export interface Puzzle {
   word: string;

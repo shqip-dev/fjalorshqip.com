@@ -1,0 +1,156 @@
+/*
+ * Lëmsh — the page around the board. It is set the way the Fjalëz page is set,
+ * because the two games are the same object seen twice: the title, the running
+ * head, the intro and the archive keep the column's left edge, and the play
+ * block is centred as a block while nothing inside it is.
+ */
+
+.lemsh {
+  padding-top: clamp(1.75rem, 6vw, 3rem);
+
+  /* The measure the boards and the keys share — wider than Fjalëz's, because a
+     word here can be seven tiles instead of five, and answering to the
+     viewport's height as well as its width so that the tiles, the tray and the
+     three keys under them are seen at once rather than scrolled through. */
+  --play: min(100%, 30rem, max(18rem, calc(100svh - 24rem)));
+}
+
+.head {
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+}
+
+/* A page title, not a lemma: ink at the headword's weight. */
+.title {
+  font-size: var(--step-title);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.rail {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1.4rem;
+  margin-top: 0.3rem;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.intro {
+  margin-top: 0.8rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.play {
+  width: var(--play);
+  margin-inline: auto;
+}
+
+/* The page before the clock: what the day asks for, stated as a running head's
+   three figures, and the one control that starts it. */
+.opening {
+  margin-top: clamp(1.1rem, 4vh, 2rem);
+}
+
+.rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 2.4rem;
+  padding-bottom: 0.75rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+}
+
+.rule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ruleLabel {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+}
+
+.ruleValue {
+  margin: 0;
+  font-size: var(--step-lead);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.how {
+  margin-top: 0.9rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+/* The one control that starts the clock, set as the key that commits a Fjalëz
+   guess is set: an oxblood label in a ruled strip of its own — one cell on a
+   rule-coloured ground, not a bordered button — full width, because it is the
+   only thing on this page to do. */
+.startStrip {
+  display: grid;
+  gap: var(--rule-hair);
+  padding: var(--rule-hair);
+  margin-top: 1.2rem;
+  background-color: var(--rule);
+}
+
+.start {
+  padding: 0.85rem 1rem;
+  font-size: var(--step-guide);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cloth);
+  background-color: var(--stock);
+  transition: background-color 140ms var(--ease-settle);
+}
+
+.start:hover {
+  background-color: var(--stock-sunk);
+}
+
+.status {
+  min-height: 1.6em;
+  margin-top: 0.7rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.closed {
+  margin-top: 1.2rem;
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.closedLink {
+  margin-top: 0.6rem;
+  font-size: var(--step-small);
+}
+
+.closedLink a {
+  text-decoration-color: var(--cloth);
+}

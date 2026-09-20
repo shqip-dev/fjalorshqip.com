@@ -11,7 +11,7 @@ image published to ghcr.io by `.github/workflows/docker-publish.yml`.
 
 ## Docs
 
-- `docs/README.md`, `docs/kerkimi.md` and `docs/fjalez.md` are user/contributor-facing and are
+- `docs/README.md`, `docs/kerkimi.md`, `docs/fjalez.md` and `docs/lemsh.md` are user/contributor-facing and are
   **written in Albanian — keep them that way**, as is all UI copy and page content.
 - `docs/_claude/` holds English detail referenced from here. Read
   [`docs/_claude/search-indexing.md`](docs/_claude/search-indexing.md) before touching the indexing
@@ -31,6 +31,7 @@ Package manager is **pnpm** (migrated from npm). `.npmrc` sets `enable-pre-post-
 | `pnpm astro check` | Typecheck only |
 | `pnpm preview` | Serve `./dist` |
 | `pnpm fjalez:words` | Regenerate `src/data/fjalez/guesses.json` (Fjalëz guess list) |
+| `pnpm lemsh:words` | Regenerate `src/data/lemsh/rounds.json` (Lëmsh days) |
 
 There is no test suite and no linter beyond `astro check` (`.prettierrc`: 2 spaces, single quotes).
 
@@ -74,11 +75,11 @@ game: one five-letter word a day, six guesses, played entirely in the browser.
 days like `getWordOfDay`, but **it must not wrap** — a repeat would hand back a solved word). Three
 things are load-bearing:
 
-- **One character to a box.** `splitLetters` is a plain character split and is what counts a word's
-  length everywhere — the puzzle list, the guess-list generator and the board all go through it. A
-  letter written with two characters (DH, SH, RR, …) fills two boxes, so `GARDH` is five and `SHTËPI`
-  is not a five-letter word here. The keyboard is QWERTY with Ë after P and Ç after L (no W — the
-  alphabet has none).
+- **One character to a box.** `splitLetters` — in `src/lib/letters.ts`, shared with Lëmsh — is a plain
+  character split and is what counts a word's length everywhere: the puzzle list, the guess-list
+  generator and the board all go through it. A letter written with two characters (DH, SH, RR, …)
+  fills two boxes, so `GARDH` is five and `SHTËPI` is not a five-letter word here. The keyboard is
+  QWERTY with Ë after P and Ç after L (no W — the alphabet has none).
 - **The guess list is committed, not generated at build time.** `src/data/fjalez/guesses.json` (3.5k
   words) comes from `pnpm fjalez:words` and is in git, because `prebuild` is env-gated down to a
   subset in development and the game may not depend on that gate. `/api/fjaleez/fjalee.json` serves it
@@ -91,6 +92,35 @@ things are load-bearing:
 Days after today are refused client-side (the whole site is prerendered, so the check can only live
 there). Umami events are `fjalez_open`, `fjalez_first_guess`, `fjalez_invalid`, `fjalez_win`,
 `fjalez_lose`, `fjalez_share` and `fjalez_definition`.
+
+## Lëmsh
+
+`/leemsh` (same `ë → ee` slug rule; code identifiers keep the plain `lemsh`) is the scramble game: a
+day is five or six words, each dealt shuffled and with a clock of its own. `src/lib/lemsh.ts` holds the
+rules, the day arithmetic and the scoring; `src/lib/lemshStore.ts` the storage. Load-bearing:
+
+- **The rounds are committed, not generated at build time** — `src/data/lemsh/rounds.json`, built by
+  `pnpm lemsh:words` from the curated pool inside `src/scripts/lemshWords.ts`, for the same reason
+  Fjalëz's guess list is: `prebuild` is env-gated down to a subset in development and a game may not
+  depend on that gate. The generator validates every pooled word against `data/dictionary.json` (the
+  answers link to `/f/<slug>`, so a word that is not a headword would link nowhere), refuses any word
+  Fjalëz already uses, deals the pool into rounds of five or six, and **fails loudly** rather than
+  writing a partial file. The series must not wrap, like Fjalëz's; `ROUNDS.length` is the end.
+- **The scramble is dealt by the generator, not the browser.** Everyone playing a day gets the same
+  tiles in the same order. The in-game *Përzie* only reorders that reader's own tray.
+- **Only what was done is stored** (`lemsh.v1`): per word, the seconds it took and whether it was
+  solved. The score is derived from that and the round, so a stored number cannot disagree with the
+  play, and the scoring can be retuned without rewriting history. A word is written the moment it
+  ends, so a half-played round resumes — the word in hand restarts with a full clock, which is the
+  one deliberate hole.
+- **The clock is a deadline, not a tick count**, and it is frozen when the word ends so the reveal
+  reads the seconds that were actually left. Nothing runs until the reader presses *Fillo*: the clock
+  starts when a word appears, so it may not start while the page is still being read.
+
+Scoring is `10 × letters + seconds left` for a solved word and nothing for a missed one; the clock is
+`max(30, 8 × letters)` seconds. Umami events are `lemsh_open`, `lemsh_start`, `lemsh_word_solved`,
+`lemsh_word_missed` (`r` is `timeout` or `skip`), `lemsh_shuffle`, `lemsh_finish`, `lemsh_share` and
+`lemsh_definition`.
 
 ## Notes
 
