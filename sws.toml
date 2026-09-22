@@ -1,0 +1,67 @@
+# static-web-server's configuration — the runtime half of the caching, and the
+# only place the site can say anything about a response, since it has no
+# application server to say it from. `docs/_claude/caching.md` is the why.
+#
+# It replaces the CLI flags the image used to be started with
+# (`--page404 index.html --page50x index.html`), because a config file and the
+# flags do not combine: the Dockerfile names one or the other.
+#
+# Note for anyone reaching for a `public/_headers` file instead: that format is
+# read by Cloudflare Pages and Netlify. This site is the Docker image behind a
+# Cloudflare proxy, so nothing would read it — these rules are what the origin
+# actually sends.
+
+[general]
+host = "::"
+port = 80
+root = "/public"
+
+# `index.astro` is the 404 catch-all — docs/_claude/search-indexing.md,
+# invariant 4 — so an unknown address gets the home page's body with a 404
+# status, and `DynamicEntries` renders the word from there.
+page404 = "./index.html"
+page50x = "./index.html"
+
+[advanced]
+
+# The rules below are applied in order and the last match wins, so this one is
+# the floor.
+#
+# It is also the rule that matters most, because HTML lands here: a page names
+# the hashed assets of the build it was rendered by, and those names are gone
+# one deploy later. Served with the default day of `max-age`, a page cached
+# before a deploy asks for scripts that no longer exist and its islands quietly
+# stop mounting. `no-cache` does not mean no caching — the copy is kept and
+# revalidated, and `last-modified` makes that a 304 with no body.
+#
+# `/sw.js` lands here too, and has to: a worker held in a cache is a worker
+# that cannot be replaced.
+[[advanced.headers]]
+source = "**"
+[advanced.headers.headers]
+Cache-Control = "no-cache"
+
+# The build's own output. The file name carries a hash of the file, so a hit
+# can never be stale and a change can never be missed.
+[[advanced.headers]]
+source = "/_astro/**"
+[advanced.headers.headers]
+Cache-Control = "public, max-age=31536000, immutable"
+
+# The social cards and the icon: not hashed, but a word's card changes only
+# when the dictionary does.
+[[advanced.headers]]
+source = "/{og/**,*.png,favicon.ico}"
+[advanced.headers.headers]
+Cache-Control = "public, max-age=604800"
+
+# The sub-indexes and Fjalëz's word list — the files a search actually costs.
+# They are regenerated only by a deploy, so a day in a reader's cache is cheap
+# and the week of `stale-while-revalidate` behind it keeps the fetch after that
+# instant as well. A reader with the service worker running holds a copy of
+# these anyway and revalidates it conditionally; this is the policy for the
+# browser that has no worker, and the first visit of the one that will.
+[[advanced.headers]]
+source = "/api/**/*.json"
+[advanced.headers.headers]
+Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"

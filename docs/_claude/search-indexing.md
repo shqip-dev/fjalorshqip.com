@@ -52,7 +52,8 @@ stem index would cost every search the difference.
    generation and both clients. Longer prefixes mean smaller files but more of them, which a static host
    may cap.
 4. **`index.astro` is also the 404 catch-all.** The Docker image serves it for unknown paths
-   (`static-web-server --page404 index.html`), and the hosting is expected to do the same, which is how
+   (`page404` in `sws.toml` — see [`caching.md`](caching.md)), and the hosting is expected to do the
+   same, which is how
    `DynamicEntries` gets a chance to render a non-prerendered `/f/<slug>`. Don't make the homepage assume
    it is only ever `/`. That includes its `<head>`, which arrives describing the home page and is
    rewritten by `src/lib/documentMeta.ts` — see [`seo.md`](seo.md).
@@ -70,6 +71,10 @@ change to the generated indexes. Multi-word queries fetch one sub-index per word
 tie-break — so edit distance only separates entries the collator calls equal, i.e. homographs sharing a
 headword. Capped at `MAX_SUGGESTIONS = 10`; candidates per bucket are capped at
 `MAX_CANDIDATES = 800`. A missing sub-index (404) is treated as an empty index, not an error.
+
+Behind that, the service worker holds every sub-index the reader has fetched and answers from it
+before the network — so the module-level cache survives a page load, and a word whose prefix was
+touched once comes up offline. See [`caching.md`](caching.md).
 
 Queries are reported to Umami as a `search_v3` event with a per-document random id
 (`document.__fjalorshqip__`, from `src/lib/analytics.ts`) — **one event per search, not per keystroke**.

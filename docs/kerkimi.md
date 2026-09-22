@@ -141,6 +141,18 @@ ndezur — serveri statik e kthen `index.html` si faqe `404`. Aty `DynamicEntrie
 Prandaj `index.astro` duhet të vazhdojë të funksionojë edhe si faqe pritëse për adresat e panjohura — nuk
 është vetëm ballina.
 
+## Puna pa internet
+
+Pas vizitës së parë, faqja mban një kopje të vetën në shfletues përmes një *service worker*-i
+(`src/sw.js`). Ai ruan çdo nënindeks që është shkarkuar një herë dhe u përgjigjet kërkesave të
+mëvonshme nga kopja e ruajtur, duke e rifreskuar atë në sfond. Prandaj:
+
+- një prefiks i kërkuar dy herë nuk kushton asnjë kërkesë të dytë;
+- pa internet, faqja vazhdon të hapet dhe çdo fjalë prefiksi i së cilës është prekur më parë shfaqet e
+  plotë — e njëjta rrugë që përdoret për faqet e paparandërtuara.
+
+Një prefiks që nuk është shkarkuar kurrë nuk mund të shfaqet pa internet; aty del faqja `404`.
+
 ## Kufizimet e njohura
 
 - **Fjalët me më pak se tri shkronja** bien të gjitha në nënindeksin `_.json` dhe praktikisht nuk

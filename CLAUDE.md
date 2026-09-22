@@ -17,7 +17,9 @@ image is published to ghcr.io by `.github/workflows/docker-publish.yml`.
   [`docs/_claude/search-indexing.md`](docs/_claude/search-indexing.md) before touching the indexing
   pipeline, the search bar, or the word-page routes, and
   [`docs/_claude/seo.md`](docs/_claude/seo.md) before touching what a page says about itself — the
-  head, the social card or the JSON-LD.
+  head, the social card or the JSON-LD, and
+  [`docs/_claude/caching.md`](docs/_claude/caching.md) before touching `sws.toml`, `src/sw.js` or
+  anything about how long a file is kept.
 
 ## Commands
 
@@ -159,6 +161,19 @@ already depends on, so it adds no package — it is build-time only, the runtime
 `src/assets/fonts/` because pango cannot read the woff2 the pages load. In production this is ~40k
 images, ~400 MB and a few minutes; `SHOULD_SKIP_WORD_CARDS=true` turns it off and every page falls
 back to the site card. Details in [`docs/_claude/seo.md`](docs/_claude/seo.md).
+
+## Caching and the service worker
+
+Nothing is cached by a server here, so the two levers are `sws.toml` — the static-web-server config
+the `Dockerfile` copies to `/etc/sws.toml`, which also carries the `--page404` catch-all the CLI flags
+used to — and `src/sw.js`, the service worker. The worker serves the sub-indexes from its own cache
+and revalidates them conditionally, so a prefix looked up twice costs no request and the site keeps
+answering offline; `src/pages/sw.js.ts` stamps it with the build, which is what invalidates the cache.
+Three things are easy to undo: the registration in `MainLayout` is a **string** passed to `set:html`,
+because Astro emits an expression written inside a `<script>` verbatim and it silently never runs;
+`/sw.js` must stay `no-cache`; and a `public/_headers` file would do nothing, since this is the Docker
+image behind a Cloudflare proxy rather than Cloudflare Pages. Details, including how to check any of
+it, in [`docs/_claude/caching.md`](docs/_claude/caching.md).
 
 ## Notes
 

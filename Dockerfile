@@ -49,4 +49,9 @@ RUN pnpm build
 FROM joseluisq/static-web-server:2
 COPY --from=build /app/dist /public
 
-ENTRYPOINT ["/static-web-server", "--page404", "index.html", "--page50x", "index.html"]
+# The flags this replaces were `--page404 index.html --page50x index.html`. They
+# live in the config file now, together with the cache-control rules, which have
+# no CLI equivalent — see docs/_claude/caching.md.
+COPY sws.toml /etc/sws.toml
+
+ENTRYPOINT ["/static-web-server", "--config-file", "/etc/sws.toml"]

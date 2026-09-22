@@ -45,8 +45,8 @@ The rest of the rules, split between `documentMeta` and the host:
   and that code only ever runs on a response the host sent as a 404, so an `index` there would
   contradict the status it arrived with. The prerendered word page, the one served with a 200, asks to
   be indexed by saying nothing.
-- The status codes are the host's half of that, and `static-web-server --page404 index.html` gets them
-  right: `/` and `/f/<slug>/` answer 200, an unknown address answers **404** with the catch-all body,
+- The status codes are the host's half of that, and static-web-server gets them right when it is
+  pointed at the catch-all (`page404` in `sws.toml` — see [`caching.md`](caching.md)): `/` and `/f/<slug>/` answer 200, an unknown address answers **404** with the catch-all body,
   and `/f/<slug>` (no trailing slash) answers 308 to the directory form — which is the form every
   canonical and every sitemap entry names. Any other hosting has to behave the same way, or the
   catch-all starts answering 200 and every junk URL becomes a soft 404.

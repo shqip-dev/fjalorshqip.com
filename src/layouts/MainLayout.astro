@@ -48,6 +48,20 @@ const canonical = getCanonicalUrl(Astro.url.pathname, siteUrl);
 const imageUrl = getAssetUrl(image, siteUrl);
 const cardTitle = socialTitle || title;
 
+/*
+ * Written out as a string rather than as the body of a `<script>`: Astro takes
+ * a script element's contents as raw text, so an expression inside one is
+ * emitted verbatim and never runs — silently, which for a service worker means
+ * a site that looks cached and is not. `set:html` is how the JSON-LD above gets
+ * there too. Registration can be refused outright (a private window, a policy),
+ * the way storage can in `fjalezStore`, so the failure is swallowed.
+ */
+const REGISTER_WORKER = `if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}`;
+
 const metaStr = import.meta.env.META_TAGS;
 const meta: [string, string][] = metaStr ? Object.entries(JSON.parse(metaStr)) : [];
 ---
@@ -95,6 +109,15 @@ const meta: [string, string][] = metaStr ? Object.entries(JSON.parse(metaStr)) :
         )
     }
     <script defer src="https://cloud.umami.is/script.js" data-website-id="2a305a59-e47b-4fc7-bf6c-0af934b1860e"></script>
+    {
+        /* The worker caches the sub-indexes, so a prefix looked up twice costs
+           no request, and the site keeps answering offline — see
+           docs/_claude/caching.md. Only in a real build: in `astro dev` a worker
+           would outlive the build it was registered by. */
+        import.meta.env.PROD && (
+          <script is:inline set:html={REGISTER_WORKER} />
+        )
+    }
   </head>
   <body>
     <a id="skip-nav" class="screenreader-text" href="#main-content">
