@@ -49,8 +49,8 @@ const imageUrl = getAssetUrl(image, siteUrl);
 const cardTitle = socialTitle || title;
 
 /*
- * Written out as a string rather than as the body of a `<script>`: Astro takes
- * a script element's contents as raw text, so an expression inside one is
+ * Written out as a string rather than as the body of a script element: Astro
+ * takes its contents as raw text, so an expression inside one is
  * emitted verbatim and never runs — silently, which for a service worker means
  * a site that looks cached and is not. `set:html` is how the JSON-LD above gets
  * there too. Registration can be refused outright (a private window, a policy),
