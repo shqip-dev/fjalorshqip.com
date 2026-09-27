@@ -34,7 +34,6 @@ Package manager is **pnpm** (migrated from npm). `.npmrc` sets `enable-pre-post-
 | `pnpm build` | `astro check` (typecheck) + `astro build` — runs `prebuild` first |
 | `pnpm astro check` | Typecheck only |
 | `pnpm preview` | Serve `./dist` |
-| `pnpm fjalez:words` | Regenerate `src/data/fjalez/guesses.json` (Fjalëz guess list) |
 | `pnpm lemsh:words` | Regenerate `src/data/lemsh/rounds.json` (Lëmsh days) |
 | `pnpm og:cards` | Redraw the per-word social cards into an existing `dist/og/` |
 | `pnpm og:site` | Redraw `public/og.png`, the card every non-word page shares |
@@ -92,10 +91,10 @@ things are load-bearing:
   generator and the board all go through it. A letter written with two characters (DH, SH, RR, …)
   fills two boxes, so `GARDH` is five and `SHTËPI` is not a five-letter word here. The keyboard is
   QWERTY with Ë after P and Ç after L (no W — the alphabet has none).
-- **The guess list is committed, not generated at build time.** `src/data/fjalez/guesses.json` (3.5k
-  words) comes from `pnpm fjalez:words` and is in git, because `prebuild` is env-gated down to a
-  subset in development and the game may not depend on that gate. `/api/fjaleez/fjalee.json` serves it
-  and the board fetches it once.
+- **The guess list is derived at build time, but not by `prebuild`.** `/api/fjaleez/fjalee.json`
+  (3.5k words) is computed by `getFjalezGuesses` in `src/lib/fjalezWords.ts` straight from
+  `data/dictionary.json`, not from `src/data/gen/`, because `prebuild` is env-gated down to a subset in
+  development and the game may not depend on that gate. The board fetches it once.
 - **Results live in `localStorage` (`fjalez.v1`) and nowhere else** — `src/lib/fjalezStore.ts`. Only
   the guesses are stored, keyed by the day's **date** rather than its index in the series (an index
   means nothing if `START_UTC` ever moves); won/lost is derived, so the two cannot disagree. Every
@@ -113,8 +112,8 @@ rules, the day arithmetic and the scoring; `src/lib/lemshStore.ts` the storage. 
 
 - **The rounds are committed, not generated at build time** — `src/data/lemsh/rounds.json`, built by
   `pnpm lemsh:words` from the curated pool inside `src/scripts/lemshWords.ts`, for the same reason
-  Fjalëz's guess list is: `prebuild` is env-gated down to a subset in development and a game may not
-  depend on that gate. The generator validates every pooled word against `data/dictionary.json` (the
+  Fjalëz's guess list skips `src/data/gen/`: `prebuild` is env-gated down to a subset in development
+  and a game may not depend on that gate. The generator validates every pooled word against `data/dictionary.json` (the
   answers link to `/f/<slug>`, so a word that is not a headword would link nowhere), refuses any word
   Fjalëz already uses, deals the pool into rounds of five or six, and **fails loudly** rather than
   writing a partial file. The series must not wrap, like Fjalëz's; `ROUNDS.length` is the end.

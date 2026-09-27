@@ -3,10 +3,9 @@
  *
  *   node ./src/scripts/lemshWords.ts
  *
- * Its output — `src/data/lemsh/rounds.json` — is committed, like the Fjalëz
- * guess list and unlike `src/data/gen/`: the entry pipeline is env-gated down
- * to a handful of words in a development build, and a game may not depend on
- * that gate.
+ * Its output — `src/data/lemsh/rounds.json` — is committed, unlike
+ * `src/data/gen/`: the entry pipeline is env-gated down to a handful of words
+ * in a development build, and a game may not depend on that gate.
  *
  * The pool below is curated by hand, because a scramble is only a game when
  * the reader could plausibly know the word: the dictionary holds forty thousand

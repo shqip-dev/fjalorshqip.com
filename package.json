@@ -10,7 +10,6 @@
     "dev": "astro dev",
     "start": "astro dev",
     "prebuild": "node ./src/scripts/preprocess.ts",
-    "fjalez:words": "node ./src/scripts/fjalezWords.ts",
     "lemsh:words": "node ./src/scripts/lemshWords.ts",
     "og:cards": "node ./src/scripts/ogCards.ts",
     "og:site": "node ./src/scripts/ogCards.ts --site",

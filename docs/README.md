@@ -21,7 +21,6 @@ mund të vendosen në çfarëdo hostingu statik (mes tjerash edhe një `static-w
 ├── public/                    # skedarë statikë (favicon, robots.txt)
 └── src/
     ├── components/            # ishujt Preact (SearchBar, Entries, ...)
-    ├── data/fjalez/           # lista e fjalëve pesëshkronjore të Fjalëzës (ruhet në git)
     ├── data/lemsh/            # ditët e Lëmshit: fjalët, lidhjet dhe rendi i përzier (ruhet në git)
     ├── data/gen/              # indekset e gjeneruara gjatë ndërtimit (nuk ruhen në git)
     ├── layouts/
@@ -29,7 +28,6 @@ mund të vendosen në çfarëdo hostingu statik (mes tjerash edhe një `static-w
     ├── pages/                 # faqet dhe endpoint-et JSON
     └── scripts/
         ├── preprocess.ts      # gjeneruesi i indekseve
-        ├── fjalezWords.ts     # gjeneruesi i listës së fjalëve të Fjalëzës
         └── lemshWords.ts      # gjeneruesi i ditëve të Lëmshit
 ```
 
@@ -45,7 +43,6 @@ Të gjitha komandat thirren nga baza e projektit përmes terminalit. Menaxheri i
 | `pnpm prebuild`  | Gjeneron indekset në `src/data/gen/` nga `data/dictionary.json`   |
 | `pnpm build`     | Kontrollon tipat dhe ndërton faqen në `./dist/` (thërret `prebuild`) |
 | `pnpm preview`   | Shërben lokalisht atë që u ndërtua në `./dist/`                   |
-| `pnpm fjalez:words` | Rigjeneron listën e fjalëve të Fjalëzës nga `data/dictionary.json` |
 | `pnpm lemsh:words` | Rigjeneron ditët e Lëmshit nga fjalori i përzgjedhur te `lemshWords.ts`        |
 
 ## Ndërtimi lokal
