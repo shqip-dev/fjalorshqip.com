@@ -39,16 +39,17 @@ export const OG_IMAGE_ALT = `${SITE_NAME} — ${SITE_TAGLINE.toLowerCase()}`;
 export const getWordCardPath = (slug: string) => `/${WORD_CARD_DIR}/${slug}.png`;
 
 /*
- * The games' cards. Fjalëz and Lëmsh are the only pages besides a word's whose
+ * The games' cards. The three games are the only pages besides a word's whose
  * card is worth drawing — a link to a game should unfurl as its board, not as
  * the dictionary in general. They live in `public/` beside the site's card
- * rather than in `dist/og/`: two files are not the 40k the words are, so the
+ * rather than in `dist/og/`: three files are not the 40k the words are, so the
  * copy `astro build` makes of them costs nothing and the pages can name them in
- * `astro dev` too. `pnpm og:site` redraws all three.
+ * `astro dev` too. `pnpm og:site` redraws all four.
  */
 export const GAME_CARD_FILENAMES = {
   fjalez: 'og-fjaleez.png',
   lemsh: 'og-leemsh.png',
+  shtigje: 'og-shtigje.png',
 } as const;
 
 export type GameKey = keyof typeof GAME_CARD_FILENAMES;

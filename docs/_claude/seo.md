@@ -68,19 +68,20 @@ the inline `<script>` early.
 
 ## The cards
 
-**Every word page has its own card**, the two games have one each, and everything else shares
+**Every word page has its own card**, the three games have one each, and everything else shares
 `public/og.png`. A link to a word unfurls in WhatsApp, Discord, Slack or a timeline as that word —
 headword in small caps, its labels, the hairline rule, the opening of its first sense — drawn on the
 same sheet the page is. A link to a game unfurls as its board: one row of the game's own cells over
 the name and a line of its own, Fjalëz's coloured the way a guessed row is (in place, elsewhere,
-absent) and Lëmsh's a tray still shuffled, which the name under the rule then solves.
+absent), Lëmsh's a tray still shuffled, which the name under the rule then solves, and Shtigje's a
+trail already traced, which is what a found word looks like on its board.
 
 `src/lib/ogCard.ts` draws all of them, so the site's card, the games' and 40k word cards cannot drift
 apart. `src/scripts/ogCards.ts` drives it:
 
     pnpm build            # astro check && astro build, then postbuild draws the word cards
     pnpm og:cards         # redraw the word cards into an existing dist/
-    pnpm og:site          # redraw public/og.png and the two game cards
+    pnpm og:site          # redraw public/og.png and the three game cards
 
 Things worth knowing before changing any of it:
 
@@ -94,10 +95,11 @@ Things worth knowing before changing any of it:
   one, and falls back to the site card, so a build that skipped them never advertises an image that
   was never drawn. `SHOULD_SKIP_WORD_CARDS=true` skips them; `SHOULD_SKIP_STATIC_WORD_PAGES` skips
   them too, since there would be no page to hang them on.
-- **The game cards go the other way — into `public/`, and into git.** There are two of them at ~9 KB,
-  so the copy `astro build` makes costs nothing, and being committed they are there for `astro dev`
-  and for a build that skipped the word cards. `GAME_CARD_FILENAMES` in `seo.ts` names them and
-  `getGameCardPath` is what `fjaleez.astro` and `leemsh.astro` pass as `image`; the drawing recipe —
+- **The game cards go the other way — into `public/`, and into git.** There are three of them at
+  ~9 KB, so the copy `astro build` makes costs nothing, and being committed they are there for
+  `astro dev` and for a build that skipped the word cards. `GAME_CARD_FILENAMES` in `seo.ts` names
+  them and `getGameCardPath` is what `fjaleez.astro`, `leemsh.astro` and `shtigje.astro` pass as
+  `image`; the drawing recipe —
   name, tagline and the row of cells — is `GAME_CARDS` in `ogCard.ts`, node-side, where the colours
   are. Redraw them with `pnpm og:site` whenever the palette moves, the same as the site's.
 - **A cell's letter is drawn between two invisible anchors.** Pango returns the glyph's ink box and

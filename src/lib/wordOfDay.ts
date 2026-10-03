@@ -19,7 +19,9 @@ export interface DayWord {
 const START_UTC = Date.UTC(2026, 8, 19);
 const DAY_MS = 86_400_000;
 
-const MONTHS = [
+/* Named here because `formatDay` is not the only thing that dates a page: the
+   weekly game writes a range of two of them — see `shtigje.ts`. */
+export const MONTHS = [
   'janar', 'shkurt', 'mars', 'prill', 'maj', 'qershor',
   'korrik', 'gusht', 'shtator', 'tetor', 'nëntor', 'dhjetor',
 ];

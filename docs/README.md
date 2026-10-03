@@ -2,9 +2,10 @@
 
 Fjalor i gjuhës shqipe, i ndërtuar me [Astro](https://astro.build) dhe ishuj [Preact](https://preactjs.com).
 
-Përveç fjalorit, faqja mban edhe dy lojëra: **Fjalëzën** — fjala e ditës me pesë shkronja (shih
-[Fjalëza](fjalez.md)) — dhe **Lëmshin** — pesë a gjashtë fjalë të përziera në ditë, secila me orën e vet
-(shih [Lëmshi](lemsh.md)).
+Përveç fjalorit, faqja mban edhe tri lojëra: **Fjalëzën** — fjala e ditës me pesë shkronja (shih
+[Fjalëza](fjalez.md)) — **Lëmshin** — pesë a gjashtë fjalë të përziera në ditë, secila me orën e vet
+(shih [Lëmshi](lemsh.md)) — dhe **Shtigjet**, e vetmja javore: një temë e re çdo të hënë, me fjalët e
+saj të fshehura në një rrjet shkronjash (shih [Shtigjet](shtigje.md)).
 
 Faqja është **tërësisht statike**: nuk ka server aplikacioni, nuk ka bazë të dhënash dhe nuk ka API që
 ekzekutohet gjatë kërkimit. Gjithçka që shpërndahet janë skedarë `HTML`, `CSS`, `JS` dhe `JSON`, të cilët
@@ -22,13 +23,15 @@ mund të vendosen në çfarëdo hostingu statik (mes tjerash edhe një `static-w
 └── src/
     ├── components/            # ishujt Preact (SearchBar, Entries, ...)
     ├── data/lemsh/            # ditët e Lëmshit: fjalët, lidhjet dhe rendi i përzier (ruhet në git)
+    ├── data/shtigje/          # javët e Shtigjeve: tema, rrjeti, shtigjet dhe fjalët shtesë (ruhet në git)
     ├── data/gen/              # indekset e gjeneruara gjatë ndërtimit (nuk ruhen në git)
     ├── layouts/
     ├── lib/                   # logjika e përbashkët: stems, slug, lexim/shkrim i skedarëve
     ├── pages/                 # faqet dhe endpoint-et JSON
     └── scripts/
         ├── preprocess.ts      # gjeneruesi i indekseve
-        └── lemshWords.ts      # gjeneruesi i ditëve të Lëmshit
+        ├── lemshWords.ts      # gjeneruesi i ditëve të Lëmshit
+        └── shtigjeWords.ts    # gjeneruesi i javëve të Shtigjeve
 ```
 
 ## Komandat
@@ -44,6 +47,7 @@ Të gjitha komandat thirren nga baza e projektit përmes terminalit. Menaxheri i
 | `pnpm build`     | Kontrollon tipat dhe ndërton faqen në `./dist/` (thërret `prebuild`) |
 | `pnpm preview`   | Shërben lokalisht atë që u ndërtua në `./dist/`                   |
 | `pnpm lemsh:words` | Rigjeneron ditët e Lëmshit nga fjalori i përzgjedhur te `lemshWords.ts`        |
+| `pnpm shtigje:words` | Rigjeneron javët e Shtigjeve nga temat te `shtigjeWords.ts`                 |
 
 ## Ndërtimi lokal
 
@@ -80,6 +84,7 @@ Variablat e tjera:
 - [Si funksionon kërkimi](kerkimi.md) — indeksimi gjatë ndërtimit dhe kërkimi në shfletues.
 - [Fjalëza](fjalez.md) — rregullat e lojës, shkronjat me dy karaktere dhe ruajtja e rezultatit.
 - [Lëmshi](lemsh.md) — fjalët e përziera, ora e secilës dhe si llogariten pikët.
+- [Shtigjet](shtigje.md) — rrjeti javor, fjalët shtesë, ndihmat dhe java sipas orës së Tiranës.
 
 ## Kontribuoni
 

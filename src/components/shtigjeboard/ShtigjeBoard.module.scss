@@ -1,0 +1,199 @@
+/*
+ * Shtigje — letters on the open sheet, and the trails drawn behind them.
+ *
+ * This board is the one place in the build with a rounded shape on it, and it
+ * is there by the user's own direction rather than by drift: a traced trail is
+ * the single object on the site that has to read as **one continuous thing
+ * crossing a grid**, and a square silhouette cannot turn a corner without
+ * either spiking or chamfering. Everything else here stays square — the keys
+ * under the board, the rows beneath it, the whole of the rest of the site. Do
+ * not read this file as permission for a radius anywhere else.
+ *
+ * The trail is not an outline that was computed; it is opaque pieces of one
+ * colour laid over each other, and the union is the silhouette. A rounded
+ * square under each letter, and a bar of the same width and the same radius
+ * from each letter to the next one *in the order traced*. Along a row or a
+ * column, square + bar + square is exactly one rounded rectangle; on a
+ * diagonal the bar's own corners land inside the square's corner arc. There
+ * is nothing to go wrong at a turn, because no corner is ever drawn.
+ *
+ * Three grounds, ordered by how resolved a cell is, the way a Fjalëz tile is:
+ *
+ *   stock-sunk   a hint has pointed at it — beads with no bars, because the
+ *                cells are what a hint buys and the order is what it does not
+ *   cloth-wash   it belongs to a word that has been traced
+ *   cloth        it is in the trail being built right now
+ */
+
+.board {
+  margin-top: clamp(1rem, 4vh, 1.8rem);
+}
+
+.grid {
+  position: relative;
+  /* The cells carry no gap, so this box is exactly six squares by eight and
+     the SVG's `0 0 6 8` maps onto it one unit to a cell. */
+  aspect-ratio: var(--cols) / var(--rows);
+  width: 100%;
+}
+
+.trails {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.trails rect {
+  stroke: none;
+}
+
+.hintTrail rect {
+  fill: var(--stock-sunk);
+}
+
+.foundTrail rect {
+  fill: var(--cloth-wash);
+}
+
+.liveTrail rect {
+  fill: var(--cloth);
+}
+
+/*
+ * The word just traced resolves from the binding to the wash one piece at a
+ * time along its own trail, so it is read back in the order it was written —
+ * the bars take the half-step between the beads they join, so the shape
+ * settles along itself rather than blinking over in parts. `both` holds the
+ * first frame through the delay. Reduced motion collapses every duration
+ * globally, which lands all of them on the final frame at once.
+ */
+.foundTrail[data-settling='true'] rect {
+  animation: settleFill 340ms var(--ease-settle) both;
+  animation-delay: calc(var(--step) * 55ms);
+}
+
+@keyframes settleFill {
+  from {
+    fill: var(--cloth);
+  }
+  to {
+    fill: var(--cloth-wash);
+  }
+}
+
+.cells {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  height: 100%;
+  /* A trail is dragged across the board, so the board has to hold the gesture
+     rather than let the page scroll out from under it. The ~400px of text
+     above the grid is what the page is scrolled by instead, which is why
+     `--play` sizes the grid to the viewport's height. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* A grid item's automatic minimum size is its content's; held above the
+     track it was given, a cell would spill out of the board. */
+  min-width: 0;
+  background: none;
+  font-size: clamp(1rem, 5vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  transition: color 140ms var(--ease-settle);
+}
+
+/* The letter standing on the binding is read off it, the way the colophon is. */
+.cell[data-state='live'] {
+  color: var(--on-cloth);
+}
+
+.cell[data-settling='true'] {
+  animation: settleInk 340ms var(--ease-settle) both;
+  animation-delay: calc(var(--step) * 55ms);
+}
+
+@keyframes settleInk {
+  from {
+    color: var(--on-cloth);
+  }
+  to {
+    color: var(--ink);
+  }
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .cell:not(:disabled):not([data-state='live']):hover {
+    color: var(--cloth);
+  }
+}
+
+/* The ring would otherwise be cut by the cell drawn after it. */
+.cell:focus-visible {
+  z-index: 1;
+  outline-offset: -4px;
+}
+
+.status {
+  min-height: 1.6em;
+  margin-top: 0.7rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--rule-hair);
+  padding: var(--rule-hair);
+  margin-top: 0.4rem;
+  background-color: var(--rule);
+}
+
+.action {
+  padding: 0.7rem 0.6rem;
+  font-size: var(--step-guide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background-color: var(--stock);
+  transition:
+    color 140ms var(--ease-settle),
+    background-color 140ms var(--ease-settle);
+}
+
+.action:not(:disabled):hover {
+  background-color: var(--stock-sunk);
+  color: var(--ink);
+}
+
+.action:disabled {
+  cursor: default;
+  color: var(--ink-muted);
+  opacity: 0.55;
+}
+
+/* Committing a trail is the move the board is for, so it is the one label in
+   oxblood — the same mark the key that commits a Fjalëz guess carries. */
+.check {
+  color: var(--cloth);
+}
+
+.check:not(:disabled):hover {
+  color: var(--cloth);
+}

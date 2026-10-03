@@ -1,0 +1,35 @@
+---
+import Shtigje from '../components/shtigje/Shtigje';
+import MainLayout from '../layouts/MainLayout.astro';
+import { getGameCardPath } from '../lib/seo.ts';
+---
+
+<MainLayout
+  title="Shtigje | Loja javore e fjalëve | fjalorshqip.com"
+  socialTitle="Shtigje — loja javore e fjalëve"
+  description="Shtigje — një temë e re çdo javë. Lidh shkronjat ngjitur dhe nxirr fjalët: asnjë shkronjë e rrjetit nuk është e tepërt."
+  image={getGameCardPath('shtigje')}
+  imageAlt="Shtigje — loja javore e fjalëve"
+>
+  {
+    /* The board knows which week it is, which week was asked for and what this
+       browser has already found — none of which exists at build time, so the
+       page ships the frame and the island renders the game. */
+  }
+  <Shtigje client:only="preact" />
+
+  <noscript>
+    <p class="noscript">
+      Shtigjet luhen në shfletues. Aktivizoni JavaScript-in për t’i luajtur, ose
+      <a href="/">kërkoni një fjalë</a> në fjalor.
+    </p>
+  </noscript>
+</MainLayout>
+
+<style lang="scss">
+  .noscript {
+    padding-top: clamp(1.75rem, 6vw, 3rem);
+    line-height: var(--leading-read);
+    color: var(--ink-muted);
+  }
+</style>

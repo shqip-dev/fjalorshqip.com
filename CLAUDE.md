@@ -11,8 +11,9 @@ image is published to ghcr.io by `.github/workflows/docker-publish.yml`.
 
 ## Docs
 
-- `docs/README.md`, `docs/kerkimi.md`, `docs/fjalez.md` and `docs/lemsh.md` are user/contributor-facing and are
-  **written in Albanian — keep them that way**, as is all UI copy and page content.
+- `docs/README.md`, `docs/kerkimi.md`, `docs/fjalez.md`, `docs/lemsh.md` and `docs/shtigje.md` are
+  user/contributor-facing and are **written in Albanian — keep them that way**, as is all UI copy and
+  page content.
 - `docs/_claude/` holds English detail referenced from here. Read
   [`docs/_claude/search-indexing.md`](docs/_claude/search-indexing.md) before touching the indexing
   pipeline, the search bar, or the word-page routes, and
@@ -35,6 +36,7 @@ Package manager is **pnpm** (migrated from npm). `.npmrc` sets `enable-pre-post-
 | `pnpm astro check` | Typecheck only |
 | `pnpm preview` | Serve `./dist` |
 | `pnpm lemsh:words` | Regenerate `src/data/lemsh/rounds.json` (Lëmsh days) |
+| `pnpm shtigje:words` | Regenerate `src/data/shtigje/weeks.json` (Shtigje weeks) |
 | `pnpm og:cards` | Redraw the per-word social cards into an existing `dist/og/` |
 | `pnpm og:site` | Redraw `public/og.png`, the card every non-word page shares |
 
@@ -135,6 +137,73 @@ that is not the word: `g` is what was built and `n` which attempt it was at that
 `lemsh_shuffle`, `lemsh_finish`, `lemsh_share` and `lemsh_definition`. The board raises what happened
 and the page tracks it — `LemshRound` holds no analytics of its own.
 
+## Shtigje
+
+`/shtigje` (no `ë`, so the slug is the word) is the **weekly** game — a Strands-style grid: six
+columns by eight rows, one theme, and every one of the forty-eight cells belongs to exactly one of
+the week's words. A word is a self-avoiding king-move trail; there is no filler, so the letters left
+over are always the words left over. `src/lib/shtigjeGrid.ts` holds the board (shared with the
+generator, which needs it before `weeks.json` exists), `src/lib/shtigje.ts` the rules and the week
+arithmetic, `src/lib/shtigjeStore.ts` the storage. Load-bearing:
+
+- **The week is Monday in Tirana, not UTC** — the one place the three games disagree about what a day
+  is. `toLocalMidnight` in `src/lib/shtigje.ts` asks `Intl` for the civil date in `Europe/Tirane` and
+  floors whole weeks since `START_UTC`, itself a Monday; an environment without the zone falls back
+  to UTC. `?j=<any date inside the week>` opens that week, so a link shared on Thursday still works.
+- **The weeks are committed, not generated at build time** — `src/data/shtigje/weeks.json`, built by
+  `pnpm shtigje:words` from the themes inside `src/scripts/shtigjeWords.ts`, for the same reason the
+  other two games' lists are. Each theme carries a *pool* larger than a week needs; the generator
+  picks the subset whose letters total exactly 48, packs it into the grid as disjoint paths, and
+  **fails loudly** rather than writing a partial file. It reports every theme that failed, not the
+  first. The series must not wrap; `WEEKS.length` is the end.
+- **The bonus words are read off the finished grid, from the dictionary** — every other word of 4–8
+  letters the grid can be made to spell, found with a trie at build time because enumerating them in
+  the browser would mean shipping the dictionary. Three of them buy a hint. They are most of
+  `weeks.json`'s 62 KB (19 KB gzip), which is why the page is the only thing that imports it.
+- **A hint stores the word it gave away, not a count.** A count has to be turned back into words to
+  draw them, and the only rule that does that slides: spend a hint, trace the word, and the same hint
+  silently points at the next one. A hint sinks a word's *cells* and never their order.
+- **The trail is beads and bars, and it is the one rounded thing on the site.** The letters stand on
+  the open sheet (no ruled table here, unlike the other two boards) and the trail is drawn behind
+  them in an SVG whose `0 0 6 8` viewBox is one unit to a cell: a rounded square (`SIDE` 0.78,
+  `RADIUS` 0.27) under every letter the trail takes, plus a bar from each letter to the next *in the
+  order traced* — never to its grid neighbour. The pieces are opaque and one colour; the union is
+  the silhouette, and no outline is ever computed, which is the whole reason this construction
+  holds. **A bar is as wide as the bead is across that direction, which is not one number**: a
+  rounded square is wider corner-to-corner than side-to-side (`support()`), so one fixed bar width
+  is flush along a row and steps visibly inside the bead at every diagonal junction — only a circle
+  has one width in every direction. Sizing each bar by the bead's support across it makes its long
+  edges tangent to the beads at both ends and the union tangent-continuous, on a straight run and
+  on a turn alike, where the silhouette goes tangent → bead arc → tangent. The honest cost is that
+  a diagonal stretch is ~10% wider than a straight one, which is the mark a square stamp leaves
+  dragged corner-first; `RADIUS` is the dial, and at `SIDE / 2` the bead is a circle and the two
+  widths meet. Drawing a bar edge-to-edge instead of centre-to-centre breaks the tangency too. A
+  cell's ground says how resolved it is — `--stock-sunk` hinted, `--cloth-wash` found,
+  `--cloth` in hand — and **a hint draws beads with no bars**, which is the whole of what a hint is:
+  the cells without the order. The rounded corners are a deliberate, user-directed exception to the
+  system's `radius: 0`, scoped to this one object; the keys under the board and everything else stay
+  square. Two earlier attempts are recorded in case they look tempting: a fat polyline through the
+  cell centres (wedges and chisel caps at an acute turn) and a ruled table with 3px leaders between
+  the letters (legible, but it reads as a diagram rather than as a trail).
+- **A drag takes a cell by its middle, not by its edge.** The drag is followed with a window-level
+  `pointermove` against the grid's own box, and a cell is entered only within `HIT_RADIUS` (0.42
+  cell) of its centre; the corners are dead ground. `pointerenter` on the cells — the obvious
+  implementation, and what this replaced — makes a diagonal impossible: going from a cell to the
+  one diagonally beyond it the pointer crosses a corner the two cells beside it also meet at, so
+  one of those is always taken first and the diagonal becomes two steps. A straight diagonal passes
+  0.707 from those centres, which is the ceiling the radius has to stay under. A *tap* still takes
+  the whole cell — a press is deliberate where a drag is in passing.
+- **A theme word is matched by its letters, not by the trail** — a grid can spell the same word twice,
+  and the canonical path is what then lights up. The board is the only place `touch-action: none`
+  appears on this site (a trail is dragged across it), which is also why `--play` sizes the grid off
+  the viewport's **height**: a board running past the fold leaves nothing to scroll the page by
+  except the ~400px of text above it.
+- `lineBetween` bridges the cells a fast swipe skipped, but only along a row, a column or a true
+  diagonal — anywhere else there is more than one line it could have taken.
+
+Umami events are `shtigje_open`, `shtigje_word`, `shtigje_bonus`, `shtigje_miss`, `shtigje_hint`,
+`shtigje_solve`, `shtigje_share` and `shtigje_definition`.
+
 ## Head metadata and social cards
 
 Every page's `<head>` — description, canonical, Open Graph, Twitter card and JSON-LD — is written by
@@ -149,9 +218,9 @@ what `@astrojs/sitemap` lists. Nothing on the 404 path asks to be indexed.
 **Every word page has its own social card.** `src/lib/ogCard.ts` draws them — the headword, its
 labels and its first sense on the page's own sheet — and `src/scripts/ogCards.ts` runs as `postbuild`
 to write one per prerendered slug into `dist/og/<slug>.png`, plus `public/og.png` for everything else.
-Fjalëz and Lëmsh have a card each as well, drawn by the same module as a row of the game's own cells:
-they are two files, so they live in `public/` beside the site's card and are committed rather than
-built, and `pnpm og:site` redraws all three.
+The three games have a card each as well, drawn by the same module as a row of the game's own cells:
+they are three files, so they live in `public/` beside the site's card and are committed rather than
+built, and `pnpm og:site` redraws all four.
 Three things make that affordable and are easy to undo: the cards go into `dist`, never `public`,
 which `astro build` would copy a second time; they are drawn from the same slug dictionary the pages
 are, so a card exists exactly when its page does; and `sharp` is a devDependency of a version `astro`

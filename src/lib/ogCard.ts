@@ -236,8 +236,9 @@ const drawRow = async (row: [string, CellState][]): Promise<Drawn> => {
 /*
  * What each game's card says. The row is the game itself rather than an
  * ornament: Fjalëz shows a guessed row as the board would colour it — in place,
- * elsewhere, absent — and Lëmsh a tray still shuffled, which the name under the
- * rule then solves.
+ * elsewhere, absent — Lëmsh a tray still shuffled, which the name under the
+ * rule then solves, and Shtigje a trail already traced, which is what a found
+ * word looks like on its board.
  */
 interface GameCardSpec {
   name: string;
@@ -266,6 +267,19 @@ const GAME_CARDS: Record<GameKey, GameCardSpec> = {
       ['Ë', 'plain'],
       ['L', 'plain'],
       ['S', 'plain'],
+    ],
+  },
+  shtigje: {
+    name: 'Shtigje',
+    tagline: 'Një temë e re çdo javë — asnjë shkronjë e rrjetit nuk është e tepërt',
+    row: [
+      ['S', 'elsewhere'],
+      ['H', 'elsewhere'],
+      ['T', 'elsewhere'],
+      ['I', 'elsewhere'],
+      ['G', 'elsewhere'],
+      ['J', 'elsewhere'],
+      ['E', 'elsewhere'],
     ],
   },
 };

@@ -1,0 +1,273 @@
+/*
+ * Shtigje — the page around the grid. Set the way the Fjalëz and Lëmsh pages
+ * are set, because the three games are one object seen three times: the title,
+ * the running head, the intro and the archive keep the column's left edge, and
+ * the play block is centred as a block while nothing inside it is.
+ *
+ * The one thing this page measures differently is the board, which is the only
+ * portrait one of the three — six columns by eight rows. It is therefore
+ * sized against the viewport's height first and its width second, so that the
+ * grid, the three keys under it and the line that answers back are seen at
+ * once rather than scrolled through.
+ */
+
+.shtigje {
+  padding-top: clamp(1.75rem, 6vw, 3rem);
+
+  /* The board's own floor, six cells wide. A little under the 44px a tap
+     wants, because these are not taps: a cell is entered by dragging across a
+     grid with no gaps in it, where overshooting the one you meant is undone by
+     carrying on. Under this the letters stop being readable, so no viewport
+     takes it lower. */
+  --board-min: 16rem;
+
+  /*
+   * Unlike the other two boards this one is portrait, and unlike them it may
+   * not be scrolled: a trail is dragged across it, so the grid holds the
+   * gesture (`touch-action: none`) and a reader whose board runs off the fold
+   * has nothing left to scroll the page by. The height is therefore what sizes
+   * it — the column's width only caps it — and the 25rem is everything else
+   * the page puts on screen above and below the grid.
+   *
+   * `6 / 8` turns the height a board may have into the width that gives it:
+   * the cells are square, so the two are one number seen twice.
+   */
+  --play: min(100%, 24rem, max(var(--board-min), calc((100svh - 25rem) * 6 / 8)));
+}
+
+.head {
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+}
+
+/* A page title, not a lemma: ink at the headword's weight. */
+.title {
+  font-size: var(--step-title);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.rail {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1.4rem;
+  margin-top: 0.3rem;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.intro {
+  margin-top: 0.8rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.play {
+  width: var(--play);
+  margin-inline: auto;
+}
+
+/*
+ * The theme is the clue and the only one there is, so it is set as a headword
+ * would be — small-caps label, the thing itself in ink beneath — rather than
+ * as a caption over a board.
+ */
+.theme {
+  margin-top: clamp(1.1rem, 4vh, 2rem);
+}
+
+.themeLabel {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+}
+
+.themeTitle {
+  margin-top: 0.1rem;
+  font-size: var(--step-lead);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.015em;
+  color: var(--cloth);
+}
+
+.count {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.status {
+  min-height: 1.6em;
+  margin-top: 0.7rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+/* The words come off the board as a ruled list — the result list's own
+   construction, hairline-separated rows that start and end on the column's
+   edge, because a found word here is the same object a solved word is in
+   Lëmsh: a lemma, one click from its entry. */
+.words {
+  margin-top: 0.6rem;
+}
+
+.wordsLabel,
+.bonusLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding-bottom: 0.45rem;
+  border-bottom: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  font-weight: 400;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.wordRow + .wordRow {
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.wordLink {
+  display: flex;
+  align-items: baseline;
+  gap: 0 0.9rem;
+  padding-block: 0.6rem;
+  min-height: 2.5rem;
+  text-decoration: none;
+}
+
+.wordLink:hover {
+  background-color: var(--stock-sunk);
+}
+
+.term {
+  flex: 1 1 auto;
+  font-size: var(--step-lead);
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 40%, transparent);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 140ms var(--ease-settle);
+}
+
+@media (hover: hover) {
+  .wordLink:hover .term {
+    text-decoration-color: currentColor;
+  }
+}
+
+.letters {
+  flex: 0 0 auto;
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.actions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: var(--rule-hair) solid var(--rule);
+}
+
+.share {
+  padding-block: 0.5rem;
+  font-size: var(--step-guide);
+  text-transform: uppercase;
+  color: var(--cloth);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cloth) 45%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.share:hover {
+  text-decoration-color: currentColor;
+}
+
+.currentLink {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  text-decoration-color: color-mix(in srgb, var(--ink-muted) 40%, transparent);
+}
+
+.currentLink:hover {
+  color: var(--cloth);
+}
+
+/* The bonus words are an aside and are set as one: a run of lowercase lemmas
+   separated by the colophon's middot, not a second list competing with the
+   theme's. */
+.bonus {
+  margin-top: 1.4rem;
+}
+
+.bonusList {
+  margin-top: 0.5rem;
+  font-size: var(--step-small);
+  line-height: var(--leading-read);
+  color: var(--ink);
+}
+
+.bonusList a {
+  text-decoration-color: color-mix(in srgb, var(--cloth) 45%, transparent);
+}
+
+.bonusList a:hover {
+  color: var(--cloth);
+}
+
+.bonusNote {
+  margin-top: 0.5rem;
+  font-size: var(--step-guide);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: var(--rule-hair) solid var(--rule);
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.closed {
+  margin-top: 1.2rem;
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}
+
+.closedLink {
+  margin-top: 0.6rem;
+  font-size: var(--step-small);
+}
+
+.closedLink a {
+  text-decoration-color: var(--cloth);
+}
