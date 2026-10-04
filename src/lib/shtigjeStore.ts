@@ -38,6 +38,18 @@ export interface WeekResult {
   bonus: string[];
   /** The theme words a hint was spent on, whether or not they were then traced. */
   hinted: string[];
+  /*
+   * Seconds the week actually took. It is a **sum of what was done** and
+   * not a tick count: each move adds the gap since the last one, capped at
+   * `THINK_CAP`, so there is no interval running, nothing to flush on the
+   * way out, and a board left open costs two minutes rather than an
+   * afternoon. The deliberate hole is the other way round — a genuine long
+   * stare at the grid is undercounted, which is the kind direction for a
+   * number that only takes points away.
+   */
+  seconds: number;
+  /** Trails committed that were not a word. Nothing limits how many. */
+  misses: number;
 }
 
 export interface Progress {
@@ -55,11 +67,18 @@ const EMPTY: Progress = { weeks: {} };
 const isWordList = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((word) => typeof word === 'string');
 
+const isCount = (value: unknown) =>
+  value === undefined || (typeof value === 'number' && Number.isFinite(value));
+
 const isResult = (value: unknown): value is WeekResult =>
   !!value &&
   isWordList((value as WeekResult).found) &&
   isWordList((value as WeekResult).bonus) &&
-  isWordList((value as WeekResult).hinted);
+  isWordList((value as WeekResult).hinted) &&
+  // Tolerated as absent: a week stored before the score existed is a week
+  // that was played, and it reads back at nought seconds and no misses.
+  isCount((value as WeekResult).seconds) &&
+  isCount((value as WeekResult).misses);
 
 export const readProgress = (): Progress => {
   try {
@@ -77,6 +96,8 @@ export const readProgress = (): Progress => {
           found: result.found,
           bonus: result.bonus,
           hinted: result.hinted,
+          seconds: Math.max(0, Math.round(result.seconds || 0)),
+          misses: Math.max(0, Math.round(result.misses || 0)),
         };
       }
     });
@@ -125,7 +146,14 @@ export const readPlayed = (): PlayedWeek[] => {
       }
       return {
         week,
-        score: scoreWeek(puzzle, stored.found, stored.bonus, stored.hinted),
+        score: scoreWeek(
+          puzzle,
+          stored.found,
+          stored.bonus,
+          stored.hinted,
+          stored.seconds,
+          stored.misses
+        ),
       };
     })
     .filter((played): played is PlayedWeek => played !== null)
@@ -139,6 +167,7 @@ export interface Stats {
   bonus: number;
   /** Consecutive solved weeks counting back from the most recent one played. */
   streak: number;
+  best: number;
 }
 
 export const getStats = (played: PlayedWeek[]): Stats => {
@@ -158,5 +187,10 @@ export const getStats = (played: PlayedWeek[]): Stats => {
     words: played.reduce((total, entry) => total + entry.score.found, 0),
     bonus: played.reduce((total, entry) => total + entry.score.bonus, 0),
     streak,
+    // Only a week that was emptied has a score worth being the best of one.
+    best: played.reduce(
+      (best, entry) => (entry.score.solved ? Math.max(best, entry.score.points) : best),
+      0
+    ),
   };
 };

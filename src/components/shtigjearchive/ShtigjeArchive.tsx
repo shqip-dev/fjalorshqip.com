@@ -26,7 +26,7 @@ const getScore = (played: PlayedWeek | undefined) => {
       done: false,
     };
   }
-  return { label: 'i plotë', done: true };
+  return { label: `${played.score.points} pikë`, done: true };
 };
 
 const ShtigjeArchive = ({ week, current, played, onPick }: ShtigjeArchiveProps) => {

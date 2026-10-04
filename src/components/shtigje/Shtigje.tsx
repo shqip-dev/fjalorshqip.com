@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   BONUS_PER_HINT,
+  BONUS_POOL,
+  HINT_COST,
+  MISS_COST,
+  THINK_CAP,
   WEEKS,
   WEEK_QUERY_PARAM,
+  formatSeconds,
   formatShare,
   formatWeekIndex,
   fromWeekParam,
@@ -14,6 +19,7 @@ import {
   getWordByName,
   isSolved,
   nextHint,
+  scoreWeek,
   toWeekParam,
 } from '../../lib/shtigje';
 import {
@@ -56,10 +62,19 @@ const Shtigje = () => {
   const [found, setFound] = useState<string[]>([]);
   const [bonus, setBonus] = useState<string[]>([]);
   const [hinted, setHinted] = useState<string[]>([]);
+  const [seconds, setSeconds] = useState(0);
+  const [misses, setMisses] = useState(0);
   const [played, setPlayed] = useState<PlayedWeek[]>([]);
   const [copied, setCopied] = useState(false);
   const [message, setMessage] = useState('');
   const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  /*
+   * When the clock was last read. There is no interval running: every move
+   * adds the gap since the move before it, so the week's time is a sum of
+   * what was done rather than something that has to be started, stopped and
+   * flushed on the way out.
+   */
+  const lastAt = useRef(Date.now());
 
   const puzzle = getWeek(week);
   const future = week > current;
@@ -79,10 +94,28 @@ const Shtigje = () => {
     setFound(stored?.found || []);
     setBonus(stored?.bonus || []);
     setHinted(stored?.hinted || []);
+    setSeconds(stored?.seconds || 0);
+    setMisses(stored?.misses || 0);
     setCopied(false);
     setMessage('');
     setPlayed(readPlayed());
+    lastAt.current = Date.now();
   }, [week]);
+
+  /*
+   * A tab that was in the background was not a board being looked at, so the
+   * clock picks up from the moment it comes back rather than charging for the
+   * time away. `THINK_CAP` already bounds the damage; this removes it.
+   */
+  useEffect(() => {
+    const onVisible = () => {
+      if (!document.hidden) {
+        lastAt.current = Date.now();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
 
   useEffect(() => {
     if (!playable || !puzzle) {
@@ -125,15 +158,34 @@ const Shtigje = () => {
     setWeek(next);
   };
 
+  /**
+   * What this move cost the clock, added to the week's total and returned so
+   * it can be stored with whatever else the move changed. Capped, so one long
+   * pause is charged as a pause and not as the whole of it.
+   */
+  const tick = () => {
+    const now = Date.now();
+    const gap = Math.min(THINK_CAP, Math.max(0, (now - lastAt.current) / 1000));
+    lastAt.current = now;
+
+    const next = Math.round(seconds + gap);
+    setSeconds(next);
+    return next;
+  };
+
   const store = (next: {
     found?: string[];
     bonus?: string[];
     hinted?: string[];
+    seconds?: number;
+    misses?: number;
   }) => {
     const result = {
       found: next.found || found,
       bonus: next.bonus || bonus,
       hinted: next.hinted || hinted,
+      seconds: next.seconds ?? seconds,
+      misses: next.misses ?? misses,
     };
     writeWeek(week, result);
     setPlayed(readPlayed());
@@ -145,9 +197,10 @@ const Shtigje = () => {
       return;
     }
 
+    const spent = tick();
     const next = [...found, word];
     setFound(next);
-    store({ found: next });
+    store({ found: next, seconds: spent });
 
     track('shtigje_word', {
       j: toWeekParam(week),
@@ -157,24 +210,39 @@ const Shtigje = () => {
     });
 
     if (next.length >= puzzle.words.length) {
+      const final = scoreWeek(puzzle, next, bonus, hinted, spent, misses);
       track('shtigje_solve', {
         j: toWeekParam(week),
-        b: String(bonus.length),
-        h: String(hinted.length),
+        p: String(final.points),
+        t: String(final.seconds),
+        m: String(final.misses),
+        b: String(final.bonus),
+        h: String(final.hints),
       });
     }
   };
 
   const onBonus = (word: string) => {
+    const spent = tick();
     const next = [...bonus, word];
     setBonus(next);
-    store({ bonus: next });
+    store({ bonus: next, seconds: spent });
 
     track('shtigje_bonus', {
       j: toWeekParam(week),
       w: word,
       b: String(next.length),
     });
+  };
+
+  /* A trail that was not a word. Nothing stops the reader trying again. */
+  const onMiss = (guess: string) => {
+    const spent = tick();
+    const next = misses + 1;
+    setMisses(next);
+    store({ misses: next, seconds: spent });
+
+    track('shtigje_miss', { j: toWeekParam(week), g: guess, m: String(next) });
   };
 
   const onHint = () => {
@@ -187,9 +255,10 @@ const Shtigje = () => {
       return;
     }
 
+    const spent = tick();
     const next = [...hinted, word];
     setHinted(next);
-    store({ hinted: next });
+    store({ hinted: next, seconds: spent });
     flash('Shkronjat e një fjale u ndriçuan — rendi mbetet i juaji.');
 
     track('shtigje_hint', {
@@ -207,9 +276,7 @@ const Shtigje = () => {
     const text = formatShare(
       week,
       puzzle,
-      found,
-      bonus,
-      hinted.length,
+      scoreWeek(puzzle, found, bonus, hinted, seconds, misses),
       `${window.location.origin}/shtigje`
     );
 
@@ -275,6 +342,7 @@ const Shtigje = () => {
   }
 
   const hintsLeft = getHintsLeft(bonus, hinted);
+  const score = scoreWeek(puzzle, found, bonus, hinted, seconds, misses);
 
   return (
     <div className={styles.shtigje}>
@@ -294,6 +362,9 @@ const Shtigje = () => {
             <span>
               {found.length} nga {puzzle.words.length} fjalë
             </span>
+            {/* Counting up, never down: the figure is a record of the week and
+                not a clock to beat. It moves only when the reader does. */}
+            {seconds !== 0 && <span>{formatSeconds(seconds)}</span>}
             <span>
               {solved
                 ? 'rrjeti u zbraz'
@@ -313,9 +384,7 @@ const Shtigje = () => {
           hinted={getOpenHints(found, hinted)}
           onFound={onFound}
           onBonus={onBonus}
-          onMiss={(guess) =>
-            track('shtigje_miss', { j: toWeekParam(week), g: guess })
-          }
+          onMiss={onMiss}
           hintsLeft={hintsLeft}
           onHint={onHint}
           done={solved}
@@ -324,6 +393,62 @@ const Shtigje = () => {
         <p className={styles.status} role="status" aria-live="polite">
           {message}
         </p>
+
+        {solved && (
+          <section className={styles.result} aria-label="Përfundimi">
+            <p className={styles.score}>
+              <span className={styles.points}>{score.points}</span>
+              <span className={`${styles.unit} sc`}>pikë</span>
+            </p>
+            <dl className={styles.tally}>
+              <div className={styles.line}>
+                <dt>Fjalët</dt>
+                <dd>
+                  {score.base} <span className={styles.aside}>pikë</span>
+                </dd>
+              </div>
+              <div className={styles.line}>
+                <dt>Koha</dt>
+                <dd>
+                  {formatSeconds(score.seconds)}{' '}
+                  <span className={styles.aside}>−{score.seconds}</span>
+                </dd>
+              </div>
+              {score.misses !== 0 && (
+                <div className={styles.line}>
+                  <dt>Prova të gabuara</dt>
+                  <dd>
+                    {score.misses}{' '}
+                    <span className={styles.aside}>
+                      −{MISS_COST * score.misses}
+                    </span>
+                  </dd>
+                </div>
+              )}
+              {score.hints !== 0 && (
+                <div className={styles.line}>
+                  <dt>Ndihma</dt>
+                  <dd>
+                    {score.hints}{' '}
+                    <span className={styles.aside}>
+                      −{HINT_COST * score.hints}
+                    </span>
+                  </dd>
+                </div>
+              )}
+              <div className={`${styles.line} ${styles.sum}`}>
+                <dt>Fondi i mbetur</dt>
+                <dd>{score.extra}</dd>
+              </div>
+            </dl>
+            <p className={styles.formula}>
+              Çdo fjalë jep 10 pikë për shkronjë. Mbi to rri një fond prej{' '}
+              {BONUS_POOL} pikësh, që shkrihet me një pikë për sekondë,{' '}
+              {MISS_COST} për çdo provë të gabuar dhe {HINT_COST} për çdo
+              ndihmë — kurrë nën zero. S’ka as orë që të ndjek, as kufi provash.
+            </p>
+          </section>
+        )}
 
         {found.length !== 0 && (
           <section className={styles.words} aria-label="Fjalët e gjetura">
@@ -403,6 +528,7 @@ const Shtigje = () => {
             <span>Javë të plota {stats.solved}</span>
             <span>Fjalë {stats.words}</span>
             <span>Varg {stats.streak}</span>
+            <span>Më i miri {stats.best}</span>
           </p>
         )}
       </div>

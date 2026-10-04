@@ -203,11 +203,63 @@ export const getOpenHints = (found: string[], hinted: string[]) =>
 export const isSolved = (week: Week, found: string[]) =>
   found.length >= week.words.length;
 
+/* ------------------------------------------------------------------ *
+ * The score.
+ *
+ * A week pays for the grid and then for the way it was taken. The words
+ * are the **base** and they are the only thing that adds: ten points a
+ * letter, the same rate Lëmsh pays, so a full forty-eight-cell grid is
+ * worth 480 whatever else happened.
+ *
+ * Over that sits one **pool**, and everything else drains it — a point a
+ * second, ten a wrong trail, sixty a hint — floored at nothing. That is
+ * what keeps the game neither timed nor capped: there is no clock to beat
+ * and no limit on how many trails you may try, you simply stop earning
+ * from the pool. Running it dry costs a reader nothing they had.
+ *
+ * The pool is paid **only for a week that was emptied**. Otherwise the
+ * fastest week would be the one where a reader traced a single word and
+ * walked away.
+ * ------------------------------------------------------------------ */
+
+/** Ten points a letter, the rate Lëmsh pays, so the two games read alike. */
+export const POINTS_PER_LETTER = 10;
+
+/** Twelve minutes of pool, which is about two unhurried solves' worth. */
+export const BONUS_POOL = 720;
+export const SECOND_COST = 1;
+export const MISS_COST = 10;
+export const HINT_COST = 60;
+
+/*
+ * The most one gap between two moves may add to the week's clock. The
+ * clock is a sum of what was done and not a tick count — see
+ * `shtigjeStore.ts` — so a board left open over lunch costs two minutes
+ * rather than an afternoon. It undercounts a long stare at the grid, which
+ * is the kind direction for a number that only ever takes points away.
+ */
+export const THINK_CAP = 120;
+
+/** `1:04` — a clock, wherever seconds are shown as a duration. */
+export const formatSeconds = (seconds: number) => {
+  const whole = Math.max(0, Math.round(seconds));
+  const minutes = Math.floor(whole / 60);
+  const rest = whole % 60;
+  return `${minutes}:${rest < 10 ? '0' : ''}${rest}`;
+};
+
 export interface Score {
   found: number;
   words: number;
   bonus: number;
   hints: number;
+  misses: number;
+  seconds: number;
+  /** What the words are worth on their own. */
+  base: number;
+  /** What is left of the pool; zero until the week is emptied. */
+  extra: number;
+  points: number;
   solved: boolean;
 }
 
@@ -215,14 +267,36 @@ export const scoreWeek = (
   week: Week,
   found: string[],
   bonusFound: string[],
-  hinted: string[]
-): Score => ({
-  found: found.length,
-  words: week.words.length,
-  bonus: bonusFound.length,
-  hints: hinted.length,
-  solved: isSolved(week, found),
-});
+  hinted: string[],
+  seconds: number,
+  misses: number
+): Score => {
+  const solved = isSolved(week, found);
+  const letters = found.reduce(
+    (total, word) => total + (getWordByName(week, word)?.path.length || 0),
+    0
+  );
+
+  const base = POINTS_PER_LETTER * letters;
+  const spent =
+    SECOND_COST * Math.max(0, Math.round(seconds)) +
+    MISS_COST * Math.max(0, misses) +
+    HINT_COST * hinted.length;
+  const extra = solved ? Math.max(0, BONUS_POOL - spent) : 0;
+
+  return {
+    found: found.length,
+    words: week.words.length,
+    bonus: bonusFound.length,
+    hints: hinted.length,
+    misses: Math.max(0, misses),
+    seconds: Math.max(0, Math.round(seconds)),
+    base,
+    extra,
+    points: base + extra,
+    solved,
+  };
+};
 
 const SHARE_MARKS = { found: '🟥', missing: '⬜' };
 
@@ -234,27 +308,29 @@ const SHARE_MARKS = { found: '🟥', missing: '⬜' };
 export const formatShare = (
   week: number,
   puzzle: Week,
-  found: string[],
-  bonusFound: string[],
-  hints: number,
+  score: Score,
   siteUrl: string
 ) => {
   const squares = puzzle.words
     .map((_, index) =>
-      index < found.length ? SHARE_MARKS.found : SHARE_MARKS.missing
+      index < score.found ? SHARE_MARKS.found : SHARE_MARKS.missing
     )
     .join('');
 
   const lines = [
-    `Shtigje nr. ${week + 1} — ${found.length}/${puzzle.words.length}`,
+    `Shtigje nr. ${week + 1} — ${score.points} pikë (${score.found}/${score.words})`,
     squares,
+    `⏱ ${formatSeconds(score.seconds)}`,
   ];
 
-  if (hints !== 0) {
-    lines.push(`💡 ${hints}`);
+  if (score.misses !== 0) {
+    lines.push(`✗ ${score.misses}`);
   }
-  if (bonusFound.length !== 0) {
-    lines.push(`+${bonusFound.length} fjalë shtesë`);
+  if (score.hints !== 0) {
+    lines.push(`💡 ${score.hints}`);
+  }
+  if (score.bonus !== 0) {
+    lines.push(`+${score.bonus} fjalë shtesë`);
   }
 
   lines.push(siteUrl);

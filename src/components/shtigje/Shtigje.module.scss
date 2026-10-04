@@ -271,3 +271,85 @@
 .closedLink a {
   text-decoration-color: var(--cloth);
 }
+
+/*
+ * The week, read back. The score is set as a figure and not as a badge — the
+ * same construction the Lëmsh result uses — over a short ruled tally that
+ * shows what the pool paid for and what drained it, because a number nobody
+ * can account for is not a score.
+ */
+.result {
+  margin-top: 0.6rem;
+  /* The word list below is its own section and needs to read as one. */
+  margin-bottom: 1.4rem;
+}
+
+.score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.points {
+  font-size: var(--step-display);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.unit {
+  font-size: var(--step-guide);
+  color: var(--ink-muted);
+}
+
+.tally {
+  margin-top: 0.7rem;
+  padding-top: 0.45rem;
+  border-top: var(--rule-hair) solid var(--rule);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding-block: 0.3rem;
+  font-size: var(--step-small);
+  color: var(--ink-muted);
+}
+
+.line dt,
+.line dd {
+  margin: 0;
+}
+
+.line dd {
+  color: var(--ink);
+}
+
+/* What the entry took off the pool, said beside what it was. */
+.aside {
+  color: var(--ink-muted);
+}
+
+/* The one line that is a total takes the rule that closes a block. */
+.sum {
+  margin-top: 0.15rem;
+  padding-top: 0.45rem;
+  border-top: var(--rule-hair) solid var(--rule);
+  color: var(--ink);
+}
+
+.sum dd {
+  font-weight: 700;
+}
+
+.formula {
+  margin-top: 0.7rem;
+  font-size: var(--step-guide);
+  line-height: var(--leading-read);
+  color: var(--ink-muted);
+}

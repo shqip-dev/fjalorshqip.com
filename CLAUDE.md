@@ -160,6 +160,20 @@ arithmetic, `src/lib/shtigjeStore.ts` the storage. Load-bearing:
   letters the grid can be made to spell, found with a trie at build time because enumerating them in
   the browser would mean shipping the dictionary. Three of them buy a hint. They are most of
   `weeks.json`'s 62 KB (19 KB gzip), which is why the page is the only thing that imports it.
+- **The score is a base that only adds and a pool that only drains.** The words are the base — 10
+  points a letter, Lëmsh's rate, so a full 48-cell grid is 480 whatever else happened. Over it sits
+  one `BONUS_POOL` of 720 that time (1/second), wrong trails (`MISS_COST` 10) and hints
+  (`HINT_COST` 60) eat into, floored at zero. That floor is what makes the game neither timed nor
+  capped, which was the requirement: there is no clock to beat and no limit on trails, you simply
+  stop earning from the pool, and a slow messy week still scores its 480. The pool pays **only for
+  a week that was emptied** — otherwise the fastest week would be the one where a reader traced one
+  word and left.
+- **The clock is a sum of what was done, not a tick count.** There is no interval anywhere: every
+  move adds the gap since the move before it, capped at `THINK_CAP` (120s), and `lastAt` resets
+  when the tab becomes visible again. So nothing has to be started, stopped or flushed on the way
+  out, a board left open over lunch costs two minutes rather than an afternoon, and a backgrounded
+  tab costs nothing. The deliberate hole runs the kind way: a genuine long stare at the grid is
+  undercounted, which is right for a number that only ever takes points away.
 - **A hint stores the word it gave away, not a count.** A count has to be turned back into words to
   draw them, and the only rule that does that slides: spend a hint, trace the word, and the same hint
   silently points at the next one. A hint sinks a word's *cells* and never their order.
@@ -201,8 +215,12 @@ arithmetic, `src/lib/shtigjeStore.ts` the storage. Load-bearing:
 - `lineBetween` bridges the cells a fast swipe skipped, but only along a row, a column or a true
   diagonal — anywhere else there is more than one line it could have taken.
 
-Umami events are `shtigje_open`, `shtigje_word`, `shtigje_bonus`, `shtigje_miss`, `shtigje_hint`,
-`shtigje_solve`, `shtigje_share` and `shtigje_definition`.
+`shtigje.v1` stores five things per week — the theme words found, the bonus words found, the words a
+hint was spent on, the seconds and the misses — and every number shown is derived from those, so a
+stored value cannot disagree with the play and the scoring can be retuned without rewriting anyone's
+history. Umami events are `shtigje_open`, `shtigje_word`, `shtigje_bonus`, `shtigje_miss`,
+`shtigje_hint`, `shtigje_solve` (carries `p` points, `t` seconds, `m` misses, `b` bonus, `h` hints),
+`shtigje_share` and `shtigje_definition`.
 
 ## Head metadata and social cards
 

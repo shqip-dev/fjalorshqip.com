@@ -40,6 +40,35 @@ Fjalët shtesë nuk janë gjetur me dorë: ato lexohen nga vetë rrjeti në koh�
 krahasuar çdo shteg të mundshëm të rrjetit me fjalorin. Secila prej tyre është lidhje drejt kuptimit
 të vet, njësoj si fjalët e temës.
 
+## Pikët
+
+Një javë paguan për rrjetin dhe pastaj për mënyrën si u mor.
+
+**Fjalët** janë baza dhe e vetmja gjë që shton: **10 pikë për çdo shkronjë**. Një rrjet i plotë prej
+dyzet e tetë kutish vlen 480 pikë, pavarësisht se çfarë ndodhi gjatë rrugës.
+
+Mbi to rri një **fond prej 720 pikësh**, dhe gjithçka tjetër e shkrin:
+
+| Çfarë | Sa |
+| :-- | :-- |
+| Çdo sekondë | −1 |
+| Çdo provë e gabuar | −10 |
+| Çdo ndihmë | −60 |
+
+Fondi nuk zbret kurrë nën zero. Kjo është arsyeja pse loja **nuk ka as orë që të ndjek, as kufi
+provash**: s'ka kohë për të mundur dhe s'ka numër shtigjesh që mund të provoni — thjesht, në një
+çast, fondi mbaron dhe pas tij asgjë nuk ju merret më. Një javë e zgjidhur ngadalë e me shumë prova
+vlen 480 pikë, kurrë më pak.
+
+Fondi paguhet **vetëm për një javë të zbrazur**. Përndryshe java më e shpejtë do të ishte ajo ku
+nxirret një fjalë e vetme dhe mbyllet faqja.
+
+Koha është **shumë e asaj që u bë**, jo një orë që rrjedh: çdo lëvizje shton kohën që nga lëvizja e
+mëparshme, e kufizuar në dy minuta. Kështu një rrjet i lënë hapur gjatë drekës ju kushton dy minuta
+dhe jo një pasdite, dhe një skedë në sfond nuk ju kushton asgjë. Ana tjetër e kësaj është e qëllimshme:
+një vështrim i gjatë mbi rrjetin numërohet më pak se ç'ishte — mirësi nga ana e një numri që vetëm
+heq pikë.
+
 ## Kutitë
 
 Çdo kuti mban **një karakter**, njësoj si te [Fjalëza](fjalez.md) dhe [Lëmshi](lemsh.md). Shkronjat
@@ -78,13 +107,15 @@ pandërtuar se një javë e gabuar.
 ## Rezultati juaj
 
 Rezultatet ruhen vetëm te `localStorage` i shfletuesit tuaj, nën çelësin `shtigje.v1`, të ndara sipas
-së hënës së javës (`2026-09-21`). Ruhen vetëm tri gjëra: fjalët e temës që gjetët, fjalët shtesë që
-gjetët dhe fjalët për të cilat harxhuat një ndihmë. Gjithçka tjetër llogaritet prej tyre. Nuk dërgohen
+së hënës së javës (`2026-09-21`). Ruhen vetëm pesë gjëra: fjalët e temës që gjetët, fjalët shtesë që
+gjetët, fjalët për të cilat harxhuat një ndihmë, sekondat dhe numri i provave të gabuara. Pikët
+llogariten prej tyre sa herë shfaqen, kështu që një numër i ruajtur nuk mund të bjerë ndesh me lojën
+që e nxori, dhe pikëzimi mund të ndryshohet pa ua rishkruar historikun lojtarëve. Nuk dërgohen
 askund dhe nuk mund të lexohen nga faqja në një shfletues tjetër — nëse pastroni të dhënat e faqes ose
 kaloni në një pajisje tjetër, historiku nis nga e para.
 
 Çdo fjalë shkruhet sapo gjendet, jo në fund: nëse e mbyllni faqen në mes, javën e vazhdoni aty ku e
 latë.
 
-Butoni *Kopjo rezultatin* kopjon vetëm numrin e javës, katrorët dhe numrin e ndihmave — **kurrë temën
-e as fjalët** — që të mund ta ndani pa ia prishur lojën tjetrit.
+Butoni *Kopjo rezultatin* kopjon vetëm numrin e javës, pikët, katrorët, kohën, provat e gabuara dhe
+ndihmat — **kurrë temën e as fjalët** — që të mund ta ndani pa ia prishur lojën tjetrit.
